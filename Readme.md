@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Максим Гончаренко](https://up.htmlacademy.ru/ecmascript-individual/2/user/1441087).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/spearance).
 
 ---
 
