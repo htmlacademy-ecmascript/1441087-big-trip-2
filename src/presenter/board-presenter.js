@@ -22,16 +22,20 @@ export default class BoardPresenter {
     render(new SortView(), this.boardComponent.getElement());
     render(this.eventListComponent, this.boardComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       const eventItem = new EventItemView();
-      render(new EventView(), eventItem.getElement());
 
-      if (i === 0) {
-        render(new EventCreateView(), eventItem.getElement());
-      }
-
-      if (i === 1) {
-        render(new EventEditView(), eventItem.getElement());
+      // Этот switch нужен для того, чтобы показать в разметке оба
+      // варианта формы редактирования.
+      switch (i) {
+        case 1:
+          render(new EventCreateView(), eventItem.getElement());
+          break;
+        case 3:
+          render(new EventEditView(), eventItem.getElement());
+          break;
+        default:
+          render(new EventView(), eventItem.getElement());
       }
 
       render(eventItem, this.eventListComponent.getElement());
