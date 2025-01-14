@@ -30,13 +30,12 @@ export default class TripPresenter {
     for (let i = 0; i < this.tripEvents.length; i++) {
       const eventItem = new EventItemView();
 
-      // Этот switch нужен для того, чтобы показать в разметке оба
-      // варианта формы редактирования.
+      // Этот switch нужен для того, чтобы показать в разметке оба варианта формы редактирования.
       switch (i) {
-        case 1:
+        case 0:
           render(new EventCreateView({event: this.tripEvents[i]}), eventItem.getElement());
           break;
-        case 3:
+        case 1:
           render(new EventEditView({event: this.tripEvents[i]}), eventItem.getElement());
           break;
         default:
