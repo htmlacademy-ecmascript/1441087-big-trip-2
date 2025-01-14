@@ -1,5 +1,5 @@
 import FilterView from './view/filter-view.js';
-import BoardPresenter from './presenter/board-presenter.js';
+import TripPresenter from './presenter/trip-presenter.js';
 import { render } from './render.js';
 
 
@@ -9,10 +9,10 @@ const pageMainElement = document.querySelector('.page-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 
-const boardPresenter = new BoardPresenter({boardContainer: pageBodyContainerElement});
+const tripPresenter = new TripPresenter({tripContainer: pageBodyContainerElement});
 
 
 render(new FilterView, filtersElement);
 
 
-boardPresenter.init();
+tripPresenter.init();

@@ -1,5 +1,5 @@
 import { render } from '../render.js';
-import BoardView from '../view/board-view.js';
+import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventCreateView from '../view/event-create-view.js';
@@ -8,19 +8,21 @@ import EventItemView from '../view/event-item-view.js';
 import EventView from '../view/event-view.js';
 
 
-export default class BoardPresenter {
-  boardComponent = new BoardView();
-  eventListComponent = new EventListView();
+export default class TripPresenter {
+  tripComponent = null;
+  eventListComponent = null;
 
-  constructor({boardContainer}) {
-    this.boardContainer = boardContainer;
+  constructor({tripContainer}) {
+    this.tripComponent = new TripView();
+    this.eventListComponent = new EventListView();
+    this.tripContainer = tripContainer;
   }
 
 
   init () {
-    render(this.boardComponent, this.boardContainer);
-    render(new SortView(), this.boardComponent.getElement());
-    render(this.eventListComponent, this.boardComponent.getElement());
+    render(this.tripComponent, this.tripContainer);
+    render(new SortView(), this.tripComponent.getElement());
+    render(this.eventListComponent, this.tripComponent.getElement());
 
     for (let i = 0; i < 5; i++) {
       const eventItem = new EventItemView();
