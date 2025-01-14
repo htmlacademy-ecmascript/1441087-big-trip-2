@@ -12,32 +12,35 @@ export default class TripPresenter {
   tripComponent = null;
   eventListComponent = null;
 
-  constructor({tripContainer}) {
+  constructor({tripContainer, eventsModel}) {
     this.tripComponent = new TripView();
     this.eventListComponent = new EventListView();
     this.tripContainer = tripContainer;
+    this.eventsModel = eventsModel;
   }
 
 
   init () {
+    this.tripEvents = [...this.eventsModel.getEvents()];
+
     render(this.tripComponent, this.tripContainer);
     render(new SortView(), this.tripComponent.getElement());
     render(this.eventListComponent, this.tripComponent.getElement());
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.tripEvents.length; i++) {
       const eventItem = new EventItemView();
 
       // Этот switch нужен для того, чтобы показать в разметке оба
       // варианта формы редактирования.
       switch (i) {
         case 1:
-          render(new EventCreateView(), eventItem.getElement());
+          render(new EventCreateView({event: this.tripEvents[i]}), eventItem.getElement());
           break;
         case 3:
-          render(new EventEditView(), eventItem.getElement());
+          render(new EventEditView({event: this.tripEvents[i]}), eventItem.getElement());
           break;
         default:
-          render(new EventView(), eventItem.getElement());
+          render(new EventView({event: this.tripEvents[i]}), eventItem.getElement());
       }
 
       render(eventItem, this.eventListComponent.getElement());
