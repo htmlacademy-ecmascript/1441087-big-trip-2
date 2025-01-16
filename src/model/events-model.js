@@ -1,6 +1,6 @@
 import {mockDestinations} from '../mock/mock-destinations.js';
 import {mockEvents} from '../mock/mock-events.js';
-import {mockOffers} from '../mock/mock-offers.js';
+import {mockOffersPacks} from '../mock/mock-offers-packs.js';
 
 
 export default class EventsModel {
@@ -13,20 +13,27 @@ export default class EventsModel {
   init() {
     this.destinations = mockDestinations;
     this.events = mockEvents;
-    this.offers = mockOffers;
-
+    this.offers = mockOffersPacks;
   }
 
-  getDestinations() {
+  getAllDestinations() {
     return this.destinations;
   }
 
-  getEvents() {
+  getAllEvents() {
     return this.events;
   }
 
-  getOffers() {
-    return this.offers;
+  getEventDestination(event) {
+    return this.destinations.find((destination) => destination.id === event.destination);
   }
 
+  getEventOffersPack(event) {
+    return this.offers.find((offer) => offer.type === event.type);
+  }
+
+  getEventOffersChecked(event) {
+    const eventOffersPack = this.offers.find((offer) => offer.type === event.type);
+    return eventOffersPack.offers.filter((offer) => event.offers.includes(offer.id));
+  }
 }

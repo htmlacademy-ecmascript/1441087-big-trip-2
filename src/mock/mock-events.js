@@ -1,4 +1,4 @@
-const mockEvents = [
+export const mockEvents = [
   {
     'id': 'a72349a8-ca9d-4c0d-9007-d9ae3db4e2ae',
     'basePrice': 8581,
@@ -26,8 +26,8 @@ const mockEvents = [
   {
     'id': '44351617-c7fd-4118-9876-f6aa892e2f37',
     'basePrice': 3339,
-    'dateFrom': '2024-12-20T12:00:00.060Z',
-    'dateTo': '2024-12-22T12:00:00.060Z',
+    'dateFrom': '2024-12-10T12:10:00.060Z',
+    'dateTo': '2024-12-15T12:00:00.060Z',
     'destination': '9bbe4200-020c-4f3c-9640-81648421f209',
     'isFavorite': true,
     'offers': [
@@ -300,5 +300,3 @@ const mockEvents = [
     'type': 'check-in'
   }
 ];
-
-export {mockEvents};

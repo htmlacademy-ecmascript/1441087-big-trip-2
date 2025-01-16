@@ -11,7 +11,12 @@ function getDateDifference (dateOne, dateTwo) {
   const diffHour = dayjs(dateOne).diff(dateTwo, 'hour') - (diffDay * 24);
   const diffMinute = dayjs(dateOne).diff(dateTwo, 'minute') - ((diffHour * 60) + ((diffDay * 24) * 60));
 
-  const diffDayText = diffDay !== 0 ? `${diffDay}D` : '';
+  let diffDayText = '';
+  if (diffDay > 0 && diffDay < 10) {
+    diffDayText = `0${diffDay}D`;
+  } else if (diffDay >= 10) {
+    diffDayText = `${diffDay}D`;
+  }
 
   let diffHourText = '';
   if (diffHour !== 0) {

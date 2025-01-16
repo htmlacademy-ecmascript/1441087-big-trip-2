@@ -7,7 +7,28 @@ import {
 } from '../utils.js';
 
 
-function createEventTemplate(event) {
+function createOfferTemplate(offer) {
+  return (
+    `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`
+  );
+}
+
+
+function createOffersCheckedListTemplate(offersChecked) {
+  return offersChecked.length !== 0 ? (
+    `<h4 class="visually-hidden">Offers:</h4>
+      <ul class="event__selected-offers">
+        ${offersChecked.map((offer) => createOfferTemplate(offer)).join('')}
+      </ul>`
+  ) : '';
+}
+
+
+function createEventTemplate(event, destination, offersChecked) {
   const dayHuman = getFormattedDate(event.dateFrom, DateFormat.DAY_HUMAN);
   const dayMachine = getFormattedDate(event.dateFrom, DateFormat.DAY_MACHINE);
   const timeFromHuman = getFormattedDate(event.dateFrom, DateFormat.TIME_HUMAN);
@@ -23,7 +44,7 @@ function createEventTemplate(event) {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${getCapitalizedWord(event.type)} Amsterdam</h3>
+      <h3 class="event__title">${getCapitalizedWord(event.type)} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${timeFromMachine}">${timeFromHuman}</time>
@@ -35,14 +56,9 @@ function createEventTemplate(event) {
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${event.basePrice}</span>
       </p>
-      <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
-      </ul>
+
+      ${createOffersCheckedListTemplate(offersChecked)}
+
       <button class="event__favorite-btn event__favorite-btn--active" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -58,12 +74,19 @@ function createEventTemplate(event) {
 
 
 export default class EventView {
-  constructor({event}) {
+  constructor({event, destination, offersPack, offersChecked}) {
     this.event = event;
+    this.destination = destination;
+    this.offersPack = offersPack;
+    this.offersChecked = offersChecked;
   }
 
   getTemplate() {
-    return createEventTemplate(this.event);
+    return createEventTemplate(
+      this.event,
+      this.destination,
+      this.offersChecked
+    );
   }
 
   getElement() {
