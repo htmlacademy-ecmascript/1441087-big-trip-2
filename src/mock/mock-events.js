@@ -1,4 +1,4 @@
-const mockPoints = [
+const mockEvents = [
   {
     'id': 'a72349a8-ca9d-4c0d-9007-d9ae3db4e2ae',
     'basePrice': 8581,
@@ -26,8 +26,8 @@ const mockPoints = [
   {
     'id': '44351617-c7fd-4118-9876-f6aa892e2f37',
     'basePrice': 3339,
-    'dateFrom': '2024-12-20T11:35:11.060Z',
-    'dateTo': '2024-12-22T05:23:11.060Z',
+    'dateFrom': '2024-12-20T12:00:00.060Z',
+    'dateTo': '2024-12-22T12:00:00.060Z',
     'destination': '9bbe4200-020c-4f3c-9640-81648421f209',
     'isFavorite': true,
     'offers': [
@@ -41,8 +41,8 @@ const mockPoints = [
   {
     'id': 'efddfe0a-b94c-40ec-bad0-f63d7c1e56e1',
     'basePrice': 9946,
-    'dateFrom': '2024-12-23T10:58:11.060Z',
-    'dateTo': '2024-12-24T09:13:11.060Z',
+    'dateFrom': '2024-12-23T10:20:11.060Z',
+    'dateTo': '2024-12-23T10:30:11.060Z',
     'destination': '97ba1bc6-b161-4015-b0a5-e1f31a3b972d',
     'isFavorite': true,
     'offers': [],
@@ -301,4 +301,4 @@ const mockPoints = [
   }
 ];
 
-export {mockPoints};
+export {mockEvents};

@@ -9,14 +9,16 @@ const filtersElement = pageHeaderElement.querySelector('.trip-controls__filters'
 const pageMainElement = document.querySelector('.page-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
-const eventsModel = new EventsModel();
-const tripPresenter = new TripPresenter({
-  tripContainer: pageBodyContainerElement,
-  eventsModel,
-});
-
 
 render(new FilterView, filtersElement);
 
 
+const eventsModel = new EventsModel();
+eventsModel.init();
+
+
+const tripPresenter = new TripPresenter({
+  tripContainer: pageBodyContainerElement,
+  eventsModel,
+});
 tripPresenter.init();

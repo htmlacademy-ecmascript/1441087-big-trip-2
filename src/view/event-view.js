@@ -1,21 +1,19 @@
 import {createElement} from '../render.js';
+import {DateFormat} from '../const.js';
 import {
-  getDayHuman,
-  getDayMachine,
-  getTimeHuman,
-  getTimeMachine,
+  getFormattedDate,
   getDateDifference,
-  makeWordCapitalize,
+  getCapitalizedWord,
 } from '../utils.js';
 
 
 function createEventTemplate(event) {
-  const dayHuman = getDayHuman(event.dateFrom);
-  const dayMachine = getDayMachine(event.dateFrom);
-  const timeFromHuman = getTimeHuman(event.dateFrom);
-  const timeFromMachine = getTimeMachine(event.dateFrom);
-  const timeToHuman = getTimeHuman(event.dateTo);
-  const timeToMachine = getTimeMachine(event.dateTo);
+  const dayHuman = getFormattedDate(event.dateFrom, DateFormat.DAY_HUMAN);
+  const dayMachine = getFormattedDate(event.dateFrom, DateFormat.DAY_MACHINE);
+  const timeFromHuman = getFormattedDate(event.dateFrom, DateFormat.TIME_HUMAN);
+  const timeFromMachine = getFormattedDate(event.dateFrom, DateFormat.TIME_MACHINE);
+  const timeToHuman = getFormattedDate(event.dateTo, DateFormat.TIME_HUMAN);
+  const timeToMachine = getFormattedDate(event.dateTo, DateFormat.TIME_MACHINE);
   const duration = getDateDifference(event.dateTo, event.dateFrom);
 
 
@@ -25,7 +23,7 @@ function createEventTemplate(event) {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${makeWordCapitalize(event.type)} Amsterdam</h3>
+      <h3 class="event__title">${getCapitalizedWord(event.type)} Amsterdam</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${timeFromMachine}">${timeFromHuman}</time>
