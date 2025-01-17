@@ -33,7 +33,9 @@ function getDateDifference(dateOne, dateTwo) {
   }
 
   let diffHourText = '';
-  if (diffHour !== 0) {
+  if (diffHour > 0 && diffHour < 10) {
+    diffHourText = `0${diffHour}H`;
+  } else if (diffHour >= 10) {
     diffHourText = `${diffHour}H`;
   } else if (diffDay !== 0) {
     diffHourText = '00H';
