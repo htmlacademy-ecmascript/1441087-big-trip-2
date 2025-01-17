@@ -57,10 +57,21 @@ function getHtmlId(string) {
 }
 
 
+function getIdGenerator () {
+  let currentValue = 0;
+
+  return function () {
+    currentValue += 1;
+    return currentValue;
+  };
+}
+
+
 export {
   getDefaultEvent,
   getFormattedDate,
   getDateDifference,
   getCapitalizedString,
   getHtmlId,
+  getIdGenerator,
 };

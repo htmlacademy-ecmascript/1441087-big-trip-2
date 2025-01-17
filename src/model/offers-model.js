@@ -15,11 +15,6 @@ export default class OffersModel {
   }
 
   getOffersPackByType(type) {
-    return this.offersPacks.find((offer) => offer.type === type);
-  }
-
-  getEventOffersChecked(event) {
-    const eventOffersPack = this.offersPacks.find((offer) => offer.type === event.type);
-    return eventOffersPack.offers.filter((offer) => event.offers.includes(offer.id));
+    return this.offersPacks.find((offersPack) => offersPack.type === type);
   }
 }

@@ -18,17 +18,18 @@ function createOfferTemplate(offer) {
 }
 
 
-function createOffersCheckedListTemplate(offersChecked) {
-  return offersChecked.length !== 0 ? (
+function createoffersCheckedListTemplate(event, offersPack) {
+  const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
+  return checkedOffers.length !== 0 ? (
     `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${offersChecked.map((offer) => createOfferTemplate(offer)).join('')}
+        ${checkedOffers.map((offer) => createOfferTemplate(offer)).join('')}
       </ul>`
   ) : '';
 }
 
 
-function createEventTemplate(event, destination, offersChecked) {
+function createEventTemplate(viewId, event, currentDestination, currentOffersPack) {
   const dayFormatted = getFormattedDate(event.dateFrom, DateFormat.DAY);
   const timeFromFormatted = getFormattedDate(event.dateFrom, DateFormat.TIME);
   const timeToFormatted = getFormattedDate(event.dateTo, DateFormat.TIME);
@@ -36,12 +37,12 @@ function createEventTemplate(event, destination, offersChecked) {
 
 
   return (
-    `<div class="event">
+    `<div id = "${viewId}" class="event">
       <time class="event__date" datetime="${event.dateFrom}">${dayFormatted}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${getCapitalizedString(event.type)} ${destination.name}</h3>
+      <h3 class="event__title">${getCapitalizedString(event.type)} ${currentDestination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${event.dateFrom}">${timeFromFormatted}</time>
@@ -53,7 +54,7 @@ function createEventTemplate(event, destination, offersChecked) {
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${event.basePrice}</span>
       </p>
-      ${createOffersCheckedListTemplate(offersChecked)}
+      ${createoffersCheckedListTemplate(event, currentOffersPack)}
       <button class="event__favorite-btn event__favorite-btn--active" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -69,23 +70,24 @@ function createEventTemplate(event, destination, offersChecked) {
 
 
 export default class EventView {
+  viewId = null;
   event = null;
-  destination = null;
-  offersPack = null;
-  offersChecked = null;
+  currentDestination = null;
+  currentOffersPack = null;
 
-  constructor({event, destination, offersPack, offersChecked}) {
+  constructor({viewId, event, currentDestination, currentOffersPack}) {
+    this.viewId = viewId;
     this.event = event;
-    this.destination = destination;
-    this.offersPack = offersPack;
-    this.offersChecked = offersChecked;
+    this.currentDestination = currentDestination;
+    this.currentOffersPack = currentOffersPack;
   }
 
   getTemplate() {
     return createEventTemplate(
+      this.viewId,
       this.event,
-      this.destination,
-      this.offersChecked
+      this.currentDestination,
+      this.currentOffersPack,
     );
   }
 
