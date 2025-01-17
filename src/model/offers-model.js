@@ -3,19 +3,23 @@ import {mockOffersPacks} from '../mock/mock-offers-packs.js';
 
 export default class OffersModel {
   constructor() {
-    this.offers = [];
+    this.offersPacks = [];
   }
 
   init() {
-    this.offers = mockOffersPacks;
+    this.offersPacks = mockOffersPacks;
   }
 
-  getEventOffersPack(event) {
-    return this.offers.find((offer) => offer.type === event.type);
+  getAllOffersPacks() {
+    return this.offersPacks;
+  }
+
+  getOffersPackByType(type) {
+    return this.offersPacks.find((offer) => offer.type === type);
   }
 
   getEventOffersChecked(event) {
-    const eventOffersPack = this.offers.find((offer) => offer.type === event.type);
+    const eventOffersPack = this.offersPacks.find((offer) => offer.type === event.type);
     return eventOffersPack.offers.filter((offer) => event.offers.includes(offer.id));
   }
 }

@@ -1,4 +1,4 @@
-// import {mockPoints} from './mock/mock-points.js';
+// import { mockPoints } from './mock/mock-points.js';
 
 // console.log('START');
 

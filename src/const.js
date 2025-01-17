@@ -1,22 +1,22 @@
 const DateFormat = {
-  DAY_HUMAN: 'MMM DD',
-  DAY_MACHINE: 'YYYY-MM-DD',
-  TIME_HUMAN: 'HH:mm',
-  TIME_MACHINE: 'YYYY-MM-DDTHH:mm',
+  DAY: 'MMM DD',
+  TIME: 'HH:mm',
+  DATE: 'DD/MM/YY HH:mm'
 };
 
-const getDefaultEvent = () => ({
-  id: '',
-  basePrice: 0,
-  dateFrom: new Date().toString(),
-  dateTo: new Date().toString(),
-  destination: '',
-  isFavorite: false,
-  offers: [],
-  type: 'taxi'
-});
+const EVENT_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant'
+];
 
 export {
   DateFormat,
-  getDefaultEvent,
+  EVENT_TYPES,
 };

@@ -11,6 +11,10 @@ import EventEditView from '../view/event-edit-view.js';
 export default class TripPresenter {
   tripComponent = null;
   eventListComponent = null;
+  tripContainer = null;
+  destinationsModel = null;
+  eventsModel = null;
+  offersModel = null;
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.tripComponent = new TripView();
@@ -37,7 +41,10 @@ export default class TripPresenter {
       // Это временное решение, пока нет открытия форм создания и редактирования.
       switch (i) {
         case 0:
-          render(new EventCreateView({event}), eventItem.getElement());
+          render(new EventCreateView({
+            destinations: this.destinationsModel.getAllDestinations(),
+            offersPacks: this.offersModel.getAllOffersPacks(),
+          }), eventItem.getElement());
           break;
         case 1:
           render(new EventEditView({event}), eventItem.getElement());
@@ -45,8 +52,8 @@ export default class TripPresenter {
         default:
           render(new EventView({
             event,
-            destination: this.destinationsModel.getEventDestination(event),
-            offersPack: this.offersModel.getEventOffersPack(event),
+            destination: this.destinationsModel.getDestinationById(event.destination),
+            offersPack: this.offersModel.getOffersPackByType(event.type),
             offersChecked: this.offersModel.getEventOffersChecked(event),
           }),
           eventItem.getElement());

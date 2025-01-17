@@ -103,7 +103,7 @@ export const mockDestinations = [
   },
   {
     'id': '124c439f-1764-4bd2-917e-50973a77f227',
-    'description': 'Chamonix - a true asian pearl',
+    'description': 'Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, its renowned for its skiing.',
     'name': 'Chamonix',
     'pictures': [
       {

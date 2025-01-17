@@ -3,7 +3,7 @@ import {DateFormat} from '../const.js';
 import {
   getFormattedDate,
   getDateDifference,
-  getCapitalizedWord,
+  getCapitalizedString,
 } from '../utils.js';
 
 
@@ -29,36 +29,31 @@ function createOffersCheckedListTemplate(offersChecked) {
 
 
 function createEventTemplate(event, destination, offersChecked) {
-  const dayHuman = getFormattedDate(event.dateFrom, DateFormat.DAY_HUMAN);
-  const dayMachine = getFormattedDate(event.dateFrom, DateFormat.DAY_MACHINE);
-  const timeFromHuman = getFormattedDate(event.dateFrom, DateFormat.TIME_HUMAN);
-  const timeFromMachine = getFormattedDate(event.dateFrom, DateFormat.TIME_MACHINE);
-  const timeToHuman = getFormattedDate(event.dateTo, DateFormat.TIME_HUMAN);
-  const timeToMachine = getFormattedDate(event.dateTo, DateFormat.TIME_MACHINE);
+  const dayFormatted = getFormattedDate(event.dateFrom, DateFormat.DAY);
+  const timeFromFormatted = getFormattedDate(event.dateFrom, DateFormat.TIME);
+  const timeToFormatted = getFormattedDate(event.dateTo, DateFormat.TIME);
   const duration = getDateDifference(event.dateTo, event.dateFrom);
 
 
   return (
     `<div class="event">
-      <time class="event__date" datetime="${dayMachine}">${dayHuman}</time>
+      <time class="event__date" datetime="${event.dateFrom}">${dayFormatted}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${getCapitalizedWord(event.type)} ${destination.name}</h3>
+      <h3 class="event__title">${getCapitalizedString(event.type)} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${timeFromMachine}">${timeFromHuman}</time>
+          <time class="event__start-time" datetime="${event.dateFrom}">${timeFromFormatted}</time>
           &mdash;
-          <time class="event__end-time" datetime="${timeToMachine}">${timeToHuman}</time>
+          <time class="event__end-time" datetime="${event.dateTo}">${timeToFormatted}</time>
         </p>
         <p class="event__duration">${duration}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${event.basePrice}</span>
       </p>
-
       ${createOffersCheckedListTemplate(offersChecked)}
-
       <button class="event__favorite-btn event__favorite-btn--active" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -74,6 +69,11 @@ function createEventTemplate(event, destination, offersChecked) {
 
 
 export default class EventView {
+  event = null;
+  destination = null;
+  offersPack = null;
+  offersChecked = null;
+
   constructor({event, destination, offersPack, offersChecked}) {
     this.event = event;
     this.destination = destination;
