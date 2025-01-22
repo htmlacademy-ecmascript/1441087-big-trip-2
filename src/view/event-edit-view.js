@@ -88,53 +88,55 @@ function createEventEditTemplate(
   currentOffersPack,
   allDestinations) {
   return (
-    `<form class="event event--edit" action="#" method="post">
-      <header class="event__header">
-        <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-${viewId}">
-            <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
-          </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${viewId}" type="checkbox">
-          ${createEventTypeListTemplate(EVENT_TYPES)}
-        </div>
+    `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          <div class="event__type-wrapper">
+            <label class="event__type  event__type-btn" for="event-type-toggle-${viewId}">
+              <span class="visually-hidden">Choose event type</span>
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
+            </label>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${viewId}" type="checkbox">
+            ${createEventTypeListTemplate(EVENT_TYPES)}
+          </div>
 
-        <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-${viewId}">
-            ${getCapitalizedString(event.type)}
-          </label>
-          <input class="event__input  event__input--destination" id="event-destination-${viewId}" type="text" name="event-destination" value="${currentDestination ? currentDestination.name : ''}" list="destination-list-${viewId}">
-          ${createDestinationListTemplate(allDestinations, viewId)}
-        </div>
+          <div class="event__field-group  event__field-group--destination">
+            <label class="event__label  event__type-output" for="event-destination-${viewId}">
+              ${getCapitalizedString(event.type)}
+            </label>
+            <input class="event__input  event__input--destination" id="event-destination-${viewId}" type="text" name="event-destination" value="${currentDestination ? currentDestination.name : ''}" list="destination-list-${viewId}">
+            ${createDestinationListTemplate(allDestinations, viewId)}
+          </div>
 
-        <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-${viewId}">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-${viewId}" type="text" name="event-start-time" value="${getFormattedDate(event.dateFrom, DateFormat.DATE)}">
-          &mdash;
-          <label class="visually-hidden" for="event-end-time-${viewId}">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-${viewId}" type="text" name="event-end-time" value="${getFormattedDate(event.dateTo, DateFormat.DATE)}">
-        </div>
+          <div class="event__field-group  event__field-group--time">
+            <label class="visually-hidden" for="event-start-time-${viewId}">From</label>
+            <input class="event__input  event__input--time" id="event-start-time-${viewId}" type="text" name="event-start-time" value="${getFormattedDate(event.dateFrom, DateFormat.DATE)}">
+            &mdash;
+            <label class="visually-hidden" for="event-end-time-${viewId}">To</label>
+            <input class="event__input  event__input--time" id="event-end-time-${viewId}" type="text" name="event-end-time" value="${getFormattedDate(event.dateTo, DateFormat.DATE)}">
+          </div>
 
-        <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-${viewId}">
-            <span class="visually-hidden">Price</span>
-            &euro;
-          </label>
-          <input class="event__input  event__input--price" id="event-price-${viewId}" type="text" name="event-price" value="${event.basePrice}">
-        </div>
+          <div class="event__field-group  event__field-group--price">
+            <label class="event__label" for="event-price-${viewId}">
+              <span class="visually-hidden">Price</span>
+              &euro;
+            </label>
+            <input class="event__input  event__input--price" id="event-price-${viewId}" type="text" name="event-price" value="${event.basePrice}">
+          </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
-      </header>
-      <section class="event__details">
-        ${createOfferListTemplate(event, currentOffersPack, viewId)}
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
+        </header>
+        <section class="event__details">
+          ${createOfferListTemplate(event, currentOffersPack, viewId)}
 
-        ${createDestinationTemplate(currentDestination)}
-      </section>
-    </form>`
+          ${createDestinationTemplate(currentDestination)}
+        </section>
+      </form>
+    </li>`
   );
 }
 

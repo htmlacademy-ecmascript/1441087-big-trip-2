@@ -1,12 +1,9 @@
 import {render} from '../framework/render.js';
-import { getDefaultEvent, getIdGenerator } from '../utils.js';
+import {getIdGenerator} from '../utils.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
-import EventItemView from '../view/event-item-view.js';
 import EventView from '../view/event-view.js';
-import EventCreateView from '../view/event-create-view.js';
-import EventEditView from '../view/event-edit-view.js';
 
 
 const idGenerator = getIdGenerator();
@@ -19,7 +16,6 @@ export default class TripPresenter {
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
-  #defaultEvent = {};
   #tripEvents = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
@@ -29,7 +25,6 @@ export default class TripPresenter {
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
-    this.#defaultEvent = getDefaultEvent();
   }
 
   init () {
@@ -40,40 +35,18 @@ export default class TripPresenter {
     render(this.#eventListComponent, this.#tripComponent.element);
 
     for (let i = 0; i < this.#tripEvents.length; i++) {
-      const eventItem = new EventItemView();
-      let event = this.#tripEvents[i];
-
-      // Этот switch нужен для того, чтобы показать в разметке все возможные варианты view.
-      // Это временное решение, пока нет открытия форм создания и редактирования.
-      switch (i) {
-        case 0:
-          event = this.#defaultEvent;
-          render(new EventCreateView({
-            viewId: idGenerator(),
-            event: this.#defaultEvent,
-            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-            allDestinations: this.#destinationsModel.getAllDestinations(),
-            allOffersPacks: this.#offersModel.getAllOffersPacks(),
-          }), eventItem.element);
-          break;
-        default:
-          render(new EventView({
-            viewId: idGenerator(),
-            event,
-            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-          }), eventItem.element);
-          render(new EventEditView({
-            viewId: idGenerator(),
-            event,
-            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-            allDestinations: this.#destinationsModel.getAllDestinations(),
-            allOffersPacks: this.#offersModel.getAllOffersPacks(),
-          }), eventItem.element);
-      }
-      render(eventItem, this.#eventListComponent.element);
+      this.#renderEvent(this.#tripEvents[i]);
     }
+  }
+
+  #renderEvent(event) {
+    const eventComponent = new EventView({
+      viewId: idGenerator(),
+      event,
+      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+    });
+
+    render(eventComponent, this.#eventListComponent.element);
   }
 }

@@ -1,20 +1,6 @@
 import dayjs from 'dayjs';
 
 
-function getDefaultEvent() {
-  return {
-    id: '',
-    basePrice: '',
-    dateFrom: new Date().setHours(0,0,0,0),
-    dateTo: new Date().setHours(0,0,0,0),
-    destination: '',
-    isFavorite: false,
-    offers: [],
-    type: 'flight'
-  };
-}
-
-
 function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
 }
@@ -70,7 +56,6 @@ function getIdGenerator () {
 
 
 export {
-  getDefaultEvent,
   getFormattedDate,
   getDateDifference,
   getCapitalizedString,
