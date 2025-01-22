@@ -1,5 +1,5 @@
 import {render, replace} from '../framework/render.js';
-import {getIdGenerator} from '../utils.js';
+import {getIdGenerator} from '../utils/common-utils.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';

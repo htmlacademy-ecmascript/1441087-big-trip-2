@@ -1,10 +1,7 @@
-import AbstractView from '../framework/view/abstract-view.js';
 import {DateFormat} from '../const.js';
-import {
-  getFormattedDate,
-  getDateDifference,
-  getCapitalizedString,
-} from '../utils.js';
+import {getCapitalizedString} from '../utils/common-utils.js';
+import {getFormattedDate, getDateDifference} from '../utils/date-utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 
 function createOfferTemplate(offer) {

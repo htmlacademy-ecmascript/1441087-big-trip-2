@@ -1,6 +1,7 @@
+import {DateFormat, EVENT_TYPES} from '../const.js';
+import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
+import {getFormattedDate} from '../utils/date-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { DateFormat, EVENT_TYPES } from '../const.js';
-import { getFormattedDate, getCapitalizedString, getHtmlId } from '../utils.js';
 
 
 function createTypeTemplate(type, viewId) {
@@ -32,7 +33,7 @@ function createDestinationListTemplate(destinations, viewId) {
 }
 
 function createOfferTemplate(offer, event, viewId) {
-  const offerId = getHtmlId(offer.title);
+  const offerId = getHtmlSafeString(offer.title);
   const offerChecked = event.offers.includes(offer.id) ? 'checked' : '';
 
   return (
