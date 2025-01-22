@@ -30,14 +30,7 @@ export default class TripPresenter {
 
   init () {
     this.#tripEvents = [...this.#eventsModel.getAllEvents()];
-
-    render(this.#tripComponent, this.#tripContainer);
-    render(new SortView(), this.#tripComponent.element);
-    render(this.#eventListComponent, this.#tripComponent.element);
-
-    for (let i = 0; i < this.#tripEvents.length; i++) {
-      this.#renderEvent(this.#tripEvents[i]);
-    }
+    this.#renderTrip();
   }
 
   #renderEvent(event) {
@@ -86,5 +79,15 @@ export default class TripPresenter {
     }
 
     render(eventComponent, this.#eventListComponent.element);
+  }
+
+  #renderTrip() {
+    render(this.#tripComponent, this.#tripContainer);
+    render(new SortView(), this.#tripComponent.element);
+    render(this.#eventListComponent, this.#tripComponent.element);
+
+    for (let i = 0; i < this.#tripEvents.length; i++) {
+      this.#renderEvent(this.#tripEvents[i]);
+    }
   }
 }
