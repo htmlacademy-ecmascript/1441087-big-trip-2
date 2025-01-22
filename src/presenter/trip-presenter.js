@@ -5,6 +5,7 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
+import NoEventView from '../view/no-event-view.js';
 
 
 const idGenerator = getIdGenerator();
@@ -17,7 +18,7 @@ export default class TripPresenter {
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
-  #tripEvents = [];
+  #events = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripComponent = new TripView();
@@ -29,7 +30,7 @@ export default class TripPresenter {
   }
 
   init () {
-    this.#tripEvents = [...this.#eventsModel.getAllEvents()];
+    this.#events = [...this.#eventsModel.getAllEvents()];
     this.#renderTrip();
   }
 
@@ -83,11 +84,17 @@ export default class TripPresenter {
 
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
+
+    if(this.#events.length === 0) {
+      render(new NoEventView(), this.#tripComponent.element);
+      return;
+    }
+
     render(new SortView(), this.#tripComponent.element);
     render(this.#eventListComponent, this.#tripComponent.element);
 
-    for (let i = 0; i < this.#tripEvents.length; i++) {
-      this.#renderEvent(this.#tripEvents[i]);
+    for (let i = 0; i < this.#events.length; i++) {
+      this.#renderEvent(this.#events[i]);
     }
   }
 }
