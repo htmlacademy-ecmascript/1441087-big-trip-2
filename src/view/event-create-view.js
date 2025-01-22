@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { DateFormat, EVENT_TYPES } from '../const.js';
 import { getFormattedDate, getCapitalizedString, getHtmlId } from '../utils.js';
 
@@ -134,7 +134,7 @@ function createEventCreateTemplate(
   );
 }
 
-export default class EventCreateView {
+export default class EventCreateView extends AbstractView {
   viewId = null;
   event = null;
   currentDestination = null;
@@ -149,6 +149,7 @@ export default class EventCreateView {
     currentOffersPack,
     allDestinations,
     allOffersPacks}){
+    super();
     this.viewId = viewId;
     this.event = event;
     this.currentDestination = currentDestination;
@@ -157,7 +158,7 @@ export default class EventCreateView {
     this.allOffersPacks = allOffersPacks;
   }
 
-  getTemplate() {
+  get template() {
     return createEventCreateTemplate(
       this.viewId,
       this.event,
@@ -166,16 +167,5 @@ export default class EventCreateView {
       this.allDestinations,
       this.allOffersPacks,
     );
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

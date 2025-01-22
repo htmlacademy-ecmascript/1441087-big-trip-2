@@ -1,4 +1,4 @@
-import { render } from '../render.js';
+import {render} from '../framework/render.js';
 import { getDefaultEvent, getIdGenerator } from '../utils.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
@@ -35,8 +35,8 @@ export default class TripPresenter {
     this.tripEvents = [...this.eventsModel.getAllEvents()];
 
     render(this.tripComponent, this.tripContainer);
-    render(new SortView(), this.tripComponent.getElement());
-    render(this.eventListComponent, this.tripComponent.getElement());
+    render(new SortView(), this.tripComponent.element);
+    render(this.eventListComponent, this.tripComponent.element);
 
     for (let i = 0; i < this.tripEvents.length; i++) {
       const eventItem = new EventItemView();
@@ -54,7 +54,7 @@ export default class TripPresenter {
             currentOffersPack: this.offersModel.getOffersPackByType(event.type),
             allDestinations: this.destinationsModel.getAllDestinations(),
             allOffersPacks: this.offersModel.getAllOffersPacks(),
-          }), eventItem.getElement());
+          }), eventItem.element);
           break;
         default:
           render(new EventView({
@@ -62,7 +62,7 @@ export default class TripPresenter {
             event,
             currentDestination: this.destinationsModel.getDestinationById(event.destination),
             currentOffersPack: this.offersModel.getOffersPackByType(event.type),
-          }), eventItem.getElement());
+          }), eventItem.element);
           render(new EventEditView({
             viewId: idGenerator(),
             event,
@@ -70,9 +70,9 @@ export default class TripPresenter {
             currentOffersPack: this.offersModel.getOffersPackByType(event.type),
             allDestinations: this.destinationsModel.getAllDestinations(),
             allOffersPacks: this.offersModel.getAllOffersPacks(),
-          }), eventItem.getElement());
+          }), eventItem.element);
       }
-      render(eventItem, this.eventListComponent.getElement());
+      render(eventItem, this.eventListComponent.element);
     }
   }
 }
