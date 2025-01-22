@@ -1,9 +1,3 @@
-const DateFormat = {
-  DAY: 'MMM DD',
-  TIME: 'HH:mm',
-  DATE: 'DD/MM/YY HH:mm'
-};
-
 const EVENT_TYPES = [
   'taxi',
   'bus',
@@ -15,6 +9,14 @@ const EVENT_TYPES = [
   'sightseeing',
   'restaurant'
 ];
+
+
+const DateFormat = {
+  DAY: 'MMM DD',
+  TIME: 'HH:mm',
+  DATE: 'DD/MM/YY HH:mm'
+};
+
 
 export {
   DateFormat,

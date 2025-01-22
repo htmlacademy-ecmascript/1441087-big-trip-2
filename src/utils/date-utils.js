@@ -1,20 +1,6 @@
 import dayjs from 'dayjs';
 
 
-function getDefaultEvent() {
-  return {
-    id: '',
-    basePrice: '',
-    dateFrom: new Date().setHours(0,0,0,0),
-    dateTo: new Date().setHours(0,0,0,0),
-    destination: '',
-    isFavorite: false,
-    offers: [],
-    type: 'flight'
-  };
-}
-
-
 function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
 }
@@ -49,31 +35,7 @@ function getDateDifference(dateOne, dateTwo) {
 }
 
 
-function getCapitalizedString(string) {
-  return string[0].toUpperCase() + string.slice(1);
-}
-
-
-function getHtmlId(string) {
-  return string.replace(/\s+/g, '-').toLowerCase();
-}
-
-
-function getIdGenerator () {
-  let currentValue = 0;
-
-  return function () {
-    currentValue += 1;
-    return currentValue;
-  };
-}
-
-
 export {
-  getDefaultEvent,
   getFormattedDate,
-  getDateDifference,
-  getCapitalizedString,
-  getHtmlId,
-  getIdGenerator,
+  getDateDifference
 };

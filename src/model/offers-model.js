@@ -2,19 +2,17 @@ import {mockOffersPacks} from '../mock/mock-offers-packs.js';
 
 
 export default class OffersModel {
-  constructor() {
-    this.offersPacks = [];
-  }
+  #offersPacks = [];
 
   init() {
-    this.offersPacks = mockOffersPacks;
+    this.#offersPacks = mockOffersPacks;
   }
 
   getAllOffersPacks() {
-    return this.offersPacks;
+    return this.#offersPacks;
   }
 
   getOffersPackByType(type) {
-    return this.offersPacks.find((offersPack) => offersPack.type === type);
+    return this.#offersPacks.find((offersPack) => offersPack.type === type);
   }
 }
