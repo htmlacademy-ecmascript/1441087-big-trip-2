@@ -18,7 +18,16 @@ const DateFormat = {
 };
 
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+
 export {
-  DateFormat,
   EVENT_TYPES,
+  DateFormat,
+  FilterType
 };
