@@ -13,66 +13,67 @@ const idGenerator = getIdGenerator();
 
 
 export default class TripPresenter {
-  tripComponent = null;
-  eventListComponent = null;
-  tripContainer = null;
-  destinationsModel = null;
-  eventsModel = null;
-  offersModel = null;
+  #tripComponent = null;
+  #eventListComponent = null;
+  #tripContainer = null;
+  #destinationsModel = null;
+  #eventsModel = null;
+  #offersModel = null;
+  #defaultEvent = {};
+  #tripEvents = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
-    this.tripComponent = new TripView();
-    this.eventListComponent = new EventListView();
-    this.tripContainer = tripContainer;
-    this.destinationsModel = destinationsModel;
-    this.eventsModel = eventsModel;
-    this.offersModel = offersModel;
+    this.#tripComponent = new TripView();
+    this.#eventListComponent = new EventListView();
+    this.#tripContainer = tripContainer;
+    this.#destinationsModel = destinationsModel;
+    this.#eventsModel = eventsModel;
+    this.#offersModel = offersModel;
+    this.#defaultEvent = getDefaultEvent();
   }
 
-
   init () {
-    this.defaultEvent = getDefaultEvent();
-    this.tripEvents = [...this.eventsModel.getAllEvents()];
+    this.#tripEvents = [...this.#eventsModel.getAllEvents()];
 
-    render(this.tripComponent, this.tripContainer);
-    render(new SortView(), this.tripComponent.element);
-    render(this.eventListComponent, this.tripComponent.element);
+    render(this.#tripComponent, this.#tripContainer);
+    render(new SortView(), this.#tripComponent.element);
+    render(this.#eventListComponent, this.#tripComponent.element);
 
-    for (let i = 0; i < this.tripEvents.length; i++) {
+    for (let i = 0; i < this.#tripEvents.length; i++) {
       const eventItem = new EventItemView();
-      let event = this.tripEvents[i];
+      let event = this.#tripEvents[i];
 
       // Этот switch нужен для того, чтобы показать в разметке все возможные варианты view.
       // Это временное решение, пока нет открытия форм создания и редактирования.
       switch (i) {
         case 0:
-          event = this.defaultEvent;
+          event = this.#defaultEvent;
           render(new EventCreateView({
             viewId: idGenerator(),
-            event: this.defaultEvent,
-            currentDestination: this.destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.offersModel.getOffersPackByType(event.type),
-            allDestinations: this.destinationsModel.getAllDestinations(),
-            allOffersPacks: this.offersModel.getAllOffersPacks(),
+            event: this.#defaultEvent,
+            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+            allDestinations: this.#destinationsModel.getAllDestinations(),
+            allOffersPacks: this.#offersModel.getAllOffersPacks(),
           }), eventItem.element);
           break;
         default:
           render(new EventView({
             viewId: idGenerator(),
             event,
-            currentDestination: this.destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.offersModel.getOffersPackByType(event.type),
+            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
           }), eventItem.element);
           render(new EventEditView({
             viewId: idGenerator(),
             event,
-            currentDestination: this.destinationsModel.getDestinationById(event.destination),
-            currentOffersPack: this.offersModel.getOffersPackByType(event.type),
-            allDestinations: this.destinationsModel.getAllDestinations(),
-            allOffersPacks: this.offersModel.getAllOffersPacks(),
+            currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+            currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+            allDestinations: this.#destinationsModel.getAllDestinations(),
+            allOffersPacks: this.#offersModel.getAllOffersPacks(),
           }), eventItem.element);
       }
-      render(eventItem, this.eventListComponent.element);
+      render(eventItem, this.#eventListComponent.element);
     }
   }
 }

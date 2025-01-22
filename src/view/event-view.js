@@ -71,25 +71,25 @@ function createEventTemplate(viewId, event, currentDestination, currentOffersPac
 
 
 export default class EventView extends AbstractView {
-  viewId = null;
-  event = null;
-  currentDestination = null;
-  currentOffersPack = null;
+  #viewId = null;
+  #event = null;
+  #currentDestination = null;
+  #currentOffersPack = null;
 
   constructor({viewId, event, currentDestination, currentOffersPack}) {
     super();
-    this.viewId = viewId;
-    this.event = event;
-    this.currentDestination = currentDestination;
-    this.currentOffersPack = currentOffersPack;
+    this.#viewId = viewId;
+    this.#event = event;
+    this.#currentDestination = currentDestination;
+    this.#currentOffersPack = currentOffersPack;
   }
 
   get template() {
     return createEventTemplate(
-      this.viewId,
-      this.event,
-      this.currentDestination,
-      this.currentOffersPack,
+      this.#viewId,
+      this.#event,
+      this.#currentDestination,
+      this.#currentOffersPack,
     );
   }
 }

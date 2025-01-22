@@ -135,12 +135,12 @@ function createEventCreateTemplate(
 }
 
 export default class EventCreateView extends AbstractView {
-  viewId = null;
-  event = null;
-  currentDestination = null;
-  currentOffersPack = null;
-  allDestinations = null;
-  allOffersPacks = null;
+  #viewId = null;
+  #event = null;
+  #currentDestination = null;
+  #currentOffersPack = null;
+  #allDestinations = null;
+  #allOffersPacks = null;
 
   constructor({
     viewId,
@@ -150,22 +150,22 @@ export default class EventCreateView extends AbstractView {
     allDestinations,
     allOffersPacks}){
     super();
-    this.viewId = viewId;
-    this.event = event;
-    this.currentDestination = currentDestination;
-    this.currentOffersPack = currentOffersPack;
-    this.allDestinations = allDestinations;
-    this.allOffersPacks = allOffersPacks;
+    this.#viewId = viewId;
+    this.#event = event;
+    this.#currentDestination = currentDestination;
+    this.#currentOffersPack = currentOffersPack;
+    this.#allDestinations = allDestinations;
+    this.#allOffersPacks = allOffersPacks;
   }
 
   get template() {
     return createEventCreateTemplate(
-      this.viewId,
-      this.event,
-      this.currentDestination,
-      this.currentOffersPack,
-      this.allDestinations,
-      this.allOffersPacks,
+      this.#viewId,
+      this.#event,
+      this.#currentDestination,
+      this.#currentOffersPack,
+      this.#allDestinations,
+      this.#allOffersPacks,
     );
   }
 }

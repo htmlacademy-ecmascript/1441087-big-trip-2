@@ -2,15 +2,13 @@ import {mockEvents} from '../mock/mock-events.js';
 
 
 export default class EventsModel {
-  constructor() {
-    this.events = [];
-  }
+  #events = [];
 
   init() {
-    this.events = mockEvents;
+    this.#events = mockEvents;
   }
 
   getAllEvents() {
-    return this.events;
+    return this.#events;
   }
 }
