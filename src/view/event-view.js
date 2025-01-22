@@ -77,13 +77,17 @@ export default class EventView extends AbstractView {
   #event = null;
   #currentDestination = null;
   #currentOffersPack = null;
+  #onToggleClick = null;
 
-  constructor({viewId, event, currentDestination, currentOffersPack}) {
+  constructor({viewId, event, currentDestination, currentOffersPack, onToggleClick}) {
     super();
     this.#viewId = viewId;
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
+    this.#onToggleClick = onToggleClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
   }
 
   get template() {
@@ -94,4 +98,9 @@ export default class EventView extends AbstractView {
       this.#currentOffersPack,
     );
   }
+
+  #toggleClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onToggleClick();
+  };
 }

@@ -147,6 +147,8 @@ export default class EventEditView extends AbstractView {
   #currentOffersPack = null;
   #allDestinations = null;
   #allOffersPacks = null;
+  #onToggleClick = null;
+  #onFormSubmit = null;
 
   constructor({
     viewId,
@@ -154,7 +156,9 @@ export default class EventEditView extends AbstractView {
     currentDestination,
     currentOffersPack,
     allDestinations,
-    allOffersPacks}){
+    allOffersPacks,
+    onToggleClick,
+    onFormSubmit}){
     super();
     this.#viewId = viewId;
     this.#event = event;
@@ -162,6 +166,11 @@ export default class EventEditView extends AbstractView {
     this.#currentOffersPack = currentOffersPack;
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
+    this.#onToggleClick = onToggleClick;
+    this.#onFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleCliclHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitlHandler);
   }
 
   get template() {
@@ -174,4 +183,14 @@ export default class EventEditView extends AbstractView {
       this.#allOffersPacks,
     );
   }
+
+  #toggleCliclHandler = (evt) => {
+    evt.preventDefault();
+    this.#onToggleClick();
+  };
+
+  #formSubmitlHandler = (evt) => {
+    evt.preventDefault();
+    this.#onFormSubmit();
+  };
 }
