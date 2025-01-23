@@ -170,8 +170,8 @@ export default class EventEditView extends AbstractView {
     this.#onToggleClick = onToggleClick;
     this.#onFormSubmit = onFormSubmit;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleCliclHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitlHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
@@ -185,12 +185,12 @@ export default class EventEditView extends AbstractView {
     );
   }
 
-  #toggleCliclHandler = (evt) => {
+  #toggleClickHandler = (evt) => {
     evt.preventDefault();
     this.#onToggleClick();
   };
 
-  #formSubmitlHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#onFormSubmit();
   };
