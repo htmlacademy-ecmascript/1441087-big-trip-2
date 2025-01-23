@@ -12,8 +12,8 @@ const idGenerator = getIdGenerator();
 
 
 export default class TripPresenter {
-  #tripComponent = null;
-  #eventListComponent = null;
+  #tripComponent = new TripView();
+  #eventListComponent = new EventListView();
   #tripContainer = null;
   #destinationsModel = null;
   #eventsModel = null;
@@ -21,8 +21,6 @@ export default class TripPresenter {
   #events = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
-    this.#tripComponent = new TripView();
-    this.#eventListComponent = new EventListView();
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
@@ -30,7 +28,7 @@ export default class TripPresenter {
   }
 
   init () {
-    this.#events = [...this.#eventsModel.getAllEvents()];
+    this.#events = [...this.#eventsModel.events];
     this.#renderTrip();
   }
 
@@ -59,8 +57,8 @@ export default class TripPresenter {
       event: event,
       currentDestination: this.#destinationsModel.getDestinationById(event.destination),
       currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-      allDestinations: this.#destinationsModel.getAllDestinations(),
-      allOffersPacks: this.#offersModel.getAllOffersPacks(),
+      allDestinations: this.#destinationsModel.destinations,
+      allOffersPacks: this.#offersModel.offersPacks,
       onToggleClick: () => {
         displayEventComponent();
         document.removeEventListener('keydown', escKeyDownHandler);

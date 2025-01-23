@@ -19,11 +19,11 @@ export default class EventsModel {
     this.#events = mockEvents;
   }
 
-  getAllEvents() {
+  get events() {
     return this.#events;
   }
 
-  getDefaultEvent() {
+  get defaultEvent() {
     return structuredClone(defaultEvent);
   }
 }

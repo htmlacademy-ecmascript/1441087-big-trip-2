@@ -4,21 +4,23 @@ import {getFormattedDate} from '../utils/date-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 
-function createTypeTemplate(type, viewId) {
+function createTypeTemplate(event, type, viewId) {
+  const checkedState = event.type === type ? 'checked' : '';
+
   return (
     `<div class="event__type-item">
-      <input id="event-type-${type}-${viewId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+      <input id="event-type-${type}-${viewId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${checkedState}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${viewId}">${getCapitalizedString(type)}</label>
     </div>`
   );
 }
 
-function createEventTypeListTemplate(eventTypes, viewId) {
+function createEventTypeListTemplate(event, eventTypes, viewId) {
   return (
     `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
-        ${eventTypes.map((type) => createTypeTemplate(type, viewId)).join('')}
+        ${eventTypes.map((type) => createTypeTemplate(event, type, viewId)).join('')}
       </fieldset>
     </div>`
   );
@@ -34,11 +36,11 @@ function createDestinationListTemplate(destinations, viewId) {
 
 function createOfferTemplate(offer, event, viewId) {
   const offerId = getHtmlSafeString(offer.title);
-  const offerChecked = event.offers.includes(offer.id) ? 'checked' : '';
+  const checkedState = event.offers.includes(offer.id) ? 'checked' : '';
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${viewId}" type="checkbox" name="event-offer-${offerId}" ${offerChecked}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${viewId}" type="checkbox" name="event-offer-${offerId}" ${checkedState}>
       <label class="event__offer-label" for="event-offer-${offerId}-${viewId}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -98,7 +100,7 @@ function createEventEditTemplate(
               <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${viewId}" type="checkbox">
-            ${createEventTypeListTemplate(EVENT_TYPES)}
+            ${createEventTypeListTemplate(event, EVENT_TYPES, viewId)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -170,8 +172,8 @@ export default class EventEditView extends AbstractView {
     this.#onToggleClick = onToggleClick;
     this.#onFormSubmit = onFormSubmit;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleCliclHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitlHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
@@ -185,12 +187,12 @@ export default class EventEditView extends AbstractView {
     );
   }
 
-  #toggleCliclHandler = (evt) => {
+  #toggleClickHandler = (evt) => {
     evt.preventDefault();
     this.#onToggleClick();
   };
 
-  #formSubmitlHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#onFormSubmit();
   };

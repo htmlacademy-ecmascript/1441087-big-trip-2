@@ -1,4 +1,5 @@
 import {render} from './framework/render.js';
+import {generateFilters} from './mock/mock-filters.js';
 import DestinationsModel from './model/destinations-model.js';
 import EventsModel from './model/events-model.js';
 import OffersModel from './model/offers-model.js';
@@ -10,9 +11,6 @@ const pageHeaderElement = document.querySelector('.page-header');
 const filtersElement = pageHeaderElement.querySelector('.trip-controls__filters');
 const pageMainElement = document.querySelector('.page-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
-
-
-render(new FilterView, filtersElement);
 
 
 const destinationsModel = new DestinationsModel();
@@ -30,3 +28,7 @@ destinationsModel.init();
 eventsModel.init();
 offersModel.init();
 tripPresenter.init();
+
+
+const filters = generateFilters(eventsModel.events);
+render(new FilterView({filters}), filtersElement);
