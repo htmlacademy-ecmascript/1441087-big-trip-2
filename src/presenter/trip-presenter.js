@@ -12,8 +12,8 @@ const idGenerator = getIdGenerator();
 
 
 export default class TripPresenter {
-  #tripComponent = null;
-  #eventListComponent = null;
+  #tripComponent = new TripView();
+  #eventListComponent = new EventListView();
   #tripContainer = null;
   #destinationsModel = null;
   #eventsModel = null;
@@ -21,8 +21,6 @@ export default class TripPresenter {
   #events = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
-    this.#tripComponent = new TripView();
-    this.#eventListComponent = new EventListView();
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
