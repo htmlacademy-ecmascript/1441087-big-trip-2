@@ -8,7 +8,7 @@ export default class OffersModel {
     this.#offersPacks = mockOffersPacks;
   }
 
-  getAllOffersPacks() {
+  get offersPacks() {
     return this.#offersPacks;
   }
 

@@ -28,7 +28,7 @@ export default class TripPresenter {
   }
 
   init () {
-    this.#events = [...this.#eventsModel.getAllEvents()];
+    this.#events = [...this.#eventsModel.events];
     this.#renderTrip();
   }
 
@@ -57,8 +57,8 @@ export default class TripPresenter {
       event: event,
       currentDestination: this.#destinationsModel.getDestinationById(event.destination),
       currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-      allDestinations: this.#destinationsModel.getAllDestinations(),
-      allOffersPacks: this.#offersModel.getAllOffersPacks(),
+      allDestinations: this.#destinationsModel.destinations,
+      allOffersPacks: this.#offersModel.offersPacks,
       onToggleClick: () => {
         displayEventComponent();
         document.removeEventListener('keydown', escKeyDownHandler);

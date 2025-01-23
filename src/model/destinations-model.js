@@ -8,7 +8,7 @@ export default class DestinationsModel {
     this.#destinations = mockDestinations;
   }
 
-  getAllDestinations() {
+  get destinations() {
     return this.#destinations;
   }
 

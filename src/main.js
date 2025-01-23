@@ -30,5 +30,5 @@ offersModel.init();
 tripPresenter.init();
 
 
-const filters = generateFilters(eventsModel.getAllEvents());
+const filters = generateFilters(eventsModel.events);
 render(new FilterView({filters}), filtersElement);
