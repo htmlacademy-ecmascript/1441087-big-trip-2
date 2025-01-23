@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import {FilterType} from '../const';
 
+const today = dayjs();
+
 const filters = {
   [FilterType.EVERYTHING]: (events) => events.filter((event) => event),
-  [FilterType.FUTURE]: (events) => events.filter((event) => dayjs(event.dateFrom) > dayjs()),
-  [FilterType.PRESENT]: (events) => events.filter((event) => dayjs(event.dateFrom) <= dayjs() && dayjs(event.dateTo) >= dayjs()),
-  [FilterType.PAST]: (events) => events.filter((event) => dayjs(event.dateTo) < dayjs())
+  [FilterType.FUTURE]: (events) => events.filter((event) => dayjs(event.dateFrom) > today),
+  [FilterType.PRESENT]: (events) => events.filter((event) => dayjs(event.dateFrom) <= today && dayjs(event.dateTo) >= today),
+  [FilterType.PAST]: (events) => events.filter((event) => dayjs(event.dateTo) < today)
 };
 
 function generateFilters(events) {
