@@ -1,4 +1,4 @@
-import {render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
 
@@ -26,6 +26,8 @@ export default class EventPresenter {
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
 
+    const prevEventComponent = this.#eventComponent;
+    const prevEventEditComponent = this.#eventEditComponent;
 
     this.#eventComponent = new EventView({
       event: this.#event,
@@ -44,7 +46,26 @@ export default class EventPresenter {
       onFormSubmit: this.#onFormSubmit
     });
 
-    render(this.#eventComponent, this.#eventListContainer);
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this.#eventComponent, this.#eventListContainer);
+      return;
+    }
+
+    if (this.#eventListContainer.contains(prevEventComponent.element)) {
+      replace(this.#eventComponent, prevEventComponent);
+    }
+
+    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
+      replace(this.#eventEditComponent, prevEventEditComponent);
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditComponent);
+  }
+
+  destroy() {
+    remove(this.#eventComponent);
+    remove(this.#eventEditComponent);
   }
 
   #displayEventComponent() {
