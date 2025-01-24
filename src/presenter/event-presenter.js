@@ -14,11 +14,13 @@ export default class EventPresenter {
   #currentDestination = null;
   #currentOffersPack = null;
 
+  #onEventUpdate = null;
 
-  constructor({eventListContainer, allDestinations, allOffersPacks}) {
+  constructor({eventListContainer, allDestinations, allOffersPacks, onEventUpdate}) {
     this.#eventListContainer = eventListContainer;
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
+    this.#onEventUpdate = onEventUpdate;
   }
 
   init({event, currentDestination, currentOffersPack}) {
@@ -33,7 +35,8 @@ export default class EventPresenter {
       event: this.#event,
       currentDestination: this.#currentDestination,
       currentOffersPack: this.#currentOffersPack,
-      onToggleClick: this.#onToggleShowClick
+      onToggleClick: this.#onToggleShowClick,
+      onFavoriteClick: this.#onFavoriteClick
     });
 
     this.#eventEditComponent = new EventEditView({
@@ -43,7 +46,7 @@ export default class EventPresenter {
       allDestinations:  this.#allDestinations,
       allOffersPacks: this.#allOffersPacks,
       onToggleClick: this.#onToggleHideClick,
-      onFormSubmit: this.#onFormSubmit
+      onFormSubmit: this.#onFormSubmit,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -93,7 +96,12 @@ export default class EventPresenter {
     this.#displayEventComponent();
   };
 
-  #onFormSubmit = () => {
+  #onFavoriteClick = () => {
+    this.#onEventUpdate({...this.#event, isFavorite: !this.#event.isFavorite});
+  };
+
+  #onFormSubmit = (event) => {
+    this.#onEventUpdate(event);
     this.#displayEventComponent();
   };
 }

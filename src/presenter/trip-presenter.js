@@ -1,4 +1,5 @@
 import {render, RenderPosition} from '../framework/render.js';
+import {updateItem} from '../utils/common-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
@@ -19,7 +20,7 @@ export default class TripPresenter {
   #noEventComponent = new NoEventView();
 
   #events = [];
-  #eventsPresenters = new Map();
+  #eventPresenters = new Map();
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
@@ -33,6 +34,15 @@ export default class TripPresenter {
     this.#renderTrip();
   }
 
+  #onEventUpdate = (updatedEvent) => {
+    this.#events = updateItem(this.#events, updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init({
+      event: updatedEvent,
+      currentDestination: this.#destinationsModel.getDestinationById(updatedEvent.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(updatedEvent.type)
+    });
+  };
+
   #renderNoEvent() {
     render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
@@ -45,7 +55,8 @@ export default class TripPresenter {
     const eventPresenter = new EventPresenter({
       eventListContainer: this.#eventListComponent.element,
       allDestinations: this.#destinationsModel.destinations,
-      allOffersPacks: this.#offersModel.offersPacks
+      allOffersPacks: this.#offersModel.offersPacks,
+      onEventUpdate: this.#onEventUpdate
     });
 
     eventPresenter.init({
@@ -54,12 +65,12 @@ export default class TripPresenter {
       currentOffersPack: this.#offersModel.getOffersPackByType(event.type)
     });
 
-    this.#eventsPresenters.set(event.id, eventPresenter);
+    this.#eventPresenters.set(event.id, eventPresenter);
   }
 
   #clearEventList() {
-    this.#eventsPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventsPresenters.clear();
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
   }
 
   #renderEventList() {
