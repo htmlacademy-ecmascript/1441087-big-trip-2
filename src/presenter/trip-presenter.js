@@ -1,4 +1,4 @@
-import {render, replace} from '../framework/render.js';
+import {render, RenderPosition, replace} from '../framework/render.js';
 import {getIdGenerator} from '../utils/common-utils.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
@@ -12,12 +12,16 @@ const idGenerator = getIdGenerator();
 
 
 export default class TripPresenter {
-  #tripComponent = new TripView();
-  #eventListComponent = new EventListView();
   #tripContainer = null;
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
+
+  #tripComponent = new TripView();
+  #sortComponent = new SortView();
+  #eventListComponent = new EventListView();
+  #noEventComponent = new NoEventView();
+
   #events = [];
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
@@ -30,6 +34,14 @@ export default class TripPresenter {
   init () {
     this.#events = [...this.#eventsModel.events];
     this.#renderTrip();
+  }
+
+  #renderNoEvent() {
+    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
 
   #renderEvent(event) {
@@ -80,19 +92,23 @@ export default class TripPresenter {
     render(eventComponent, this.#eventListComponent.element);
   }
 
-  #renderTrip() {
-    render(this.#tripComponent, this.#tripContainer);
-
-    if(this.#events.length === 0) {
-      render(new NoEventView(), this.#tripComponent.element);
-      return;
-    }
-
-    render(new SortView(), this.#tripComponent.element);
+  #renderEventList() {
     render(this.#eventListComponent, this.#tripComponent.element);
 
     for (let i = 0; i < this.#events.length; i++) {
       this.#renderEvent(this.#events[i]);
     }
+  }
+
+  #renderTrip() {
+    render(this.#tripComponent, this.#tripContainer);
+
+    if(this.#events.length === 0) {
+      this.#renderNoEvent();
+      return;
+    }
+
+    this.#renderSort();
+    this.#renderEventList();
   }
 }
