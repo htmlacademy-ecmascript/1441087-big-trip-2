@@ -1,5 +1,7 @@
 import {render, RenderPosition} from '../framework/render.js';
 import {updateItem} from '../utils/common-utils.js';
+import {sortEventDay, sortEventDuration, sortEventPrice} from '../utils/sort-utils.js';
+import {sortTypes} from '../const.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
@@ -11,15 +13,18 @@ export default class TripPresenter {
   #tripContainer = null;
 
   #tripComponent = new TripView();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #eventListComponent = new EventListView();
   #noEventComponent = new NoEventView();
 
   #events = [];
+  #sourcedEvents = [];
   #eventPresenters = new Map();
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
+
+  #currentSortType = sortTypes.find((sortType) => sortType.isDefault === true).name;
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
@@ -30,6 +35,7 @@ export default class TripPresenter {
 
   init () {
     this.#events = [...this.#eventsModel.events];
+    this.#sourcedEvents = [...this.#eventsModel.events];
     this.#renderTrip();
   }
 
@@ -39,6 +45,8 @@ export default class TripPresenter {
 
   #onEventUpdate = (updatedEvent) => {
     this.#events = updateItem(this.#events, updatedEvent);
+    this.#sourcedEvents = updateItem(this.#events, updatedEvent);
+
     this.#eventPresenters.get(updatedEvent.id).init({
       event: updatedEvent,
       currentDestination: this.#destinationsModel.getDestinationById(updatedEvent.destination),
@@ -46,11 +54,38 @@ export default class TripPresenter {
     });
   };
 
-  #renderNoEvent() {
-    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  #sortEvents(sortType) {
+    switch (sortType) {
+      case 'day':
+        this.#events.sort(sortEventDay);
+        break;
+      case 'time':
+        this.#events.sort(sortEventDuration);
+        break;
+      case 'price':
+        this.#events.sort(sortEventPrice);
+        break;
+      default:
+        this.#events = [...this.#sourcedEvents];
+    }
+
+    this.#currentSortType = sortType;
   }
 
+  #onSortTypeChangeClick = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortEvents(sortType);
+    this.#clearEventList();
+    this.#renderEventList();
+  };
+
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChangeClick: this.#onSortTypeChangeClick
+    });
     render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
 
@@ -72,6 +107,16 @@ export default class TripPresenter {
     this.#eventPresenters.set(event.id, eventPresenter);
   }
 
+  #renderEvents() {
+    for (let i = 0; i < this.#events.length; i++) {
+      this.#renderEvent(this.#events[i]);
+    }
+  }
+
+  #renderNoEvents() {
+    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
   #clearEventList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
@@ -80,16 +125,14 @@ export default class TripPresenter {
   #renderEventList() {
     render(this.#eventListComponent, this.#tripComponent.element);
 
-    for (let i = 0; i < this.#events.length; i++) {
-      this.#renderEvent(this.#events[i]);
-    }
+    this.#renderEvents();
   }
 
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
 
     if(this.#events.length === 0) {
-      this.#renderNoEvent();
+      this.#renderNoEvents();
       return;
     }
 
