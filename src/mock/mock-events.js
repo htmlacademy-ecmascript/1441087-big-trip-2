@@ -300,5 +300,3 @@ export const mockEvents = [
     type: 'check-in'
   }
 ];
-
-// export const mockEvents = [];

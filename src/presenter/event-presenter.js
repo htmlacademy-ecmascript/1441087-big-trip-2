@@ -2,25 +2,34 @@ import {render, replace, remove} from '../framework/render.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
 
+const Mode = {
+  DEFAULT: 'default',
+  EDITING: 'editing'
+};
+
 export default class EventPresenter {
   #eventListContainer = null;
-  #allDestinations = null;
-  #allOffersPacks = null;
 
   #eventComponent = null;
   #eventEditComponent = null;
 
   #event = null;
+  #allDestinations = null;
+  #allOffersPacks = null;
   #currentDestination = null;
   #currentOffersPack = null;
 
   #onEventUpdate = null;
+  #onModeChange = null;
 
-  constructor({eventListContainer, allDestinations, allOffersPacks, onEventUpdate}) {
+  #mode = Mode.DEFAULT;
+
+  constructor({eventListContainer, allDestinations, allOffersPacks, onEventUpdate, onModeChange}) {
     this.#eventListContainer = eventListContainer;
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#onEventUpdate = onEventUpdate;
+    this.#onModeChange = onModeChange;
   }
 
   init({event, currentDestination, currentOffersPack}) {
@@ -54,11 +63,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventListContainer.contains(prevEventComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventComponent, prevEventComponent);
     }
 
-    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#eventEditComponent, prevEventEditComponent);
     }
 
@@ -71,14 +80,23 @@ export default class EventPresenter {
     remove(this.#eventEditComponent);
   }
 
+  resetView() {
+    if(this.#mode !== Mode.DEFAULT) {
+      this.#displayEventComponent();
+    }
+  }
+
   #displayEventComponent() {
     replace(this.#eventComponent, this.#eventEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #displayEventEditComponent() {
     replace(this.#eventEditComponent, this.#eventComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#onModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #escKeyDownHandler = (evt) => {

@@ -10,10 +10,6 @@ import NoEventView from '../view/no-event-view.js';
 export default class TripPresenter {
   #tripContainer = null;
 
-  #destinationsModel = null;
-  #eventsModel = null;
-  #offersModel = null;
-
   #tripComponent = new TripView();
   #sortComponent = new SortView();
   #eventListComponent = new EventListView();
@@ -21,6 +17,9 @@ export default class TripPresenter {
 
   #events = [];
   #eventPresenters = new Map();
+  #destinationsModel = null;
+  #eventsModel = null;
+  #offersModel = null;
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
@@ -33,6 +32,10 @@ export default class TripPresenter {
     this.#events = [...this.#eventsModel.events];
     this.#renderTrip();
   }
+
+  #onModeChange = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #onEventUpdate = (updatedEvent) => {
     this.#events = updateItem(this.#events, updatedEvent);
@@ -56,7 +59,8 @@ export default class TripPresenter {
       eventListContainer: this.#eventListComponent.element,
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
-      onEventUpdate: this.#onEventUpdate
+      onEventUpdate: this.#onEventUpdate,
+      onModeChange: this.#onModeChange
     });
 
     eventPresenter.init({
