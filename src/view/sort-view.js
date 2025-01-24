@@ -9,7 +9,15 @@ function createSortItemTemplate(sortItem) {
 
   return (
     `<div class="trip-sort__item  trip-sort__item--${name}">
-      <input id="sort-${name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${name}" ${isChecked} ${isDisabled}>
+      <input
+        id="sort-${name}"
+        data-sort-type="${name}"
+        class="trip-sort__input  visually-hidden"
+        type="radio"
+        name="trip-sort"
+        value="sort-${name}"
+        ${isChecked}
+        ${isDisabled}>
       <label class="trip-sort__btn" for="sort-${name}">${getCapitalizedString(name)}</label>
     </div>`
   );
