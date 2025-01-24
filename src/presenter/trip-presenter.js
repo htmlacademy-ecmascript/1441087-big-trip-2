@@ -19,6 +19,7 @@ export default class TripPresenter {
   #noEventComponent = new NoEventView();
 
   #events = [];
+  #eventsPresenters = new Map();
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
@@ -52,6 +53,13 @@ export default class TripPresenter {
       currentDestination: this.#destinationsModel.getDestinationById(event.destination),
       currentOffersPack: this.#offersModel.getOffersPackByType(event.type)
     });
+
+    this.#eventsPresenters.set(event.id, eventPresenter);
+  }
+
+  #clearEventList() {
+    this.#eventsPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventsPresenters.clear();
   }
 
   #renderEventList() {
