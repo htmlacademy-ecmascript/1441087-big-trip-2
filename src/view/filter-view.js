@@ -3,11 +3,11 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 function createFilterItemTemplate(filter) {
   const {type, count} = filter;
-  const disabledState = count === 0 ? 'disabled' : '';
+  const isDisabled = count === 0 ? 'disabled' : '';
 
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${disabledState}>
+      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isDisabled}>
       <label class="trip-filters__filter-label" for="filter-${type}">${getCapitalizedString(type)} ${count}</label>
     </div>`
   );

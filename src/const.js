@@ -26,27 +26,27 @@ const FilterType = {
 const sortTypes = [
   {
     name: 'day',
-    isDisabled: false,
+    isAvailable: true,
     isDefault: true
   },
   {
     name: 'event',
-    isDisabled: true,
+    isAvailable: false,
     isDefault: false
   },
   {
     name: 'time',
-    isDisabled: false,
+    isAvailable: true,
     isDefault: false
   },
   {
     name: 'price',
-    isDisabled: false,
+    isAvailable: true,
     isDefault: false
   },
   {
     name: 'offers',
-    isDisabled: true,
+    isAvailable: false,
     isDefault: false
   }
 ];

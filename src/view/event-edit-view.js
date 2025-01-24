@@ -5,11 +5,11 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 
 function createTypeTemplate(event, type, viewId) {
-  const checkedState = event.type === type ? 'checked' : '';
+  const isChecked = event.type === type ? 'checked' : '';
 
   return (
     `<div class="event__type-item">
-      <input id="event-type-${type}-${viewId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${checkedState}>
+      <input id="event-type-${type}-${viewId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${viewId}">${getCapitalizedString(type)}</label>
     </div>`
   );
@@ -36,11 +36,11 @@ function createDestinationListTemplate(destinations, viewId) {
 
 function createOfferTemplate(offer, event, viewId) {
   const offerId = getHtmlSafeString(offer.title);
-  const checkedState = event.offers.includes(offer.id) ? 'checked' : '';
+  const isChecked = event.offers.includes(offer.id) ? 'checked' : '';
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${viewId}" type="checkbox" name="event-offer-${offerId}" ${checkedState}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerId}-${viewId}" type="checkbox" name="event-offer-${offerId}" ${isChecked}>
       <label class="event__offer-label" for="event-offer-${offerId}-${viewId}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
