@@ -1,18 +1,14 @@
-import {render, RenderPosition, replace} from '../framework/render.js';
-import {getIdGenerator} from '../utils/common-utils.js';
+import {render, RenderPosition} from '../framework/render.js';
+import EventPresenter from '../presenter/event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
-import EventView from '../view/event-view.js';
-import EventEditView from '../view/event-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
-
-
-const idGenerator = getIdGenerator();
 
 
 export default class TripPresenter {
   #tripContainer = null;
+
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
@@ -45,51 +41,17 @@ export default class TripPresenter {
   }
 
   #renderEvent(event) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        displayEventComponent();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const eventComponent = new EventView({
-      viewId: idGenerator(),
-      event: event,
-      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-      onToggleClick: () => {
-        displayEventEditComponent();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    const eventEditComponent = new EventEditView({
-      viewId: idGenerator(),
-      event: event,
-      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+    const eventPresenter = new EventPresenter({
+      eventListContainer: this.#eventListComponent.element,
       allDestinations: this.#destinationsModel.destinations,
-      allOffersPacks: this.#offersModel.offersPacks,
-      onToggleClick: () => {
-        displayEventComponent();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onFormSubmit: () => {
-        displayEventComponent();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
+      allOffersPacks: this.#offersModel.offersPacks
     });
 
-    function displayEventComponent() {
-      replace(eventComponent, eventEditComponent);
-    }
-
-    function displayEventEditComponent() {
-      replace(eventEditComponent, eventComponent);
-    }
-
-    render(eventComponent, this.#eventListComponent.element);
+    eventPresenter.init({
+      event: event,
+      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(event.type)
+    });
   }
 
   #renderEventList() {

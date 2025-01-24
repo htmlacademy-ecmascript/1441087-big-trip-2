@@ -154,7 +154,6 @@ export default class EventEditView extends AbstractView {
   #onFormSubmit = null;
 
   constructor({
-    viewId,
     event,
     currentDestination,
     currentOffersPack,
@@ -163,7 +162,7 @@ export default class EventEditView extends AbstractView {
     onToggleClick,
     onFormSubmit}){
     super();
-    this.#viewId = viewId;
+    this.#viewId = event.id;
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;

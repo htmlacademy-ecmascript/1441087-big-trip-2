@@ -76,9 +76,9 @@ export default class EventView extends AbstractView {
   #currentOffersPack = null;
   #onToggleClick = null;
 
-  constructor({viewId, event, currentDestination, currentOffersPack, onToggleClick}) {
+  constructor({event, currentDestination, currentOffersPack, onToggleClick}) {
     super();
-    this.#viewId = viewId;
+    this.#viewId = event.id;
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
