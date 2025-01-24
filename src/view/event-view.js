@@ -31,7 +31,7 @@ function createEventTemplate(viewId, event, currentDestination, currentOffersPac
   const timeFromFormatted = getFormattedDate(event.dateFrom, DateFormat.TIME);
   const timeToFormatted = getFormattedDate(event.dateTo, DateFormat.TIME);
   const duration = getDateDifference(event.dateTo, event.dateFrom);
-  const isFavorite = event.isFavorite ? 'event__favorite-btn--active' : '';
+  const isFavorite = event.isFavorite ? ' event__favorite-btn--active' : '';
 
 
   return (
@@ -54,7 +54,7 @@ function createEventTemplate(viewId, event, currentDestination, currentOffersPac
           &euro;&nbsp;<span class="event__price-value">${event.basePrice}</span>
         </p>
         ${createoffersCheckedListTemplate(event, currentOffersPack)}
-        <button class="event__favorite-btn ${isFavorite}" type="button">
+        <button class="event__favorite-btn${isFavorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
             <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -75,16 +75,19 @@ export default class EventView extends AbstractView {
   #currentDestination = null;
   #currentOffersPack = null;
   #onToggleClick = null;
+  #onFavoriteClick = null;
 
-  constructor({viewId, event, currentDestination, currentOffersPack, onToggleClick}) {
+  constructor({event, currentDestination, currentOffersPack, onToggleClick, onFavoriteClick}) {
     super();
-    this.#viewId = viewId;
+    this.#viewId = event.id;
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
     this.#onToggleClick = onToggleClick;
+    this.#onFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
@@ -99,5 +102,10 @@ export default class EventView extends AbstractView {
   #toggleClickHandler = (evt) => {
     evt.preventDefault();
     this.#onToggleClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onFavoriteClick();
   };
 }
