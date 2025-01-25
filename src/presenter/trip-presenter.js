@@ -1,12 +1,11 @@
 import {render, RenderPosition} from '../framework/render.js';
 import {updateItem} from '../utils/common-utils.js';
-import {sortEventDay, sortEventDuration, sortEventPrice} from '../utils/sort-utils.js';
-import {sortTypes} from '../const.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
+import EventSort from '../utils/sort-utils.js';
 
 
 export default class TripPresenter {
@@ -24,7 +23,7 @@ export default class TripPresenter {
   #eventsModel = null;
   #offersModel = null;
 
-  #currentSortType = sortTypes.find((sortType) => sortType.isDefault === true).name;
+  #currentSortType = EventSort.defaultSortType;
 
   constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
@@ -35,7 +34,8 @@ export default class TripPresenter {
 
   init () {
     this.#events = [...this.#eventsModel.events];
-    this.#sourcedEvents = [...this.#eventsModel.events];
+    this.#sortEvents(this.#currentSortType);
+    this.#sourcedEvents = [...this.#events];
     this.#renderTrip();
   }
 
@@ -55,20 +55,7 @@ export default class TripPresenter {
   };
 
   #sortEvents(sortType) {
-    switch (sortType) {
-      case 'day':
-        this.#events.sort(sortEventDay);
-        break;
-      case 'time':
-        this.#events.sort(sortEventDuration);
-        break;
-      case 'price':
-        this.#events.sort(sortEventPrice);
-        break;
-      default:
-        this.#events = [...this.#sourcedEvents];
-    }
-
+    EventSort.sortEvents(sortType, this.#events);
     this.#currentSortType = sortType;
   }
 
@@ -84,6 +71,7 @@ export default class TripPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView({
+      sortTypes: EventSort.sortTypes,
       onSortTypeChangeClick: this.#onSortTypeChangeClick
     });
     render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
