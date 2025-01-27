@@ -6,10 +6,10 @@ function getFormattedDate(date, format) {
 }
 
 
-function getDateDifference(dateOne, dateTwo) {
-  const diffDay = dayjs(dateOne).diff(dateTwo, 'day');
-  const diffHour = dayjs(dateOne).diff(dateTwo, 'hour') - (diffDay * 24);
-  const diffMinute = dayjs(dateOne).diff(dateTwo, 'minute') - ((diffHour * 60) + ((diffDay * 24) * 60));
+function getDateDifference(dateA, dateB) {
+  const diffDay = dayjs(dateA).diff(dateB, 'day');
+  const diffHour = dayjs(dateA).diff(dateB, 'hour') - (diffDay * 24);
+  const diffMinute = dayjs(dateA).diff(dateB, 'minute') - ((diffHour * 60) + ((diffDay * 24) * 60));
 
   let diffDayText = '';
   if (diffDay > 0 && diffDay < 10) {
@@ -34,8 +34,14 @@ function getDateDifference(dateOne, dateTwo) {
   return diffDateText;
 }
 
+function getEventDuration(event) {
+  const eventDuration = dayjs(event.dateFrom).diff(event.dateTo);
+  return eventDuration;
+}
+
 
 export {
   getFormattedDate,
-  getDateDifference
+  getDateDifference,
+  getEventDuration
 };
