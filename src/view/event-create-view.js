@@ -4,7 +4,8 @@ import {getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 
-function createTypeTemplate(_state, type, id) {
+function createTypeTemplate(_state, type) {
+  const {id} = _state;
   const isChecked = _state.type === type ? 'checked' : '';
 
   return (
@@ -15,12 +16,12 @@ function createTypeTemplate(_state, type, id) {
   );
 }
 
-function createEventTypeListTemplate(_state, eventTypes, id) {
+function createEventTypeListTemplate(_state, eventTypes) {
   return (
     `<div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
-        ${eventTypes.map((type) => createTypeTemplate(_state, type, id)).join('')}
+        ${eventTypes.map((type) => createTypeTemplate(_state, type)).join('')}
       </fieldset>
     </div>`
   );
@@ -34,7 +35,8 @@ function createDestinationListTemplate(destinations, id) {
   );
 }
 
-function createOfferTemplate(offer, _state, id) {
+function createOfferTemplate(_state, offer) {
+  const {id} = _state;
   const {title, price} = offer;
   const offerHtmlTitle = getHtmlSafeString(title);
   const isChecked = _state.offers.includes(offer.id) ? 'checked' : '';
@@ -58,12 +60,14 @@ function createOfferTemplate(offer, _state, id) {
   );
 }
 
-function createOfferListTemplate(_state, offersPack = {}, id) {
-  return offersPack.offers.length !== 0 ? (
+function createOfferListTemplate(_state) {
+  const {currentOffersPack} = _state;
+
+  return currentOffersPack.offers.length !== 0 ? (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
-        ${offersPack.offers.map((offer) => createOfferTemplate(offer, _state, id)).join('')}
+        ${currentOffersPack.offers.map((offer) => createOfferTemplate(_state, offer)).join('')}
       </div>
     </section>`
   ) : '';
@@ -97,8 +101,9 @@ function createDestinationTemplate(destination) {
   }
 }
 
-function createEventCreateTemplate(_state, currentDestination, currentOffersPack, allDestinations) {
-  const {id, type, dateFrom, dateTo, basePrice} = _state;
+function createEventCreateTemplate(_state, allDestinations) {
+  const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
+  const isSubmitDisabled = !type || !currentDestination;
 
   return (
     `<li class="trip-events__item">
@@ -110,7 +115,7 @@ function createEventCreateTemplate(_state, currentDestination, currentOffersPack
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
-            ${createEventTypeListTemplate(_state, EVENT_TYPES, id)}
+            ${createEventTypeListTemplate(_state, EVENT_TYPES)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -143,11 +148,11 @@ function createEventCreateTemplate(_state, currentDestination, currentOffersPack
             <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
-          ${createOfferListTemplate(_state, currentOffersPack, id)}
+          ${createOfferListTemplate(_state)}
 
           ${createDestinationTemplate(currentDestination)}
         </section>
@@ -157,9 +162,6 @@ function createEventCreateTemplate(_state, currentDestination, currentOffersPack
 }
 
 export default class EventCreateView extends AbstractStatefulView {
-  #event = null;
-  #currentDestination = null;
-  #currentOffersPack = null;
   #allDestinations = null;
   #allOffersPacks = null;
 
@@ -170,9 +172,7 @@ export default class EventCreateView extends AbstractStatefulView {
     allDestinations,
     allOffersPacks}){
     super();
-    this._setState(this._parseEventToState(event));
-    this.#currentDestination = currentDestination;
-    this.#currentOffersPack = currentOffersPack;
+    this._setState(this._parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
 
@@ -182,31 +182,21 @@ export default class EventCreateView extends AbstractStatefulView {
   get template() {
     return createEventCreateTemplate(
       this._state,
-      this.#currentDestination,
-      this.#currentOffersPack,
-      this.#allDestinations,
-      this.#allOffersPacks,
+      this.#allDestinations
     );
+  }
+
+  reset(event, currentDestination, currentOffersPack) {
+    this.updateElement(this._parseEventToState(event, currentDestination, currentOffersPack));
   }
 
   _restoreHandlers() {
     this.element.querySelector('.event__type-list').addEventListener('click', this.#onTypeClick);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
-    if(this.#currentOffersPack.offers.length !== 0) {
+    if(this._state.currentOffersPack.offers.length !== 0) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#onOffersClick);
     }
-  }
-
-
-  #updateViewEventType(newType) {
-    const newOffersPack = this.#allOffersPacks.find((offersPack) => offersPack.type === newType);
-
-    this.#currentOffersPack = newOffersPack;
-    this.updateElement({
-      type: newType,
-      offers: [],
-    });
   }
 
   #onTypeClick = (evt) => {
@@ -220,7 +210,11 @@ export default class EventCreateView extends AbstractStatefulView {
       const newType = targetInput.value;
 
       if(newType !== this._state.type) {
-        this.#updateViewEventType(newType);
+        this.updateElement({
+          type: newType,
+          offers: [],
+          currentOffersPack: this.#allOffersPacks.find((offersPack) => offersPack.type === newType)
+        });
       }
 
       typeToggle.checked = false;
@@ -232,15 +226,15 @@ export default class EventCreateView extends AbstractStatefulView {
     const newDestinationName = evt.target.value;
     const newDestination = this.#allDestinations.find((destination) => destination.name === newDestinationName);
 
-    if(newDestination && this.#currentDestination !== newDestination) {
-      this.#currentDestination = newDestination;
+    if(newDestination && this._state.currentDestination !== newDestination) {
       this.updateElement({
         destination: newDestination.id,
+        currentDestination: newDestination
       });
     } else {
-      this.#currentDestination = null;
       this.updateElement({
         destination: '',
+        currentDestination: null
       });
     }
   };

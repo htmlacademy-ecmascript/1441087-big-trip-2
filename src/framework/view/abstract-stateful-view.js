@@ -37,22 +37,25 @@ export default class AbstractStatefulView extends AbstractView {
     this._state = structuredClone({...this._state, ...update});
   }
 
-  /**
-   * Метод для преобразования События в Состояние
-   * @param {Object} event Событие
-   * @returns {{state: Object}} Состояние
-   */
-  _parseEventToState(event) {
-    return {...event};
+  /**Метод для преобразования События в Состояние*/
+  _parseEventToState(event, currentDestination, currentOffersPack) {
+    const state = {
+      ...event,
+      currentDestination,
+      currentOffersPack
+    };
+
+    return state;
   }
 
-  /**
-   * Метод для преобразования Состояния в Событие
-   * @param {Object} state Состояние
-   * @returns {{event: Object}} Событие
-   */
+  /**Метод для преобразования Состояния в Событие*/
   _parseStateToEvent(state) {
-    return {...state};
+    const event = {...state};
+
+    delete event.currentDestination;
+    delete event.currentOffersPack;
+
+    return event;
   }
 
   /** Метод для перерисовки элемента */
