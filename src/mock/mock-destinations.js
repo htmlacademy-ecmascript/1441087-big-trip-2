@@ -153,7 +153,7 @@ export const mockDestinations = [
   },
   {
     id: '1b17f449-8447-46a0-934e-fc54af3dd4ca',
-    description: 'Oslo - with an embankment of a mighty river as a centre of attraction',
+    description: '',
     name: 'Oslo',
     pictures: [
       {

@@ -36,6 +36,7 @@ function createEventTemplate(event, currentDestination, currentOffersPack) {
   const timeToFormatted = getFormattedDate(dateTo, DateFormat.TIME);
   const duration = getDateDifference(dateTo, event.dateFrom);
   const isFavorite = event.isFavorite ? ' event__favorite-btn--active' : '';
+  const currentDestinationName = currentDestination ? currentDestination.name : '';
 
   return (
     `<li class="trip-events__item">
@@ -44,7 +45,7 @@ function createEventTemplate(event, currentDestination, currentOffersPack) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getCapitalizedString(type)} ${currentDestination.name}</h3>
+        <h3 class="event__title">${getCapitalizedString(type)} ${currentDestinationName}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dateFrom}">${timeFromFormatted}</time>
@@ -76,19 +77,19 @@ export default class EventView extends AbstractView {
   #event = null;
   #currentDestination = null;
   #currentOffersPack = null;
-  #onToggleClick = null;
-  #onFavoriteClick = null;
+  #toggleClickHandler = null;
+  #favoriteClickHandler = null;
 
-  constructor({event, currentDestination, currentOffersPack, onToggleClick, onFavoriteClick}) {
+  constructor({event, currentDestination, currentOffersPack, toggleClickHandler, favoriteClickHandler}) {
     super();
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
-    this.#onToggleClick = onToggleClick;
-    this.#onFavoriteClick = onFavoriteClick;
+    this.#toggleClickHandler = toggleClickHandler;
+    this.#favoriteClickHandler = favoriteClickHandler;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onToggleClickHandler);
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onToggleClick);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteClick);
   }
 
   get template() {
@@ -99,13 +100,13 @@ export default class EventView extends AbstractView {
     );
   }
 
-  #onToggleClickHandler = (evt) => {
+  #onToggleClick = (evt) => {
     evt.preventDefault();
-    this.#onToggleClick();
+    this.#toggleClickHandler();
   };
 
-  #onFavoriteClickHandler = (evt) => {
+  #onFavoriteClick = (evt) => {
     evt.preventDefault();
-    this.#onFavoriteClick();
+    this.#favoriteClickHandler();
   };
 }

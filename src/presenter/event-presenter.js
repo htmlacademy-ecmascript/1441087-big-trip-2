@@ -1,4 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
+import {isEscapeKey} from '../utils/common-utils.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
 
@@ -44,8 +45,8 @@ export default class EventPresenter {
       event: this.#event,
       currentDestination: this.#currentDestination,
       currentOffersPack: this.#currentOffersPack,
-      onToggleClick: this.#onToggleShowClick,
-      onFavoriteClick: this.#onFavoriteClick
+      toggleClickHandler: this.#onToggleShowClick,
+      favoriteClickHandler: this.#onFavoriteClick
     });
 
     this.#eventEditComponent = new EventEditView({
@@ -54,8 +55,8 @@ export default class EventPresenter {
       currentOffersPack: this.#currentOffersPack,
       allDestinations:  this.#allDestinations,
       allOffersPacks: this.#allOffersPacks,
-      onToggleClick: this.#onToggleHideClick,
-      onFormSubmit: this.#onFormSubmit,
+      toggleClickHandler: this.#onToggleHideClick,
+      formSubmitHandler: this.#onFormSubmit,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -100,7 +101,7 @@ export default class EventPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscapeKey(evt)) {
       evt.preventDefault();
       this.#displayEventComponent();
     }
