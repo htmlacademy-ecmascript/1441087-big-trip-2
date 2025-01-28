@@ -6,10 +6,12 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import EventSort from '../utils/sort-utils.js';
+import EventCreateView from '../view/event-create-view.js';
 
 
 export default class TripPresenter {
   #tripContainer = null;
+  #eventCreate = null;
 
   #tripComponent = new TripView();
   #sortComponent = null;
@@ -25,11 +27,14 @@ export default class TripPresenter {
 
   #currentSortType = EventSort.defaultSortType;
 
-  constructor({tripContainer, destinationsModel, eventsModel, offersModel}) {
+  constructor({tripContainer, eventCreate, destinationsModel, eventsModel, offersModel}) {
     this.#tripContainer = tripContainer;
+    this.#eventCreate = eventCreate;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
+
+    this.#eventCreate.addEventListener('click', this.#onEventCreateClick);
   }
 
   init () {
@@ -38,6 +43,18 @@ export default class TripPresenter {
     this.#sourcedEvents = [...this.#events];
     this.#renderTrip();
   }
+
+  #onEventCreateClick = () => {
+    const defaultEvent = this.#eventsModel.defaultEvent;
+    const eventCreateView = new EventCreateView({
+      event: defaultEvent,
+      currentDestination: this.#destinationsModel.getDestinationById(defaultEvent.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(defaultEvent.type),
+      allDestinations:  this.#destinationsModel.destinations,
+      allOffersPacks: this.#offersModel.offersPacks,
+    });
+    render(eventCreateView, this.#eventListComponent.element, RenderPosition.AFTERBEGIN);
+  };
 
   #onModeChange = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());

@@ -5,11 +5,13 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 
 function createOfferTemplate(offer) {
+  const {title, price} = offer;
+
   return (
     `<li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
+      <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
+      <span class="event__offer-price">${price}</span>
     </li>`
   );
 }
@@ -17,6 +19,7 @@ function createOfferTemplate(offer) {
 
 function createoffersCheckedListTemplate(event, offersPack) {
   const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
+
   return checkedOffers.length !== 0 ? (
     `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
@@ -26,32 +29,33 @@ function createoffersCheckedListTemplate(event, offersPack) {
 }
 
 
-function createEventTemplate(viewId, event, currentDestination, currentOffersPack) {
-  const dayFormatted = getFormattedDate(event.dateFrom, DateFormat.DAY);
-  const timeFromFormatted = getFormattedDate(event.dateFrom, DateFormat.TIME);
-  const timeToFormatted = getFormattedDate(event.dateTo, DateFormat.TIME);
-  const duration = getDateDifference(event.dateTo, event.dateFrom);
+function createEventTemplate(event, currentDestination, currentOffersPack) {
+  const {id, type, dateFrom, dateTo, basePrice} = event;
+  const dayFormatted = getFormattedDate(dateFrom, DateFormat.DAY);
+  const timeFromFormatted = getFormattedDate(dateFrom, DateFormat.TIME);
+  const timeToFormatted = getFormattedDate(dateTo, DateFormat.TIME);
+  const duration = getDateDifference(dateTo, event.dateFrom);
   const isFavorite = event.isFavorite ? ' event__favorite-btn--active' : '';
-
+  const currentDestinationName = currentDestination ? currentDestination.name : '';
 
   return (
     `<li class="trip-events__item">
-      <div id = "${viewId}" class="event">
-        <time class="event__date" datetime="${event.dateFrom}">${dayFormatted}</time>
+      <div id = "${id}" class="event">
+        <time class="event__date" datetime="${dateFrom}">${dayFormatted}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${getCapitalizedString(event.type)} ${currentDestination.name}</h3>
+        <h3 class="event__title">${getCapitalizedString(type)} ${currentDestinationName}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${event.dateFrom}">${timeFromFormatted}</time>
+            <time class="event__start-time" datetime="${dateFrom}">${timeFromFormatted}</time>
             &mdash;
-            <time class="event__end-time" datetime="${event.dateTo}">${timeToFormatted}</time>
+            <time class="event__end-time" datetime="${dateTo}">${timeToFormatted}</time>
           </p>
           <p class="event__duration">${duration}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${event.basePrice}</span>
+          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         ${createoffersCheckedListTemplate(event, currentOffersPack)}
         <button class="event__favorite-btn${isFavorite}" type="button">
@@ -70,42 +74,39 @@ function createEventTemplate(viewId, event, currentDestination, currentOffersPac
 
 
 export default class EventView extends AbstractView {
-  #viewId = null;
   #event = null;
   #currentDestination = null;
   #currentOffersPack = null;
-  #onToggleClick = null;
-  #onFavoriteClick = null;
+  #toggleClickHandler = null;
+  #favoriteClickHandler = null;
 
-  constructor({event, currentDestination, currentOffersPack, onToggleClick, onFavoriteClick}) {
+  constructor({event, currentDestination, currentOffersPack, toggleClickHandler, favoriteClickHandler}) {
     super();
-    this.#viewId = event.id;
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
-    this.#onToggleClick = onToggleClick;
-    this.#onFavoriteClick = onFavoriteClick;
+    this.#toggleClickHandler = toggleClickHandler;
+    this.#favoriteClickHandler = favoriteClickHandler;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onToggleClick);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteClick);
   }
 
   get template() {
     return createEventTemplate(
-      this.#viewId,
       this.#event,
       this.#currentDestination,
       this.#currentOffersPack,
     );
   }
 
-  #toggleClickHandler = (evt) => {
+  #onToggleClick = (evt) => {
     evt.preventDefault();
-    this.#onToggleClick();
+    this.#toggleClickHandler();
   };
 
-  #favoriteClickHandler = (evt) => {
+  #onFavoriteClick = (evt) => {
     evt.preventDefault();
-    this.#onFavoriteClick();
+    this.#favoriteClickHandler();
   };
 }
