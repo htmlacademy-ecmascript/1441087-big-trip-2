@@ -24,8 +24,16 @@ const FilterType = {
   PAST: 'past'
 };
 
+const flatpickrConfig = {
+  enableTime: true,
+  'time_24hr': true,
+  locale: {firstDayOfWeek: 1},
+  dateFormat: DateFormat.FLATPICKR
+};
+
 export {
   EVENT_TYPES,
   DateFormat,
   FilterType,
+  flatpickrConfig
 };

@@ -102,7 +102,8 @@ export default class EventPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
+    if (isEscapeKey(evt) &&
+        document.activeElement.tagName !== 'INPUT') {
       evt.preventDefault();
       this.#eventEditComponent.reset(this.#event, this.#currentDestination, this.#currentOffersPack);
       this.#replaceFormToCard();

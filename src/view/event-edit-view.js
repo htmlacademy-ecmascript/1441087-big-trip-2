@@ -1,4 +1,4 @@
-import {DateFormat, EVENT_TYPES} from '../const.js';
+import {DateFormat, EVENT_TYPES, flatpickrConfig} from '../const.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
 import {getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -231,13 +231,9 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepicker = flatpickr(
       this.element.querySelector(`#event-start-time-${this._state.id}`),
       {
-        enableTime: true,
-        /* eslint-disable */
-        time_24hr: true,
-        /* eslint-enabled */
-        dateFormat: DateFormat.FLATPICKR,
+        ...flatpickrConfig,
         defaultDate: this._state.dateFrom,
-        onChange: this.#onDateFromChange,
+        onClose: this.#onDateFromClose,
       },
     );
   }
@@ -246,14 +242,10 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepicker = flatpickr(
       this.element.querySelector(`#event-end-time-${this._state.id}`),
       {
-        enableTime: true,
-        /* eslint-disable */
-        time_24hr: true,
-        /* eslint-enabled */
-        dateFormat: DateFormat.FLATPICKR,
+        ...flatpickrConfig,
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onChange: this.#onDateToChange,
+        onClose: this.#onDateToClose,
       },
     );
   }
@@ -308,7 +300,7 @@ export default class EventEditView extends AbstractStatefulView {
     }
   };
 
-  #onDateFromChange = ([userDate]) => {
+  #onDateFromClose = ([userDate]) => {
     const newFromDate = new Date(userDate);
     const oldToDate = new Date(this._state.dateTo);
 
@@ -318,7 +310,7 @@ export default class EventEditView extends AbstractStatefulView {
     });
   };
 
-  #onDateToChange = ([userDate]) => {
+  #onDateToClose = ([userDate]) => {
     this.updateElement({
       dateTo: userDate,
     });
