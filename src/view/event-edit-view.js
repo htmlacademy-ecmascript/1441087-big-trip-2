@@ -2,6 +2,10 @@ import {DateFormat, EVENT_TYPES} from '../const.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
 import {getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/material_blue.css';
 
 
 function createTypeTemplate(_state, type) {
@@ -167,6 +171,7 @@ function createEventEditTemplate(_state, allDestinations) {
 export default class EventEditView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffersPacks = null;
+  #datepicker = null;
   #toggleClickHandler = null;
   #formSubmitHandler = null;
 
@@ -195,6 +200,15 @@ export default class EventEditView extends AbstractStatefulView {
     );
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
   reset(event, currentDestination, currentOffersPack) {
     this.updateElement(this._parseEventToState(event, currentDestination, currentOffersPack));
   }
@@ -208,6 +222,40 @@ export default class EventEditView extends AbstractStatefulView {
     if(this._state.currentOffersPack.offers.length !== 0) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#onOffersClick);
     }
+
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
+  }
+
+  #setDateFromPicker() {
+    this.#datepicker = flatpickr(
+      this.element.querySelector(`#event-start-time-${this._state.id}`),
+      {
+        enableTime: true,
+        /* eslint-disable */
+        time_24hr: true,
+        /* eslint-enabled */
+        dateFormat: DateFormat.FLATPICKR,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#onDateFromChange,
+      },
+    );
+  }
+
+  #setDateToPicker() {
+    this.#datepicker = flatpickr(
+      this.element.querySelector(`#event-end-time-${this._state.id}`),
+      {
+        enableTime: true,
+        /* eslint-disable */
+        time_24hr: true,
+        /* eslint-enabled */
+        dateFormat: DateFormat.FLATPICKR,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#onDateToChange,
+      },
+    );
   }
 
   #onToggleClick = (evt) => {
@@ -258,6 +306,22 @@ export default class EventEditView extends AbstractStatefulView {
         currentDestination: null
       });
     }
+  };
+
+  #onDateFromChange = ([userDate]) => {
+    const newFromDate = new Date(userDate);
+    const oldToDate = new Date(this._state.dateTo);
+
+    this.updateElement({
+      dateFrom: userDate,
+      dateTo: oldToDate < newFromDate ? userDate : this._state.dateTo
+    });
+  };
+
+  #onDateToChange = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
   };
 
   #onPriceChange = (evt) => {
