@@ -184,7 +184,7 @@ export default class EventEditView extends AbstractStatefulView {
     toggleClickHandler,
     formSubmitHandler}){
     super();
-    this._setState(this._parseEventToState(event, currentDestination, currentOffersPack));
+    this._setState(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#toggleClickHandler = toggleClickHandler;
@@ -210,7 +210,7 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   reset(event, currentDestination, currentOffersPack) {
-    this.updateElement(this._parseEventToState(event, currentDestination, currentOffersPack));
+    this.updateElement(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
   }
 
   _restoreHandlers() {
@@ -257,7 +257,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#formSubmitHandler(this._parseStateToEvent(this._state));
+    this.#formSubmitHandler(EventEditView.parseStateToEvent(this._state));
   };
 
   #onTypeClick = (evt) => {
@@ -342,4 +342,23 @@ export default class EventEditView extends AbstractStatefulView {
       }
     }
   };
+
+  static parseEventToState(event, currentDestination, currentOffersPack) {
+    const state = {
+      ...event,
+      currentDestination,
+      currentOffersPack
+    };
+
+    return state;
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+
+    delete event.currentDestination;
+    delete event.currentOffersPack;
+
+    return event;
+  }
 }

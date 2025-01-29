@@ -177,7 +177,7 @@ export default class EventCreateView extends AbstractStatefulView {
     allDestinations,
     allOffersPacks}){
     super();
-    this._setState(this._parseEventToState(event, currentDestination, currentOffersPack));
+    this._setState(EventCreateView.parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
 
@@ -201,7 +201,7 @@ export default class EventCreateView extends AbstractStatefulView {
   }
 
   reset(event, currentDestination, currentOffersPack) {
-    this.updateElement(this._parseEventToState(event, currentDestination, currentOffersPack));
+    this.updateElement(EventCreateView.parseEventToState(event, currentDestination, currentOffersPack));
   }
 
   _restoreHandlers() {
@@ -321,4 +321,23 @@ export default class EventCreateView extends AbstractStatefulView {
       }
     }
   };
+
+  static parseEventToState(event, currentDestination, currentOffersPack) {
+    const state = {
+      ...event,
+      currentDestination,
+      currentOffersPack
+    };
+
+    return state;
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+
+    delete event.currentDestination;
+    delete event.currentOffersPack;
+
+    return event;
+  }
 }
