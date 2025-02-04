@@ -1,9 +1,9 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createSortItemTemplate(sortItem) {
-  const {name, isAvailable, isDefault} = sortItem;
-  const isChecked = isDefault ? 'checked' : '';
+function createSortItemTemplate(sortItem, currentSortType) {
+  const {name, isAvailable} = sortItem;
+  const isChecked = name === currentSortType ? 'checked' : '';
   const isDisabled = isAvailable ? '' : 'disabled';
 
   return (
@@ -22,8 +22,8 @@ function createSortItemTemplate(sortItem) {
   );
 }
 
-function createSortTemplate(sortTypes) {
-  const sortItems = sortTypes.slice().map((sortItem) => createSortItemTemplate(sortItem)).join('');
+function createSortTemplate(sortTypes, currentSortType) {
+  const sortItems = sortTypes.slice().map((sortItem) => createSortItemTemplate(sortItem, currentSortType)).join('');
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItems}
@@ -34,18 +34,20 @@ function createSortTemplate(sortTypes) {
 
 export default class SortView extends AbstractView {
   #sortTypes = null;
+  #currentSortType = null;
   #onSortTypeChangeClick = null;
 
-  constructor({sortTypes, onSortTypeChangeClick}) {
+  constructor({sortTypes, currentSortType, onSortTypeChangeClick}) {
     super();
     this.#sortTypes = sortTypes;
+    this.#currentSortType = currentSortType;
     this.#onSortTypeChangeClick = onSortTypeChangeClick;
 
     this.element.addEventListener('click', this.#sortTypeChangeHandler);
   }
 
   get template() {
-    return createSortTemplate(this.#sortTypes);
+    return createSortTemplate(this.#sortTypes, this.#currentSortType);
   }
 
   #sortTypeChangeHandler = (evt) => {

@@ -1,4 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
+import {UserAction, UpdateType} from '../const.js';
 import {isEscapeKey} from '../utils/common-utils.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
@@ -120,11 +121,19 @@ export default class EventPresenter {
   };
 
   #onFavoriteClick = () => {
-    this.#onEventUpdate({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#onEventUpdate(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      {...this.#event, isFavorite: !this.#event.isFavorite}
+    );
   };
 
   #onFormSubmit = (event) => {
-    this.#onEventUpdate(event);
+    this.#onEventUpdate(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event
+    );
     this.#replaceFormToCard();
   };
 }

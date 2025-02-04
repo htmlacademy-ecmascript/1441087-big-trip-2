@@ -15,10 +15,6 @@ function getIdGenerator () {
   };
 }
 
-function updateItem(items, updatedItem) {
-  return items.map((item) => item.id === updatedItem.id ? updatedItem : item);
-}
-
 function isEscapeKey (evt) {
   return evt.key === 'Escape';
 }
@@ -27,6 +23,5 @@ export {
   getCapitalizedString,
   getHtmlSafeString,
   getIdGenerator,
-  updateItem,
   isEscapeKey
 };
