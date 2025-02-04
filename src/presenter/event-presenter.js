@@ -1,6 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
 import {isEscapeKey} from '../utils/common-utils.js';
+import {isDatesEqual} from '../utils/date-utils.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
 
@@ -58,6 +59,7 @@ export default class EventPresenter {
       allOffersPacks: this.#allOffersPacks,
       toggleClickHandler: this.#onToggleHideClick,
       formSubmitHandler: this.#onFormSubmit,
+      deleteClickHandler: this.#onDeleteCLick,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -129,11 +131,22 @@ export default class EventPresenter {
   };
 
   #onFormSubmit = (event) => {
+    const isMinorUpdate = !isDatesEqual(this.#event.dateFrom, event.dateFrom) ||
+    !isDatesEqual(this.#event.dateTo, event.dateTo);
+
     this.#onEventUpdate(
       UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       event
     );
     this.#replaceFormToCard();
+  };
+
+  #onDeleteCLick = (event) => {
+    this.#onEventUpdate(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event
+    );
   };
 }

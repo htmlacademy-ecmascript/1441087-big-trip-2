@@ -27,9 +27,14 @@ function getEventDuration(event) {
   return eventDuration;
 }
 
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+}
+
 
 export {
   getFormattedDate,
   getDateDifference,
-  getEventDuration
+  getEventDuration,
+  isDatesEqual
 };

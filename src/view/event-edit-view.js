@@ -174,6 +174,7 @@ export default class EventEditView extends AbstractStatefulView {
   #datepicker = null;
   #toggleClickHandler = null;
   #formSubmitHandler = null;
+  #deleteClickHandler = null;
 
   constructor({
     event,
@@ -182,13 +183,15 @@ export default class EventEditView extends AbstractStatefulView {
     allDestinations,
     allOffersPacks,
     toggleClickHandler,
-    formSubmitHandler}){
+    formSubmitHandler,
+    deleteClickHandler}){
     super();
     this._setState(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#toggleClickHandler = toggleClickHandler;
     this.#formSubmitHandler = formSubmitHandler;
+    this.#deleteClickHandler = deleteClickHandler;
 
     this._restoreHandlers();
   }
@@ -218,6 +221,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-list').addEventListener('click', this.#onTypeClick);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onDeleteClick);
     this.element.querySelector('form').addEventListener('submit', this.#onFormSubmit);
     if(this._state.currentOffersPack.offers.length !== 0) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#onOffersClick);
@@ -253,11 +257,6 @@ export default class EventEditView extends AbstractStatefulView {
   #onToggleClick = (evt) => {
     evt.preventDefault();
     this.#toggleClickHandler();
-  };
-
-  #onFormSubmit = (evt) => {
-    evt.preventDefault();
-    this.#formSubmitHandler(EventEditView.parseStateToEvent(this._state));
   };
 
   #onTypeClick = (evt) => {
@@ -322,6 +321,16 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       basePrice: newPrice,
     });
+  };
+
+  #onFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#formSubmitHandler(EventEditView.parseStateToEvent(this._state));
+  };
+
+  #onDeleteClick = (evt) => {
+    evt.preventDefault();
+    this.#deleteClickHandler(EventEditView.parseStateToEvent(this._state));
   };
 
   #onOffersClick = (evt) => {
