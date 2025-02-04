@@ -1,5 +1,6 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
+import {filter} from '../utils/filter-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
@@ -22,27 +23,33 @@ export default class TripPresenter {
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
+  #filtersModel = null;
 
   #currentSortType = EventSort.defaultSortType;
 
-  constructor({tripContainer, eventCreate, destinationsModel, eventsModel, offersModel}) {
+  constructor({tripContainer, eventCreate, destinationsModel, eventsModel, offersModel, filtersModel}) {
     this.#tripContainer = tripContainer;
     this.#eventCreate = eventCreate;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
+    this.#filtersModel = filtersModel;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
+
 
     this.#eventCreate.addEventListener('click', this.#onEventCreateClick);
   }
 
   get events () {
-    const events = [...this.#eventsModel.events];
+    const filterType = this.#filtersModel.filter;
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[filterType](events);
 
-    EventSort.sortEvents(this.#currentSortType, events);
+    EventSort.sortEvents(this.#currentSortType, filteredEvents);
 
-    return events;
+    return filteredEvents;
   }
 
   get destinations () {
