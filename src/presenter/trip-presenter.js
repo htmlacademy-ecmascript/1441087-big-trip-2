@@ -17,7 +17,7 @@ export default class TripPresenter {
   #tripComponent = new TripView();
   #sortComponent = null;
   #eventListComponent = new EventListView();
-  #noEventComponent = new NoEventView();
+  #noEventComponent = null;
 
   #eventPresenters = new Map();
   #destinationsModel = null;
@@ -25,7 +25,8 @@ export default class TripPresenter {
   #offersModel = null;
   #filtersModel = null;
 
-  #currentSortType = EventSort.defaultSortType;
+  #currentSortType = null;
+  #currentFilterType = null;
 
   constructor({tripContainer, eventCreate, destinationsModel, eventsModel, offersModel, filtersModel}) {
     this.#tripContainer = tripContainer;
@@ -37,15 +38,16 @@ export default class TripPresenter {
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filtersModel.addObserver(this.#handleModelEvent);
-
-
     this.#eventCreate.addEventListener('click', this.#onEventCreateClick);
+
+    this.#currentSortType = EventSort.defaultSortType;
+    this.#currentFilterType = filtersModel.defaultFilterType;
   }
 
   get events () {
-    const filterType = this.#filtersModel.filter;
+    this.#currentFilterType = this.#filtersModel.filter;
     const events = this.#eventsModel.events;
-    const filteredEvents = filter[filterType](events);
+    const filteredEvents = filter[this.#currentFilterType](events);
 
     EventSort.sortEvents(this.#currentSortType, filteredEvents);
 
@@ -156,6 +158,10 @@ export default class TripPresenter {
   }
 
   #renderNoEvents() {
+    this.#noEventComponent = new NoEventView({
+      filterType: this.#currentFilterType
+    });
+
     render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
 
@@ -164,7 +170,10 @@ export default class TripPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noEventComponent);
+
+    if(this.#noEventComponent) {
+      remove(this.#noEventComponent);
+    }
 
     if(resetSortType) {
       this.#currentSortType = EventSort.defaultSortType;
