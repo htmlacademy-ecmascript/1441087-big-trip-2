@@ -1,6 +1,6 @@
 import {DateFormat, EVENT_TYPES, flatpickrConfig} from '../const.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
-import {getFormattedDate} from '../utils/date-utils.js';
+import {getFormattedDate, EVENT_HOUR_OFFSET} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 
@@ -107,7 +107,7 @@ function createDestinationTemplate(destination) {
 
 function createEventEditTemplate(_state, allDestinations) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
-  const isSubmitDisabled = !type || !currentDestination;
+  const isSubmitDisabled = !type;
 
   return (
     `<li class="trip-events__item">
@@ -300,12 +300,16 @@ export default class EventEditView extends AbstractStatefulView {
   };
 
   #onDateFromClose = ([userDate]) => {
-    const newFromDate = new Date(userDate);
-    const oldToDate = new Date(this._state.dateTo);
+    const dateFrom = new Date(userDate);
+    let dateTo = new Date(this._state.dateTo);
+
+    if(dateFrom > dateTo) {
+      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
+    }
 
     this.updateElement({
-      dateFrom: userDate,
-      dateTo: oldToDate < newFromDate ? userDate : this._state.dateTo
+      dateFrom: dateFrom,
+      dateTo: dateTo
     });
   };
 

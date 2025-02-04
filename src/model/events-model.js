@@ -3,9 +3,9 @@ import {mockEvents} from '../mock/mock-events.js';
 
 const defaultEvent = {
   id: '',
-  basePrice: '',
+  basePrice: 0,
   dateFrom: new Date().setHours(0,0,0,0),
-  dateTo: new Date().setHours(0,0,0,0),
+  dateTo: new Date().setHours(1,0,0,0),
   destination: '',
   isFavorite: false,
   offers: [],

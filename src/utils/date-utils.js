@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 const HOURS_IN_DAY = 24;
 const MANUTES_IN_HOUR = 60;
 const REQUIRED_STRING_LENGTH = 2;
+const EVENT_HOUR_OFFSET = 1;
 
 
 function getFormattedDate(date, format) {
@@ -33,8 +34,9 @@ function isDatesEqual(dateA, dateB) {
 
 
 export {
+  EVENT_HOUR_OFFSET,
   getFormattedDate,
   getDateDifference,
   getEventDuration,
-  isDatesEqual
+  isDatesEqual,
 };

@@ -1,4 +1,4 @@
-export const mockEvents = [
+const mockSourcedEvents = [
   {
     id: 'a72349a8-ca9d-4c0d-9007-d9ae3db4e2ae',
     basePrice: 8581,
@@ -300,3 +300,7 @@ export const mockEvents = [
     type: 'check-in'
   }
 ];
+
+const mockEvents = mockSourcedEvents.slice(-3);
+
+export {mockEvents};

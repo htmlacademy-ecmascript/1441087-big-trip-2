@@ -2,17 +2,16 @@ import {render, RenderPosition, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
 import {filter} from '../utils/filter-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
+import NewEventPresenter from '../presenter/new-event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import EventSort from '../utils/sort-utils.js';
-import EventCreateView from '../view/event-create-view.js';
 
 
 export default class TripPresenter {
   #tripContainer = null;
-  #eventCreate = null;
 
   #tripComponent = new TripView();
   #sortComponent = null;
@@ -20,6 +19,8 @@ export default class TripPresenter {
   #noEventComponent = null;
 
   #eventPresenters = new Map();
+  #newEventPresenter = null;
+
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
@@ -28,17 +29,24 @@ export default class TripPresenter {
   #currentSortType = null;
   #currentFilterType = null;
 
-  constructor({tripContainer, eventCreate, destinationsModel, eventsModel, offersModel, filtersModel}) {
+  constructor({tripContainer, destinationsModel, eventsModel, offersModel, filtersModel, onNewEventDestroy}) {
     this.#tripContainer = tripContainer;
-    this.#eventCreate = eventCreate;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
     this.#filtersModel = filtersModel;
 
+    this.#newEventPresenter = new NewEventPresenter({
+      eventListContainer: this.#eventListComponent.element,
+      destinationsModel: destinationsModel,
+      eventsModel: eventsModel,
+      offersModel: offersModel,
+      onEventUpdate: this.#handleViewAction,
+      onDestroy: onNewEventDestroy
+    });
+
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filtersModel.addObserver(this.#handleModelEvent);
-    this.#eventCreate.addEventListener('click', this.#onEventCreateClick);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = filtersModel.defaultFilterType;
@@ -66,19 +74,14 @@ export default class TripPresenter {
     this.#renderTrip();
   }
 
-  #onEventCreateClick = () => {
-    const defaultEvent = this.#eventsModel.defaultEvent;
-    const eventCreateView = new EventCreateView({
-      event: defaultEvent,
-      currentDestination: this.#destinationsModel.getDestinationById(defaultEvent.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(defaultEvent.type),
-      allDestinations:  this.#destinationsModel.destinations,
-      allOffersPacks: this.#offersModel.offersPacks,
-    });
-    render(eventCreateView, this.#eventListComponent.element, RenderPosition.AFTERBEGIN);
-  };
+  createEvent() {
+    this.#currentSortType = EventSort.defaultSortType;
+    this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
+    this.#newEventPresenter.init();
+  }
 
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -162,10 +165,11 @@ export default class TripPresenter {
       filterType: this.#currentFilterType
     });
 
-    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
   #clearTrip({resetSortType = false} = {}) {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
