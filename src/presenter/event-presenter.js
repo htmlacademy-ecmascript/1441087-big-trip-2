@@ -132,7 +132,8 @@ export default class EventPresenter {
 
   #onFormSubmit = (event) => {
     const isMinorUpdate = !isDatesEqual(this.#event.dateFrom, event.dateFrom) ||
-    !isDatesEqual(this.#event.dateTo, event.dateTo);
+    !isDatesEqual(this.#event.dateTo, event.dateTo) ||
+    (this.#event.basePrice !== event.basePrice);
 
     this.#onEventUpdate(
       UserAction.UPDATE_EVENT,
