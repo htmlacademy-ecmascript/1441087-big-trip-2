@@ -130,7 +130,7 @@ export default class TripPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView({
-      sortTypes: EventSort.sortTypes,
+      sortSettings: EventSort.sortSettings,
       currentSortType: this.#currentSortType,
       onSortTypeChangeClick: this.#onSortTypeChangeClick
     });

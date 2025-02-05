@@ -22,8 +22,8 @@ function createSortItemTemplate(sortItem, currentSortType) {
   );
 }
 
-function createSortTemplate(sortTypes, currentSortType) {
-  const sortItems = sortTypes.slice().map((sortItem) => createSortItemTemplate(sortItem, currentSortType)).join('');
+function createSortTemplate(sortSettings, currentSortType) {
+  const sortItems = sortSettings.slice().map((sortItem) => createSortItemTemplate(sortItem, currentSortType)).join('');
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItems}
@@ -33,13 +33,13 @@ function createSortTemplate(sortTypes, currentSortType) {
 
 
 export default class SortView extends AbstractView {
-  #sortTypes = null;
+  #sortSettings = null;
   #currentSortType = null;
   #onSortTypeChangeClick = null;
 
-  constructor({sortTypes, currentSortType, onSortTypeChangeClick}) {
+  constructor({sortSettings, currentSortType, onSortTypeChangeClick}) {
     super();
-    this.#sortTypes = sortTypes;
+    this.#sortSettings = sortSettings;
     this.#currentSortType = currentSortType;
     this.#onSortTypeChangeClick = onSortTypeChangeClick;
 
@@ -47,7 +47,7 @@ export default class SortView extends AbstractView {
   }
 
   get template() {
-    return createSortTemplate(this.#sortTypes, this.#currentSortType);
+    return createSortTemplate(this.#sortSettings, this.#currentSortType);
   }
 
   #sortTypeChangeHandler = (evt) => {
