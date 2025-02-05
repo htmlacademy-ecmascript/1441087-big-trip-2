@@ -5,6 +5,20 @@ const MANUTES_IN_HOUR = 60;
 const REQUIRED_STRING_LENGTH = 2;
 const EVENT_HOUR_OFFSET = 1;
 
+const DateFormat = {
+  DAY: 'MMM DD',
+  TIME: 'HH:mm',
+  DATE: 'DD/MM/YY HH:mm',
+  FLATPICKR: 'd/m/y H:i'
+};
+
+const flatpickrConfig = {
+  enableTime: true,
+  'time_24hr': true,
+  locale: {firstDayOfWeek: 1},
+  dateFormat: DateFormat.FLATPICKR
+};
+
 
 function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
@@ -35,6 +49,8 @@ function isDatesEqual(dateA, dateB) {
 
 export {
   EVENT_HOUR_OFFSET,
+  DateFormat,
+  flatpickrConfig,
   getFormattedDate,
   getDateDifference,
   getEventDuration,

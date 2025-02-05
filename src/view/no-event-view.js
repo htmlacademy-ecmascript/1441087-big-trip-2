@@ -1,4 +1,4 @@
-import {FilterType} from '../const.js';
+import {FilterType} from '../utils/filter-utils.js';
 import AbstractView from '../framework/view/abstract-view';
 
 const NoEventTextType = {

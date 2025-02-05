@@ -1,6 +1,5 @@
-import {remove, render, RenderPosition} from '../framework/render.js';
-import {isEscapeKey} from '../utils/common-utils.js';
-import {UserAction, UpdateType} from '../const.js';
+import {render, RenderPosition, remove} from '../framework/render.js';
+import {UserAction, UpdateType, isEscapeKey} from '../utils/common-utils.js';
 import EventCreateView from '../view/event-create-view.js';
 
 

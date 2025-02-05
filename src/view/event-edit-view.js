@@ -1,6 +1,6 @@
-import {DateFormat, EVENT_TYPES, flatpickrConfig} from '../const.js';
+import {EVENT_TYPES} from '../utils/event-utils.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
-import {getFormattedDate, EVENT_HOUR_OFFSET} from '../utils/date-utils.js';
+import {EVENT_HOUR_OFFSET, DateFormat, flatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 

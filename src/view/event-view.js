@@ -1,6 +1,5 @@
-import {DateFormat} from '../const.js';
 import {getCapitalizedString} from '../utils/common-utils.js';
-import {getFormattedDate, getDateDifference} from '../utils/date-utils.js';
+import {DateFormat, getFormattedDate, getDateDifference} from '../utils/date-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 

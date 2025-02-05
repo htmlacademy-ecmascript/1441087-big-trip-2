@@ -1,6 +1,5 @@
-import {render, replace, remove} from '../framework/render.js';
-import {UserAction, UpdateType} from '../const.js';
-import {isEscapeKey} from '../utils/common-utils.js';
+import {render, remove, replace} from '../framework/render.js';
+import {UserAction, UpdateType, isEscapeKey} from '../utils/common-utils.js';
 import {isDatesEqual} from '../utils/date-utils.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
