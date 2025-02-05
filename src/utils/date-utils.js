@@ -19,11 +19,9 @@ const flatpickrConfig = {
   dateFormat: DateFormat.FLATPICKR
 };
 
-
 function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
 }
-
 
 function getDateDifference(dateA, dateB) {
   const days = dayjs(dateA).diff(dateB, 'day');
@@ -37,15 +35,9 @@ function getDateDifference(dateA, dateB) {
   return `${daysText}${hoursText}${minutesText}`;
 }
 
-function getEventDuration(event) {
-  const eventDuration = dayjs(event.dateFrom).diff(event.dateTo);
-  return eventDuration;
-}
-
 function isDatesEqual(dateA, dateB) {
   return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 }
-
 
 export {
   EVENT_HOUR_OFFSET,
@@ -53,6 +45,5 @@ export {
   flatpickrConfig,
   getFormattedDate,
   getDateDifference,
-  getEventDuration,
   isDatesEqual,
 };

@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {getEventDuration} from './date-utils';
 
 const SortTypes = {
   DAY:'day',
@@ -36,6 +35,10 @@ const sortSettings = [
     isDefault: false
   }
 ];
+
+function getEventDuration(event) {
+  return dayjs(event.dateFrom).diff(event.dateTo);
+}
 
 function getWeightForNullDate(dateA, dateB) {
   if (dateA === null && dateB === null) {
