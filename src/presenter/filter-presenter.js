@@ -1,5 +1,4 @@
 import {render, remove, replace} from '../framework/render.js';
-import {FilterType, filter} from '../utils/filter-utils.js';
 import {UpdateType} from '../utils/common-utils.js';
 import FilterView from '../view/filter-view.js';
 
@@ -22,9 +21,9 @@ export default class FilterPresenter {
   get filters() {
     const events = this.#eventsModel.events;
 
-    return Object.values(FilterType).map((type) => ({
+    return Object.values(this.#filtersModel.filterTypes).map((type) => ({
       type,
-      count: filter[type](events).length
+      count: this.#filtersModel.filterMethods[type](events).length
     }));
   }
 

@@ -1,6 +1,5 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../utils/common-utils.js';
-import {filter} from '../utils/filter-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
 import TripView from '../view/trip-view.js';
@@ -55,7 +54,7 @@ export default class TripPresenter {
   get events () {
     this.#currentFilterType = this.#filtersModel.filter;
     const events = this.#eventsModel.events;
-    const filteredEvents = filter[this.#currentFilterType](events);
+    const filteredEvents = this.#filtersModel.filterMethods[this.#currentFilterType](events);
 
     EventSort.sortEvents(this.#currentSortType, filteredEvents);
 
@@ -163,7 +162,7 @@ export default class TripPresenter {
 
   #renderNoEvents() {
     this.#noEventComponent = new NoEventView({
-      filterType: this.#currentFilterType
+      noEventMessage: this.#filtersModel.getnoEventMessage(this.#currentFilterType)
     });
 
     render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
