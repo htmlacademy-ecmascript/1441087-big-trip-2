@@ -18,15 +18,6 @@ function getHtmlSafeString(string) {
   return string.replace(/\s+/g, '-').toLowerCase();
 }
 
-function getIdGenerator () {
-  let currentValue = 0;
-
-  return function () {
-    currentValue += 1;
-    return currentValue;
-  };
-}
-
 function isEscapeKey (evt) {
   return evt.key === 'Escape';
 }
@@ -36,6 +27,5 @@ export {
   UpdateType,
   getCapitalizedString,
   getHtmlSafeString,
-  getIdGenerator,
   isEscapeKey
 };
