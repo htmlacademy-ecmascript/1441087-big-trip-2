@@ -16,20 +16,22 @@ export default class EventPresenter {
   #eventEditComponent = null;
 
   #event = null;
-  #allDestinations = null;
-  #allOffersPacks = null;
   #currentDestination = null;
   #currentOffersPack = null;
+  #allDestinations = null;
+  #allOffersPacks = null;
+  #eventTypes = null;
 
   #onEventUpdate = null;
   #onModeChange = null;
 
   #mode = Mode.DEFAULT;
 
-  constructor({eventListContainer, allDestinations, allOffersPacks, onEventUpdate, onModeChange}) {
+  constructor({eventListContainer, allDestinations, allOffersPacks, eventTypes, onEventUpdate, onModeChange}) {
     this.#eventListContainer = eventListContainer;
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
+    this.#eventTypes = eventTypes;
     this.#onEventUpdate = onEventUpdate;
     this.#onModeChange = onModeChange;
   }
@@ -56,6 +58,7 @@ export default class EventPresenter {
       currentOffersPack: this.#currentOffersPack,
       allDestinations:  this.#allDestinations,
       allOffersPacks: this.#allOffersPacks,
+      eventTypes: this.#eventTypes,
       toggleClickHandler: this.#onToggleHideClick,
       formSubmitHandler: this.#onFormSubmit,
       deleteClickHandler: this.#onDeleteCLick,

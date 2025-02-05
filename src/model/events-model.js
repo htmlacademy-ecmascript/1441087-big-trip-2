@@ -1,6 +1,18 @@
 import Observable from '../framework/observable.js';
 import {mockEvents} from '../mock/mock-events.js';
 
+const EVENT_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant'
+];
+
 const defaultEvent = {
   id: '',
   basePrice: 0,
@@ -22,6 +34,10 @@ export default class EventsModel extends Observable {
 
   get events() {
     return this.#events;
+  }
+
+  get eventTypes() {
+    return [...EVENT_TYPES];
   }
 
   get defaultEvent() {

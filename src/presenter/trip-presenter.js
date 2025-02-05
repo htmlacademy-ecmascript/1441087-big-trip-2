@@ -143,6 +143,7 @@ export default class TripPresenter {
       eventListContainer: this.#eventListComponent.element,
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
+      eventTypes: this.#eventsModel.eventTypes,
       onEventUpdate: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });

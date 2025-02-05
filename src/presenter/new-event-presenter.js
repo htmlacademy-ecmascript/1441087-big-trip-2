@@ -37,6 +37,7 @@ export default class NewEventPresenter {
       currentOffersPack: this.#offersModel.getOffersPackByType(defaultEvent.type),
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
+      eventTypes: this.#eventsModel.eventTypes,
       onFormSubmit: this.#onFormSubmit,
       onCancelClick: this.#onCancelClick
     });

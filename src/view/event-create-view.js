@@ -1,4 +1,3 @@
-import {EVENT_TYPES} from '../utils/event-utils.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
 import {EVENT_HOUR_OFFSET, DateFormat, flatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -105,7 +104,7 @@ function createDestinationTemplate(destination) {
   }
 }
 
-function createEventCreateTemplate(_state, allDestinations) {
+function createEventCreateTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
   const isSubmitDisabled = !type;
 
@@ -119,7 +118,7 @@ function createEventCreateTemplate(_state, allDestinations) {
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
-            ${createEventTypeListTemplate(_state, EVENT_TYPES)}
+            ${createEventTypeListTemplate(_state, eventTypes)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -168,8 +167,8 @@ function createEventCreateTemplate(_state, allDestinations) {
 export default class EventCreateView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffersPacks = null;
+  #eventTypes = null;
   #datepicker = null;
-
   #onFormSubmit = null;
   #onCancelClick = null;
 
@@ -179,6 +178,7 @@ export default class EventCreateView extends AbstractStatefulView {
     currentOffersPack,
     allDestinations,
     allOffersPacks,
+    eventTypes,
     onFormSubmit,
     onCancelClick
   }){
@@ -186,6 +186,7 @@ export default class EventCreateView extends AbstractStatefulView {
     this._setState(EventCreateView.parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
+    this.#eventTypes = eventTypes;
     this.#onFormSubmit = onFormSubmit;
     this.#onCancelClick = onCancelClick;
 
@@ -195,7 +196,8 @@ export default class EventCreateView extends AbstractStatefulView {
   get template() {
     return createEventCreateTemplate(
       this._state,
-      this.#allDestinations
+      this.#allDestinations,
+      this.#eventTypes
     );
   }
 

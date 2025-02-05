@@ -1,4 +1,3 @@
-import {EVENT_TYPES} from '../utils/event-utils.js';
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
 import {EVENT_HOUR_OFFSET, DateFormat, flatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
@@ -105,7 +104,7 @@ function createDestinationTemplate(destination) {
   }
 }
 
-function createEventEditTemplate(_state, allDestinations) {
+function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
   const isSubmitDisabled = !type;
 
@@ -119,7 +118,7 @@ function createEventEditTemplate(_state, allDestinations) {
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
-            ${createEventTypeListTemplate(_state, EVENT_TYPES)}
+            ${createEventTypeListTemplate(_state, eventTypes)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -171,6 +170,7 @@ function createEventEditTemplate(_state, allDestinations) {
 export default class EventEditView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffersPacks = null;
+  #eventTypes = null;
   #datepicker = null;
   #toggleClickHandler = null;
   #formSubmitHandler = null;
@@ -182,6 +182,7 @@ export default class EventEditView extends AbstractStatefulView {
     currentOffersPack,
     allDestinations,
     allOffersPacks,
+    eventTypes,
     toggleClickHandler,
     formSubmitHandler,
     deleteClickHandler}){
@@ -189,6 +190,7 @@ export default class EventEditView extends AbstractStatefulView {
     this._setState(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
+    this.#eventTypes = eventTypes;
     this.#toggleClickHandler = toggleClickHandler;
     this.#formSubmitHandler = formSubmitHandler;
     this.#deleteClickHandler = deleteClickHandler;
@@ -199,7 +201,8 @@ export default class EventEditView extends AbstractStatefulView {
   get template() {
     return createEventEditTemplate(
       this._state,
-      this.#allDestinations
+      this.#allDestinations,
+      this.#eventTypes
     );
   }
 
