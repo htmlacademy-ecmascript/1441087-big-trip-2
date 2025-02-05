@@ -1,5 +1,5 @@
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
-import {EVENT_HOUR_OFFSET, DateFormat, flatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
+import {EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 
@@ -238,7 +238,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepicker = flatpickr(
       this.element.querySelector(`#event-start-time-${this._state.id}`),
       {
-        ...flatpickrConfig,
+        ...getFlatpickrConfig(),
         defaultDate: this._state.dateFrom,
         onClose: this.#onDateFromClose,
       },
@@ -249,7 +249,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepicker = flatpickr(
       this.element.querySelector(`#event-end-time-${this._state.id}`),
       {
-        ...flatpickrConfig,
+        ...getFlatpickrConfig(),
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
         onClose: this.#onDateToClose,

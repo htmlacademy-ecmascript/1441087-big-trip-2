@@ -12,12 +12,14 @@ const DateFormat = {
   FLATPICKR: 'd/m/y H:i'
 };
 
-const flatpickrConfig = {
-  enableTime: true,
-  'time_24hr': true,
-  locale: {firstDayOfWeek: 1},
-  dateFormat: DateFormat.FLATPICKR
-};
+function getFlatpickrConfig() {
+  return {
+    enableTime: true,
+    'time_24hr': true,
+    locale: {firstDayOfWeek: 1},
+    dateFormat: DateFormat.FLATPICKR
+  };
+}
 
 function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
@@ -42,7 +44,7 @@ function isDatesEqual(dateA, dateB) {
 export {
   EVENT_HOUR_OFFSET,
   DateFormat,
-  flatpickrConfig,
+  getFlatpickrConfig,
   getFormattedDate,
   getFormattedDuration,
   isDatesEqual,
