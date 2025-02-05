@@ -301,6 +301,6 @@ const mockSourcedEvents = [
   }
 ];
 
-const mockEvents = mockSourcedEvents.slice(-3);
+const mockEvents = mockSourcedEvents.slice();
 
 export {mockEvents};
