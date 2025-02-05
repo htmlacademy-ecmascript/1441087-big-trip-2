@@ -23,10 +23,10 @@ function getFormattedDate(date, format) {
   return date ? dayjs(date).format(format) : '';
 }
 
-function getDateDifference(dateA, dateB) {
-  const days = dayjs(dateA).diff(dateB, 'day');
-  const hours = dayjs(dateA).diff(dateB, 'hour') - (days * HOURS_IN_DAY);
-  const minutes = dayjs(dateA).diff(dateB, 'minute') - ((hours * MANUTES_IN_HOUR) + ((days * HOURS_IN_DAY) * MANUTES_IN_HOUR));
+function getFormattedDuration(dateA, dateB) {
+  const days = dayjs(dateB).diff(dateA, 'day');
+  const hours = dayjs(dateB).diff(dateA, 'hour') - (days * HOURS_IN_DAY);
+  const minutes = dayjs(dateB).diff(dateA, 'minute') - ((hours * MANUTES_IN_HOUR) + ((days * HOURS_IN_DAY) * MANUTES_IN_HOUR));
 
   const daysText = days > 0 ? `${String(days).padStart(REQUIRED_STRING_LENGTH, '0')}D ` : '';
   const hoursText = (days > 0 || hours > 0) ? `${String(hours).padStart(REQUIRED_STRING_LENGTH, '0')}H ` : '';
@@ -44,6 +44,6 @@ export {
   DateFormat,
   flatpickrConfig,
   getFormattedDate,
-  getDateDifference,
+  getFormattedDuration,
   isDatesEqual,
 };

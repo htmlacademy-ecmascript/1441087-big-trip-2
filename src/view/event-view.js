@@ -1,5 +1,5 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
-import {DateFormat, getFormattedDate, getDateDifference} from '../utils/date-utils.js';
+import {DateFormat, getFormattedDate, getFormattedDuration} from '../utils/date-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 
@@ -33,7 +33,7 @@ function createEventTemplate(event, currentDestination, currentOffersPack) {
   const dayFormatted = getFormattedDate(dateFrom, DateFormat.DAY);
   const timeFromFormatted = getFormattedDate(dateFrom, DateFormat.TIME);
   const timeToFormatted = getFormattedDate(dateTo, DateFormat.TIME);
-  const duration = getDateDifference(dateTo, event.dateFrom);
+  const duration = getFormattedDuration(dateFrom, dateTo);
   const isFavorite = event.isFavorite ? ' event__favorite-btn--active' : '';
   const currentDestinationName = currentDestination ? currentDestination.name : '';
 
