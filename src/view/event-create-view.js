@@ -183,7 +183,7 @@ export default class EventCreateView extends AbstractStatefulView {
     onCancelClick
   }){
     super();
-    this._setState(EventCreateView.parseEventToState(event, currentDestination, currentOffersPack));
+    this._setState(EventCreateView.parseDataToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#eventTypes = eventTypes;
@@ -211,7 +211,7 @@ export default class EventCreateView extends AbstractStatefulView {
   }
 
   reset(event, currentDestination, currentOffersPack) {
-    this.updateElement(EventCreateView.parseEventToState(event, currentDestination, currentOffersPack));
+    this.updateElement(EventCreateView.parseDataToState(event, currentDestination, currentOffersPack));
   }
 
   _restoreHandlers() {
@@ -321,7 +321,7 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onFormSubmit(EventCreateView.parseStateToEvent(this._state));
+    this.#onFormSubmit(EventCreateView.parseStateToData(this._state));
   };
 
   #cancelClickHandler = (evt) => {
@@ -348,7 +348,7 @@ export default class EventCreateView extends AbstractStatefulView {
     }
   };
 
-  static parseEventToState(event, currentDestination, currentOffersPack) {
+  static parseDataToState(event, currentDestination, currentOffersPack) {
     const state = {
       ...event,
       currentDestination,
@@ -358,7 +358,7 @@ export default class EventCreateView extends AbstractStatefulView {
     return state;
   }
 
-  static parseStateToEvent(state) {
+  static parseStateToData(state) {
     const event = {...state};
 
     delete event.currentDestination;

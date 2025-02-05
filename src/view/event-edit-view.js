@@ -187,7 +187,7 @@ export default class EventEditView extends AbstractStatefulView {
     formSubmitHandler,
     deleteClickHandler}){
     super();
-    this._setState(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
+    this._setState(EventEditView.parseDataToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#eventTypes = eventTypes;
@@ -216,7 +216,7 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   reset(event, currentDestination, currentOffersPack) {
-    this.updateElement(EventEditView.parseEventToState(event, currentDestination, currentOffersPack));
+    this.updateElement(EventEditView.parseDataToState(event, currentDestination, currentOffersPack));
   }
 
   _restoreHandlers() {
@@ -332,12 +332,12 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#formSubmitHandler(EventEditView.parseStateToEvent(this._state));
+    this.#formSubmitHandler(EventEditView.parseStateToData(this._state));
   };
 
   #onDeleteClick = (evt) => {
     evt.preventDefault();
-    this.#deleteClickHandler(EventEditView.parseStateToEvent(this._state));
+    this.#deleteClickHandler(EventEditView.parseStateToData(this._state));
   };
 
   #onOffersClick = (evt) => {
@@ -359,7 +359,7 @@ export default class EventEditView extends AbstractStatefulView {
     }
   };
 
-  static parseEventToState(event, currentDestination, currentOffersPack) {
+  static parseDataToState(event, currentDestination, currentOffersPack) {
     const state = {
       ...event,
       currentDestination,
@@ -369,7 +369,7 @@ export default class EventEditView extends AbstractStatefulView {
     return state;
   }
 
-  static parseStateToEvent(state) {
+  static parseStateToData(state) {
     const event = {...state};
 
     delete event.currentDestination;
