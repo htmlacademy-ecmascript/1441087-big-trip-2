@@ -48,11 +48,11 @@ export default class TripPresenter {
     this.#filtersModel.addObserver(this.#handleModelEvent);
 
     this.#currentSortType = EventSort.defaultSortType;
-    this.#currentFilterType = filtersModel.defaultFilterType;
+    this.#currentFilterType = this.#filtersModel.filterType;
   }
 
   get events () {
-    this.#currentFilterType = this.#filtersModel.filter;
+    this.#currentFilterType = this.#filtersModel.filterType;
     const events = this.#eventsModel.events;
     const filteredEvents = this.#filtersModel.filterMethods[this.#currentFilterType](events);
 

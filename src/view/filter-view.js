@@ -1,10 +1,10 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFilterItemTemplate(filter, currentFilter) {
+function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
   const isDisabled = count === 0 ? 'disabled' : '';
-  const isChecked = type === currentFilter ? 'checked' : '';
+  const isChecked = type === currentFilterType ? 'checked' : '';
 
   return (
     `<div class="trip-filters__filter">
@@ -14,8 +14,8 @@ function createFilterItemTemplate(filter, currentFilter) {
   );
 }
 
-function createFilterTemplate(filters, currentFilter) {
-  const filterItemTemplates = filters.map((filter) => createFilterItemTemplate(filter, currentFilter)).join('');
+function createFilterTemplate(filters, currentFilterType) {
+  const filterItemTemplates = filters.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
 
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -27,20 +27,20 @@ function createFilterTemplate(filters, currentFilter) {
 
 export default class FilterView extends AbstractView {
   #filters = null;
-  #currentFilter = null;
+  #currentFilterType = null;
   #filterClickHandler = null;
 
-  constructor({filters, currentFilter, filterClickHandler}){
+  constructor({filters, currentFilterType, filterClickHandler}){
     super();
     this.#filters = filters;
-    this.#currentFilter = currentFilter;
+    this.#currentFilterType = currentFilterType;
     this.#filterClickHandler = filterClickHandler;
 
     this.element.addEventListener('click', this.#onFilterClick);
   }
 
   get template() {
-    return createFilterTemplate(this.#filters, this.#currentFilter);
+    return createFilterTemplate(this.#filters, this.#currentFilterType);
   }
 
   #onFilterClick = (evt) => {

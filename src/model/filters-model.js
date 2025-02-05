@@ -27,10 +27,10 @@ const noEventMessage = {
 };
 
 export default class FiltersModel extends Observable {
-  #filter = DEFAULT_FILTER_TYPE;
+  #filterType = DEFAULT_FILTER_TYPE;
 
-  get filter() {
-    return this.#filter;
+  get filterType() {
+    return this.#filterType;
   }
 
   get defaultFilterType() {
@@ -45,9 +45,9 @@ export default class FiltersModel extends Observable {
     return FilterMethod;
   }
 
-  setFilter(updateType, filter) {
-    this.#filter = filter;
-    this._notify(updateType, filter);
+  setFilter(updateType, filterType) {
+    this.#filterType = filterType;
+    this._notify(updateType, filterType);
   }
 
   getnoEventMessage(filterType) {

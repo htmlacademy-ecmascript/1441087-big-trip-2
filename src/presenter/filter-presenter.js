@@ -33,7 +33,7 @@ export default class FilterPresenter {
 
     this.#filterComponent = new FilterView({
       filters,
-      currentFilter: this.#filtersModel.filter,
+      currentFilterType: this.#filtersModel.filterType,
       filterClickHandler: this.#onFilterClick
     });
 
@@ -51,7 +51,7 @@ export default class FilterPresenter {
   };
 
   #onFilterClick = (filterType) => {
-    if (this.#filtersModel.filter === filterType) {
+    if (this.#filtersModel.filterType === filterType) {
       return;
     }
 
