@@ -38,7 +38,7 @@ function getFormattedDuration(dateA, dateB) {
 }
 
 function isDatesEqual(dateA, dateB) {
-  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dayjs(dateB));
 }
 
 export {
