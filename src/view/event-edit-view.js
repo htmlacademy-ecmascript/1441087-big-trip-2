@@ -13,8 +13,15 @@ function createTypeTemplate(_state, type) {
 
   return (
     `<div class="event__type-item">
-      <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">${getCapitalizedString(type)}</label>
+      <input
+        id="event-type-${type}-${id}"
+        class="event__type-input  visually-hidden"
+        type="radio"
+        name="event-type"
+        value="${type}" ${isChecked}>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${id}">
+        ${getCapitalizedString(type)}
+      </label>
     </div>`
   );
 }
@@ -106,7 +113,7 @@ function createDestinationTemplate(destination) {
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
-  const isSubmitDisabled = !type;
+  const isSubmitDisabled = !type ? 'disabled' : '';
 
   return (
     `<li class="trip-events__item">
@@ -126,8 +133,8 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
               ${getCapitalizedString(type)}
             </label>
             <input
-              class="event__input  event__input--destination"
               id="event-destination-${id}"
+              class="event__input  event__input--destination"
               type="text"
               name="event-destination"
               value="${currentDestination ? currentDestination.name : ''}"
@@ -138,16 +145,16 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-${id}">From</label>
             <input
-              class="event__input  event__input--time"
               id="event-start-time-${id}"
+              class="event__input  event__input--time"
               type="text"
               name="event-start-time"
               value="${getFormattedDate(dateFrom, DateFormat.DATE)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
             <input
-              class="event__input  event__input--time"
               id="event-end-time-${id}"
+              class="event__input  event__input--time"
               type="text"
               name="event-end-time"
               value="${getFormattedDate(dateTo, DateFormat.DATE)}">
@@ -167,7 +174,7 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
               value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>

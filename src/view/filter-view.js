@@ -8,8 +8,17 @@ function createFilterItemTemplate(filter, currentFilterType) {
 
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isDisabled} ${isChecked}>
-      <label class="trip-filters__filter-label" for="filter-${type}">${getCapitalizedString(type)}</label>
+      <input
+        id="filter-${type}"
+        class="trip-filters__filter-input  visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value="${type}"
+        ${isDisabled}
+        ${isChecked}>
+      <label class="trip-filters__filter-label" for="filter-${type}">
+        ${getCapitalizedString(type)}
+      </label>
     </div>`
   );
 }
