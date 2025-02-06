@@ -137,10 +137,20 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-${id}">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${getFormattedDate(dateFrom, DateFormat.DATE)}">
+            <input
+              class="event__input  event__input--time"
+              id="event-start-time-${id}"
+              type="text"
+              name="event-start-time"
+              value="${getFormattedDate(dateFrom, DateFormat.DATE)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${getFormattedDate(dateTo, DateFormat.DATE)}">
+            <input
+              class="event__input  event__input--time"
+              id="event-end-time-${id}"
+              type="text"
+              name="event-end-time"
+              value="${getFormattedDate(dateTo, DateFormat.DATE)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -148,7 +158,13 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-${id}" type="number" min="0" name="event-price" value="${basePrice}">
+            <input
+              class="event__input  event__input--price"
+              id="event-price-${id}"
+              type="number"
+              min="0"
+              name="event-price"
+              value="${basePrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
@@ -169,8 +185,8 @@ export default class EventCreateView extends AbstractStatefulView {
   #allOffersPacks = null;
   #eventTypes = null;
   #datepicker = null;
-  #onFormSubmit = null;
-  #onCancelClick = null;
+  #handleFormSubmit = null;
+  #handleCancelClick = null;
 
   constructor({
     event,
@@ -179,16 +195,16 @@ export default class EventCreateView extends AbstractStatefulView {
     allDestinations,
     allOffersPacks,
     eventTypes,
-    onFormSubmit,
-    onCancelClick
+    handleFormSubmit,
+    handleCancelClick
   }){
     super();
     this._setState(EventCreateView.parseDataToState(event, currentDestination, currentOffersPack));
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#eventTypes = eventTypes;
-    this.#onFormSubmit = onFormSubmit;
-    this.#onCancelClick = onCancelClick;
+    this.#handleFormSubmit = handleFormSubmit;
+    this.#handleCancelClick = handleCancelClick;
 
     this._restoreHandlers();
   }
@@ -215,13 +231,13 @@ export default class EventCreateView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.event__type-list').addEventListener('click', this.#onTypeClick);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#onDestinationChange);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#onPriceChange);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
+    this.element.querySelector('.event__type-list').addEventListener('click', this.#typeClickHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
     if(this._state.currentOffersPack.offers.length !== 0) {
-      this.element.querySelector('.event__available-offers').addEventListener('click', this.#onOffersClick);
+      this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersClickHandler);
     }
 
     this.#setDateFromPicker();
@@ -234,7 +250,7 @@ export default class EventCreateView extends AbstractStatefulView {
       {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateFrom,
-        onClose: this.#onDateFromClose,
+        onClose: this.#dateFromCloseHandler,
       },
     );
   }
@@ -246,12 +262,32 @@ export default class EventCreateView extends AbstractStatefulView {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onClose: this.#onDateToClose,
+        onClose: this.#dateToCloseHandler,
       },
     );
   }
 
-  #onTypeClick = (evt) => {
+  #dateFromCloseHandler = ([userDate]) => {
+    const dateFrom = new Date(userDate);
+    let dateTo = new Date(this._state.dateTo);
+
+    if(dateFrom > dateTo) {
+      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
+    }
+
+    this.updateElement({
+      dateFrom: dateFrom,
+      dateTo: dateTo
+    });
+  };
+
+  #dateToCloseHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #typeClickHandler = (evt) => {
     const targetInput = evt.target.closest('input');
     const typeToggle = this.element.querySelector('.event__type-toggle');
 
@@ -273,7 +309,7 @@ export default class EventCreateView extends AbstractStatefulView {
     }
   };
 
-  #onDestinationChange = (evt) => {
+  #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     const newDestinationName = evt.target.value;
     const newDestination = this.#allDestinations.find((destination) => destination.name === newDestinationName);
@@ -291,27 +327,7 @@ export default class EventCreateView extends AbstractStatefulView {
     }
   };
 
-  #onDateFromClose = ([userDate]) => {
-    const dateFrom = new Date(userDate);
-    let dateTo = new Date(this._state.dateTo);
-
-    if(dateFrom > dateTo) {
-      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
-    }
-
-    this.updateElement({
-      dateFrom: dateFrom,
-      dateTo: dateTo
-    });
-  };
-
-  #onDateToClose = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate,
-    });
-  };
-
-  #onPriceChange = (evt) => {
+  #priceChangeHandler = (evt) => {
     evt.preventDefault();
     const newPrice = evt.target.value;
     this.updateElement({
@@ -321,15 +337,15 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onFormSubmit(EventCreateView.parseStateToData(this._state));
+    this.#handleFormSubmit(EventCreateView.parseStateToData(this._state));
   };
 
   #cancelClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onCancelClick();
+    this.#handleCancelClick();
   };
 
-  #onOffersClick = (evt) => {
+  #offersClickHandler = (evt) => {
     const targetInput = evt.target.closest('input');
     if(targetInput) {
       evt.stopPropagation();

@@ -28,7 +28,14 @@ export default class TripPresenter {
   #currentSortType = null;
   #currentFilterType = null;
 
-  constructor({tripContainer, destinationsModel, eventsModel, offersModel, filtersModel, onNewEventDestroy}) {
+  constructor({
+    tripContainer,
+    destinationsModel,
+    eventsModel,
+    offersModel,
+    filtersModel,
+    handleNewEventClose
+  }){
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
@@ -40,12 +47,12 @@ export default class TripPresenter {
       destinationsModel: destinationsModel,
       eventsModel: eventsModel,
       offersModel: offersModel,
-      onEventUpdate: this.#handleViewAction,
-      onDestroy: onNewEventDestroy
+      handleEventUpdate: this.#viewActionHandler,
+      handleNewEventClose: handleNewEventClose
     });
 
-    this.#eventsModel.addObserver(this.#handleModelEvent);
-    this.#filtersModel.addObserver(this.#handleModelEvent);
+    this.#eventsModel.addObserver(this.#modelEventHandler);
+    this.#filtersModel.addObserver(this.#modelEventHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = this.#filtersModel.filterType;
@@ -79,12 +86,12 @@ export default class TripPresenter {
     this.#newEventPresenter.init();
   }
 
-  #handleModeChange = () => {
+  #modeChangeHandler = () => {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #viewActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventsModel.updateEvent(updateType, update);
@@ -98,7 +105,7 @@ export default class TripPresenter {
     }
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #modelEventHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init({
@@ -118,7 +125,7 @@ export default class TripPresenter {
     }
   };
 
-  #onSortTypeChangeClick = (sortType) => {
+  #sortClickHandler = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -132,7 +139,7 @@ export default class TripPresenter {
     this.#sortComponent = new SortView({
       sortSettings: EventSort.sortSettings,
       currentSortType: this.#currentSortType,
-      onSortTypeChangeClick: this.#onSortTypeChangeClick
+      handleSortClick: this.#sortClickHandler
     });
     render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
@@ -143,8 +150,8 @@ export default class TripPresenter {
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
       eventTypes: this.#eventsModel.eventTypes,
-      onEventUpdate: this.#handleViewAction,
-      onModeChange: this.#handleModeChange
+      handleViewAction: this.#viewActionHandler,
+      handleModeChange: this.#modeChangeHandler
     });
 
     eventPresenter.init({
@@ -168,6 +175,19 @@ export default class TripPresenter {
     render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
+  #renderTrip() {
+    render(this.#tripComponent, this.#tripContainer);
+
+    if(this.events.length === 0) {
+      this.#renderNoEvents();
+      return;
+    }
+
+    this.#renderSort();
+    render(this.#eventListComponent, this.#tripComponent.element);
+    this.#renderEvents(this.events);
+  }
+
   #clearTrip({resetSortType = false} = {}) {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
@@ -182,18 +202,5 @@ export default class TripPresenter {
     if(resetSortType) {
       this.#currentSortType = EventSort.defaultSortType;
     }
-  }
-
-  #renderTrip() {
-    render(this.#tripComponent, this.#tripContainer);
-
-    if(this.events.length === 0) {
-      this.#renderNoEvents();
-      return;
-    }
-
-    this.#renderSort();
-    render(this.#eventListComponent, this.#tripComponent.element);
-    this.#renderEvents(this.events);
   }
 }

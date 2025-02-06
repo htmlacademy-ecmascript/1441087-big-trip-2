@@ -15,6 +15,7 @@ export default class EventPresenter {
   #eventComponent = null;
   #eventEditComponent = null;
 
+  #mode = Mode.DEFAULT;
   #event = null;
   #currentDestination = null;
   #currentOffersPack = null;
@@ -22,18 +23,23 @@ export default class EventPresenter {
   #allOffersPacks = null;
   #eventTypes = null;
 
-  #onEventUpdate = null;
-  #onModeChange = null;
+  #handleViewAction = null;
+  handleModeChange = null;
 
-  #mode = Mode.DEFAULT;
-
-  constructor({eventListContainer, allDestinations, allOffersPacks, eventTypes, onEventUpdate, onModeChange}) {
+  constructor({
+    eventListContainer,
+    allDestinations,
+    allOffersPacks,
+    eventTypes,
+    handleViewAction,
+    handleModeChange
+  }){
     this.#eventListContainer = eventListContainer;
     this.#allDestinations = allDestinations;
     this.#allOffersPacks = allOffersPacks;
     this.#eventTypes = eventTypes;
-    this.#onEventUpdate = onEventUpdate;
-    this.#onModeChange = onModeChange;
+    this.#handleViewAction = handleViewAction;
+    this.handleModeChange = handleModeChange;
   }
 
   init({event, currentDestination, currentOffersPack}) {
@@ -48,8 +54,8 @@ export default class EventPresenter {
       event: this.#event,
       currentDestination: this.#currentDestination,
       currentOffersPack: this.#currentOffersPack,
-      toggleClickHandler: this.#onToggleShowClick,
-      favoriteClickHandler: this.#onFavoriteClick
+      handleFavoriteClick: this.#favoriteClickHandler,
+      handleToggleClick: this.#toggleShowClickHandler
     });
 
     this.#eventEditComponent = new EventEditView({
@@ -59,9 +65,9 @@ export default class EventPresenter {
       allDestinations:  this.#allDestinations,
       allOffersPacks: this.#allOffersPacks,
       eventTypes: this.#eventTypes,
-      toggleClickHandler: this.#onToggleHideClick,
-      formSubmitHandler: this.#onFormSubmit,
-      deleteClickHandler: this.#onDeleteCLick,
+      handleFormSubmit: this.#formSubmitHandler,
+      handleDeleteClick: this.#deleteClickHandler,
+      handleToggleClick: this.#toggleHideClickHandler,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -96,7 +102,7 @@ export default class EventPresenter {
   #replaceCardToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#onModeChange();
+    this.handleModeChange();
     this.#mode = Mode.EDITING;
   }
 
@@ -115,29 +121,29 @@ export default class EventPresenter {
     }
   };
 
-  #onToggleShowClick = () => {
+  #toggleShowClickHandler = () => {
     this.#replaceCardToForm();
   };
 
-  #onToggleHideClick = () => {
+  #toggleHideClickHandler = () => {
     this.#eventEditComponent.reset(this.#event, this.#currentDestination, this.#currentOffersPack);
     this.#replaceFormToCard();
   };
 
-  #onFavoriteClick = () => {
-    this.#onEventUpdate(
+  #favoriteClickHandler = () => {
+    this.#handleViewAction(
       UserAction.UPDATE_EVENT,
       UpdateType.MINOR,
       {...this.#event, isFavorite: !this.#event.isFavorite}
     );
   };
 
-  #onFormSubmit = (event) => {
+  #formSubmitHandler = (event) => {
     const isMinorUpdate = !isDatesEqual(this.#event.dateFrom, event.dateFrom) ||
     !isDatesEqual(this.#event.dateTo, event.dateTo) ||
     (this.#event.basePrice !== event.basePrice);
 
-    this.#onEventUpdate(
+    this.#handleViewAction(
       UserAction.UPDATE_EVENT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       event
@@ -145,8 +151,8 @@ export default class EventPresenter {
     this.#replaceFormToCard();
   };
 
-  #onDeleteCLick = (event) => {
-    this.#onEventUpdate(
+  #deleteClickHandler = (event) => {
+    this.#handleViewAction(
       UserAction.DELETE_EVENT,
       UpdateType.MINOR,
       event

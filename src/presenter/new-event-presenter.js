@@ -12,16 +12,23 @@ export default class NewEventPresenter {
   #eventsModel = null;
   #offersModel = null;
 
-  #onEventUpdate = null;
-  #onDestroy = null;
+  #handleEventUpdate = null;
+  #handleNewEventClose = null;
 
-  constructor({eventListContainer, destinationsModel, eventsModel, offersModel, onEventUpdate, onDestroy}) {
+  constructor({
+    eventListContainer,
+    destinationsModel,
+    eventsModel,
+    offersModel,
+    handleEventUpdate,
+    handleNewEventClose
+  }){
     this.#eventListContainer = eventListContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
-    this.#onEventUpdate = onEventUpdate;
-    this.#onDestroy = onDestroy;
+    this.#handleEventUpdate = handleEventUpdate;
+    this.#handleNewEventClose = handleNewEventClose;
   }
 
   init() {
@@ -38,8 +45,8 @@ export default class NewEventPresenter {
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
       eventTypes: this.#eventsModel.eventTypes,
-      onFormSubmit: this.#onFormSubmit,
-      onCancelClick: this.#onCancelClick
+      handleFormSubmit: this.#formSubmitHandler,
+      handleCancelClick: this.#cancelClickHandler
     });
 
     render(this.#eventCreateComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
@@ -52,7 +59,7 @@ export default class NewEventPresenter {
       return;
     }
 
-    this.#onDestroy();
+    this.#handleNewEventClose();
 
     remove(this.#eventCreateComponent);
     this.#eventCreateComponent = null;
@@ -60,8 +67,8 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  #onFormSubmit = (event) => {
-    this.#onEventUpdate(
+  #formSubmitHandler = (event) => {
+    this.#handleEventUpdate(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
       {...event, id: crypto.randomUUID()},
@@ -69,7 +76,7 @@ export default class NewEventPresenter {
     this.destroy();
   };
 
-  #onCancelClick = () => {
+  #cancelClickHandler = () => {
     this.destroy();
   };
 

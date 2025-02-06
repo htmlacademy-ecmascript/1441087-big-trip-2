@@ -24,7 +24,7 @@ const tripPresenter = new TripPresenter({
   eventsModel,
   offersModel,
   filtersModel,
-  onNewEventDestroy: handleNewEventFormClose
+  handleNewEventClose: newEventCloseHandler
 });
 const filterPresenter = new FilterPresenter({
   filterContainer: filtersElement,
@@ -34,14 +34,14 @@ const filterPresenter = new FilterPresenter({
 
 
 const newEventButtonComponent = new NewEventButtonView({
-  onButtonClick: handleNewEventButtonClick
+  handleNewEventOpen: newEventOpenHandler
 });
 
-function handleNewEventFormClose() {
+function newEventCloseHandler() {
   newEventButtonComponent.element.disabled = false;
 }
 
-function handleNewEventButtonClick() {
+function newEventOpenHandler() {
   tripPresenter.createEvent();
   newEventButtonComponent.element.disabled = true;
 }
