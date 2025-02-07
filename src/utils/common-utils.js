@@ -10,6 +10,17 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const HttpMethod = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
+const HttpRoute = {
+  EVENT: 'points',
+  DESTINATION: 'destinations',
+  OFFERS_PACK: 'offers'
+};
+
 function getCapitalizedString(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
@@ -25,6 +36,8 @@ function isEscapeKey (evt) {
 export {
   UserAction,
   UpdateType,
+  HttpMethod,
+  HttpRoute,
   getCapitalizedString,
   getHtmlSafeString,
   isEscapeKey

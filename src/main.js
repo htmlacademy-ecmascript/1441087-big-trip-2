@@ -6,6 +6,11 @@ import FiltersModel from'./model/filters-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import EventsApiService from './service/event-api-service.js';
+
+
+const AUTHORIZATION = 'Basic FortySix&2';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 
 const pageHeaderElement = document.querySelector('.page-header');
@@ -15,7 +20,9 @@ const tripMainElement = document.querySelector('.trip-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
 const destinationsModel = new DestinationsModel();
-const eventsModel = new EventsModel();
+const eventsModel = new EventsModel({
+  eventsApiService: new EventsApiService(END_POINT, AUTHORIZATION)
+});
 const offersModel = new OffersModel();
 const filtersModel = new FiltersModel();
 const tripPresenter = new TripPresenter({

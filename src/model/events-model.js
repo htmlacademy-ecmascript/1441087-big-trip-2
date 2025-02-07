@@ -26,7 +26,17 @@ const defaultEvent = {
 
 
 export default class EventsModel extends Observable {
+  #eventsApiService = null;
   #events = [];
+
+  constructor({eventsApiService}) {
+    super();
+    this.#eventsApiService = eventsApiService;
+
+    this.#eventsApiService.events.then(() => {
+
+    });
+  }
 
   init() {
     this.#events = mockEvents;
