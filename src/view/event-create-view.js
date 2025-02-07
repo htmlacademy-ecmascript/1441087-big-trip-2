@@ -72,6 +72,9 @@ function createOfferTemplate(_state, offer) {
 
 function createOfferListTemplate(_state) {
   const {currentOffersPack} = _state;
+  if(!currentOffersPack) {
+    return '';
+  }
 
   return currentOffersPack.offers.length !== 0 ? (
     `<section class="event__section  event__section--offers">
@@ -243,7 +246,7 @@ export default class EventCreateView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
-    if(this._state.currentOffersPack.offers.length !== 0) {
+    if(this._state.currentOffersPack && this._state.currentOffersPack.offers.length !== 0) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersClickHandler);
     }
 
