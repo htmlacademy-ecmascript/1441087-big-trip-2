@@ -1,6 +1,5 @@
 import Observable from '../framework/observable.js';
 import {UpdateType} from '../utils/common-utils.js';
-// import {mockEvents} from '../mock/mock-events.js';
 
 const EVENT_TYPES = [
   'taxi',
@@ -33,10 +32,6 @@ export default class EventsModel extends Observable {
   constructor({eventsApiService}) {
     super();
     this.#eventsApiService = eventsApiService;
-
-    this.#eventsApiService.events.then(() => {
-
-    });
   }
 
   get events() {

@@ -6,7 +6,8 @@ import FiltersModel from'./model/filters-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
-import EventsApiService from './service/event-api-service.js';
+import EventsApiService from './service/events-api-service.js';
+import DestinationsApiService from './service/destinations-api-service.js';
 
 
 const AUTHORIZATION = 'Basic FortySix&2';
@@ -19,7 +20,9 @@ const pageMainElement = document.querySelector('.page-main');
 const tripMainElement = document.querySelector('.trip-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
-const destinationsModel = new DestinationsModel();
+const destinationsModel = new DestinationsModel({
+  destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
+});
 const eventsModel = new EventsModel({
   eventsApiService: new EventsApiService(END_POINT, AUTHORIZATION)
 });
@@ -55,11 +58,11 @@ function newEventOpenHandler() {
 
 
 destinationsModel.init();
+offersModel.init();
 eventsModel.init()
   .finally(() => {
     render(newEventButtonComponent, tripMainElement);
   });
-offersModel.init();
 
 filterPresenter.init();
 tripPresenter.init();
