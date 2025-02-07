@@ -169,7 +169,7 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               id="event-price-${id}"
               class="event__input  event__input--price"
               type="number"
-              min="0"
+              min="1"
               name="event-price"
               value="${basePrice}">
           </div>
