@@ -53,9 +53,10 @@ export default class TripPresenter {
       handleNewEventClose: handleNewEventClose
     });
 
-    this.#eventsModel.addObserver(this.#modelEventHandler);
-    this.#destinationsModel.addObserver(this.#modelDestinationHandler);
-    this.#filtersModel.addObserver(this.#modelEventHandler);
+    this.#eventsModel.addObserver(this.#modelEventsHandler);
+    this.#destinationsModel.addObserver(this.#modelDestinationsHandler);
+    this.#offersModel.addObserver(this.#modelOffersHandler);
+    this.#filtersModel.addObserver(this.#modelEventsHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = this.#filtersModel.filterType;
@@ -108,7 +109,7 @@ export default class TripPresenter {
     }
   };
 
-  #modelEventHandler = (updateType, data) => {
+  #modelEventsHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init({
@@ -131,7 +132,15 @@ export default class TripPresenter {
     }
   };
 
-  #modelDestinationHandler = (updateType) => {
+  #modelDestinationsHandler = (updateType) => {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this.#tryRenderTrip();
+        break;
+    }
+  };
+
+  #modelOffersHandler = (updateType) => {
     switch (updateType) {
       case UpdateType.INIT:
         this.#tryRenderTrip();
@@ -195,7 +204,8 @@ export default class TripPresenter {
 
   #tryRenderTrip(){
     if(!this.#eventsModel.isLoading &&
-       !this.#destinationsModel.isLoading) {
+       !this.#destinationsModel.isLoading &&
+       !this.#offersModel.isLoading) {
       remove(this.#loadingComponent);
       this.#renderTrip();
     }
@@ -205,7 +215,8 @@ export default class TripPresenter {
     render(this.#tripComponent, this.#tripContainer);
 
     if (this.#eventsModel.isLoading ||
-        this.#destinationsModel.isLoading) {
+        this.#destinationsModel.isLoading ||
+        this.#offersModel.isLoading) {
       this.#renderLoading();
       return;
     }

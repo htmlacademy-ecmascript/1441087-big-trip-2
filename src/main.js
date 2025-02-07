@@ -8,6 +8,7 @@ import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import EventsApiService from './service/events-api-service.js';
 import DestinationsApiService from './service/destinations-api-service.js';
+import OffersApiService from './service/offers-api-service.js';
 
 
 const AUTHORIZATION = 'Basic FortySix&2';
@@ -26,7 +27,9 @@ const destinationsModel = new DestinationsModel({
 const eventsModel = new EventsModel({
   eventsApiService: new EventsApiService(END_POINT, AUTHORIZATION)
 });
-const offersModel = new OffersModel();
+const offersModel = new OffersModel({
+  offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
+});
 const filtersModel = new FiltersModel();
 const tripPresenter = new TripPresenter({
   tripContainer: pageBodyContainerElement,

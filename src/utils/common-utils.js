@@ -19,7 +19,7 @@ const HttpMethod = {
 const HttpRoute = {
   EVENT: 'points',
   DESTINATION: 'destinations',
-  OFFERS_PACK: 'offers'
+  OFFERS: 'offers'
 };
 
 function getCapitalizedString(string) {
