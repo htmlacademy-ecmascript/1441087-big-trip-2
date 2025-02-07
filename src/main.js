@@ -53,11 +53,12 @@ function newEventOpenHandler() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
-
 
 destinationsModel.init();
-eventsModel.init();
+eventsModel.init()
+  .finally(() => {
+    render(newEventButtonComponent, tripMainElement);
+  });
 offersModel.init();
 
 filterPresenter.init();
