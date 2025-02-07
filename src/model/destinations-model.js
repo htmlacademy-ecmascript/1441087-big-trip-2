@@ -5,6 +5,7 @@ import {UpdateType} from '../utils/common-utils.js';
 export default class DestinationsModel extends Observable {
   #destinationsApiService = null;
   #destinations = [];
+  #isLoading = true;
 
   constructor({destinationsApiService}) {
     super();
@@ -19,11 +20,16 @@ export default class DestinationsModel extends Observable {
       this.#destinations = [];
     }
 
+    this.#isLoading = false;
     this._notify(UpdateType.INIT);
   }
 
   get destinations() {
     return this.#destinations;
+  }
+
+  get isLoading() {
+    return this.#isLoading;
   }
 
   getDestinationById(id) {

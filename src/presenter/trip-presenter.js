@@ -29,7 +29,6 @@ export default class TripPresenter {
 
   #currentSortType = null;
   #currentFilterType = null;
-  #isLoading = true;
 
   constructor({
     tripContainer,
@@ -55,6 +54,7 @@ export default class TripPresenter {
     });
 
     this.#eventsModel.addObserver(this.#modelEventHandler);
+    this.#destinationsModel.addObserver(this.#modelDestinationHandler);
     this.#filtersModel.addObserver(this.#modelEventHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
@@ -126,9 +126,15 @@ export default class TripPresenter {
         this.#renderTrip();
         break;
       case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderTrip();
+        this.#tryRenderTrip();
+        break;
+    }
+  };
+
+  #modelDestinationHandler = (updateType) => {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this.#tryRenderTrip();
         break;
     }
   };
@@ -187,10 +193,19 @@ export default class TripPresenter {
     render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
+  #tryRenderTrip(){
+    if(!this.#eventsModel.isLoading &&
+       !this.#destinationsModel.isLoading) {
+      remove(this.#loadingComponent);
+      this.#renderTrip();
+    }
+  }
+
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
 
-    if (this.#isLoading) {
+    if (this.#eventsModel.isLoading ||
+        this.#destinationsModel.isLoading) {
       this.#renderLoading();
       return;
     }

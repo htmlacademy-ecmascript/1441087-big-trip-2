@@ -28,6 +28,7 @@ const defaultEvent = {
 export default class EventsModel extends Observable {
   #eventsApiService = null;
   #events = [];
+  #isLoading = true;
 
   constructor({eventsApiService}) {
     super();
@@ -46,6 +47,10 @@ export default class EventsModel extends Observable {
     return structuredClone(defaultEvent);
   }
 
+  get isLoading() {
+    return this.#isLoading;
+  }
+
   async init() {
     try {
       const events = await this.#eventsApiService.events;
@@ -54,6 +59,7 @@ export default class EventsModel extends Observable {
       this.#events = [];
     }
 
+    this.#isLoading = false;
     this._notify(UpdateType.INIT);
   }
 
