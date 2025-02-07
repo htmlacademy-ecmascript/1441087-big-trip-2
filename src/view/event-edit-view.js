@@ -116,7 +116,7 @@ function createDestinationTemplate(destination) {
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
-  const isSubmitDisabled = !type || !currentDestination;
+  const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
 
   return (
     `<li class="trip-events__item">
@@ -289,7 +289,7 @@ export default class EventEditView extends AbstractStatefulView {
     let dateTo = new Date(this._state.dateTo);
 
     if(dateFrom > dateTo) {
-      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
+      dateTo = new Date(new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET));
     }
 
     this.updateElement({

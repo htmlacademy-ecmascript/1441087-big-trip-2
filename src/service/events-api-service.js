@@ -21,6 +21,28 @@ export default class EventsApiService extends ApiService {
     return parsedResponse;
   }
 
+  async addEvent(event) {
+    const response = await this._load({
+      url: `${HttpRoute.EVENT}`,
+      method: HttpMethod.POST,
+      body: JSON.stringify(this.#adaptEventToServer(event)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deleteEvent(event) {
+    const response = await this._load({
+      url: `${HttpRoute.EVENT}/${event.id}`,
+      method: HttpMethod.DELETE,
+    });
+
+    return response;
+  }
+
   #adaptEventToServer(event) {
     const adaptedEvent = {...event,
       'base_price': parseInt(event.basePrice, 10),
@@ -29,6 +51,7 @@ export default class EventsApiService extends ApiService {
       'is_favorite': event.isFavorite,
     };
 
+    delete adaptedEvent.id;
     delete adaptedEvent.basePrice;
     delete adaptedEvent.dateFrom;
     delete adaptedEvent.dateTo;

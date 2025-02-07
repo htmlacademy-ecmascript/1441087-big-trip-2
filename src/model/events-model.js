@@ -13,11 +13,11 @@ const EVENT_TYPES = [
   'restaurant'
 ];
 
-const defaultEvent = {
-  id: '',
+const BLANK_EVENT = {
+  id: null,
   basePrice: 0,
-  dateFrom: new Date().setHours(0,0,0,0),
-  dateTo: new Date().setHours(1,0,0,0),
+  dateFrom: new Date(new Date().setHours(12,0,0,0)),
+  dateTo: new Date(new Date().setHours(13,0,0,0)),
   destination: '',
   isFavorite: false,
   offers: [],
@@ -43,8 +43,9 @@ export default class EventsModel extends Observable {
     return [...EVENT_TYPES];
   }
 
-  get defaultEvent() {
-    return structuredClone(defaultEvent);
+  get blankEvent() {
+    return structuredClone(BLANK_EVENT);
+
   }
 
   get isLoading() {
@@ -85,28 +86,36 @@ export default class EventsModel extends Observable {
     }
   }
 
-  addEvent(updateType, update) {
-    this.#events = [
-      update,
-      ...this.#events,
-    ];
+  async addEvent(updateType, update) {
+    try {
+      const response = await this.#eventsApiService.addEvent(update);
+      const newEvent = this.#adaptEventToClient(response);
+      this.#events = [newEvent, ...this.#events];
 
-    this._notify(updateType, update);
+      this._notify(updateType, newEvent);
+    } catch(err) {
+      throw new Error('Can\'t add event');
+    }
   }
 
-  deleteEvent(updateType, update) {
+  async deleteEvent(updateType, update) {
     const index = this.#events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting event');
     }
 
-    this.#events = [
-      ...this.#events.slice(0, index),
-      ...this.#events.slice(index + 1),
-    ];
+    try {
+      await this.#eventsApiService.deleteEvent(update);
+      this.#events = [
+        ...this.#events.slice(0, index),
+        ...this.#events.slice(index + 1),
+      ];
 
-    this._notify(updateType);
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete event');
+    }
   }
 
   #adaptEventToClient(event) {

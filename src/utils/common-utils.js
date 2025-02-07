@@ -14,6 +14,8 @@ const UpdateType = {
 const HttpMethod = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const HttpRoute = {

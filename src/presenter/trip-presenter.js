@@ -81,10 +81,11 @@ export default class TripPresenter {
   }
 
   init () {
+    render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderTrip();
   }
 
-  createEvent() {
+  openCreateEvent() {
     this.#currentSortType = EventSort.defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
     this.#newEventPresenter.init();
@@ -227,7 +228,7 @@ export default class TripPresenter {
     }
 
     this.#renderSort();
-    render(this.#eventListComponent, this.#tripComponent.element);
+    // render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderEvents(this.events);
   }
 

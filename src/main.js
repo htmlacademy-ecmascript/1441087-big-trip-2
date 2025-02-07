@@ -55,7 +55,7 @@ function newEventCloseHandler() {
 }
 
 function newEventOpenHandler() {
-  tripPresenter.createEvent();
+  tripPresenter.openCreateEvent();
   newEventButtonComponent.element.disabled = true;
 }
 
