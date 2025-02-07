@@ -113,7 +113,7 @@ function createDestinationTemplate(destination) {
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
-  const isSubmitDisabled = !type ? 'disabled' : '';
+  const isSubmitDisabled = !type || !currentDestination;
 
   return (
     `<li class="trip-events__item">
@@ -174,7 +174,7 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
               value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
