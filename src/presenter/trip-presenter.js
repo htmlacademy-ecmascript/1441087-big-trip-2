@@ -1,12 +1,13 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../utils/common-utils.js';
+import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
-import EventSort from '../utils/sort-utils.js';
+import LoadingView from '../view/loading-view.js';
 
 
 export default class TripPresenter {
@@ -16,6 +17,7 @@ export default class TripPresenter {
   #sortComponent = null;
   #eventListComponent = new EventListView();
   #noEventComponent = null;
+  #loadingComponent = new LoadingView();
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -27,6 +29,7 @@ export default class TripPresenter {
 
   #currentSortType = null;
   #currentFilterType = null;
+  #isLoading = true;
 
   constructor({
     tripContainer,
@@ -122,6 +125,11 @@ export default class TripPresenter {
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTrip();
+        break;
     }
   };
 
@@ -167,6 +175,10 @@ export default class TripPresenter {
     events.forEach((event) => this.#renderEvent(event));
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
   #renderNoEvents() {
     this.#noEventComponent = new NoEventView({
       noEventMessage: this.#filtersModel.getnoEventMessage(this.#currentFilterType)
@@ -177,6 +189,11 @@ export default class TripPresenter {
 
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     if(this.events.length === 0) {
       this.#renderNoEvents();
@@ -194,6 +211,7 @@ export default class TripPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if(this.#noEventComponent) {
       remove(this.#noEventComponent);

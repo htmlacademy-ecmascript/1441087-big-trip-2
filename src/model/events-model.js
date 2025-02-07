@@ -1,5 +1,6 @@
 import Observable from '../framework/observable.js';
-import {mockEvents} from '../mock/mock-events.js';
+import {UpdateType} from '../utils/common-utils.js';
+// import {mockEvents} from '../mock/mock-events.js';
 
 const EVENT_TYPES = [
   'taxi',
@@ -38,10 +39,6 @@ export default class EventsModel extends Observable {
     });
   }
 
-  init() {
-    this.#events = mockEvents;
-  }
-
   get events() {
     return this.#events;
   }
@@ -52,6 +49,17 @@ export default class EventsModel extends Observable {
 
   get defaultEvent() {
     return structuredClone(defaultEvent);
+  }
+
+  async init() {
+    try {
+      const events = await this.#eventsApiService.events;
+      this.#events = events.map(this.#adaptEventToClient);
+    } catch(err) {
+      this.#events = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   updateEvent(updateType, update) {
