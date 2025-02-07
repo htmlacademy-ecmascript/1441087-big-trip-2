@@ -357,20 +357,12 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #offersClickHandler = (evt) => {
     const targetInput = evt.target.closest('input');
-    if(targetInput) {
-      evt.stopPropagation();
-      const targetOfferId = targetInput.dataset.offerId;
-      const isIncludes = this._state.offers.includes(targetOfferId);
-
-      if(isIncludes) {
-        this.updateElement({
-          offers: [...this._state.offers.filter((offer) => offer !== targetOfferId)],
-        });
-      } else {
-        this.updateElement({
-          offers: [...this._state.offers, targetOfferId],
-        });
-      }
+    if (targetInput) {
+      const checkedInputs = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
+      const checkedOffersId = [...checkedInputs.map((input) => input.dataset.offerId)];
+      this.updateElement({
+        offers: [...checkedOffersId],
+      });
     }
   };
 
