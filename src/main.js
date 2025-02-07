@@ -12,7 +12,7 @@ import OffersApiService from './service/offers-api-service.js';
 
 
 const AUTHORIZATION = 'Basic FortySix&2';
-const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 
 const pageHeaderElement = document.querySelector('.page-header');
