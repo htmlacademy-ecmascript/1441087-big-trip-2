@@ -1,5 +1,6 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../utils/common-utils.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
@@ -9,6 +10,10 @@ import EventListView from '../view/event-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import LoadingView from '../view/loading-view.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -26,6 +31,11 @@ export default class TripPresenter {
   #eventsModel = null;
   #offersModel = null;
   #filtersModel = null;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #currentSortType = null;
   #currentFilterType = null;
@@ -97,6 +107,8 @@ export default class TripPresenter {
   };
 
   #viewActionHandler = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventPresenters.get(update.id).setSaving();
@@ -123,6 +135,8 @@ export default class TripPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #modelEventsHandler = (updateType, data) => {
