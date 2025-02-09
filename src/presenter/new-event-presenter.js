@@ -74,6 +74,17 @@ export default class NewEventPresenter {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#eventCreateComponent.updateElement({
+        isDisabled: false,
+        isSaving: false
+      });
+    };
+
+    this.#eventCreateComponent.shake(resetFormState);
+  }
+
   #formSubmitHandler = (event) => {
     this.#handleEventUpdate(
       UserAction.ADD_EVENT,
