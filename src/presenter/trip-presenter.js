@@ -1,5 +1,5 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-import {API_ERROR_MESSAGE, UserAction, UpdateType} from '../utils/common-utils.js';
+import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../utils/common-utils.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
@@ -8,7 +8,6 @@ import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import TripMessageView from '../view/trip-message-view.js';
-import LoadingView from '../view/loading-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -22,7 +21,6 @@ export default class TripPresenter {
   #sortComponent = null;
   #eventListComponent = new EventListView();
   #messageComponent = null;
-  #loadingComponent = new LoadingView();
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -220,23 +218,24 @@ export default class TripPresenter {
     events.forEach((event) => this.#renderEvent(event));
   }
 
-  #renderLoading() {
-    render(this.#loadingComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  #renderLoadingMessage() {
+    this.#renderTripMessage(LOADING_MESSAGE);
   }
 
   #renderNoEventsMessage() {
-    this.#messageComponent = new TripMessageView({
-      message: this.#filtersModel.getnoEventMessage(this.#currentFilterType),
-    });
-
-    render(this.#messageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+    this.#renderTripMessage(this.#filtersModel.getnoEventMessage(this.#currentFilterType));
   }
 
   #renderApiErrorMessage() {
-    this.#messageComponent = new TripMessageView({
-      message: API_ERROR_MESSAGE,
-    });
+    this.#renderTripMessage(API_ERROR_MESSAGE);
+  }
 
+  #renderTripMessage(message) {
+    if(this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
+
+    this.#messageComponent = new TripMessageView({message});
     render(this.#messageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
@@ -244,7 +243,7 @@ export default class TripPresenter {
     if(!this.#eventsModel.isLoading &&
        !this.#destinationsModel.isLoading &&
        !this.#offersModel.isLoading) {
-      remove(this.#loadingComponent);
+      remove(this.#messageComponent);
       this.#renderTrip();
     }
   }
@@ -262,7 +261,7 @@ export default class TripPresenter {
     if (this.#eventsModel.isLoading ||
         this.#destinationsModel.isLoading ||
         this.#offersModel.isLoading) {
-      this.#renderLoading();
+      this.#renderLoadingMessage();
       return;
     }
 
@@ -281,7 +280,6 @@ export default class TripPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
-    remove(this.#loadingComponent);
 
     if(this.#messageComponent) {
       remove(this.#messageComponent);

@@ -1,4 +1,5 @@
 const API_ERROR_MESSAGE = 'Failed to load latest route information';
+const LOADING_MESSAGE = 'Loading...';
 
 const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -40,6 +41,7 @@ function isEscapeKey (evt) {
 
 export {
   API_ERROR_MESSAGE,
+  LOADING_MESSAGE,
   UserAction,
   UpdateType,
   HttpMethod,
