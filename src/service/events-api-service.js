@@ -51,7 +51,6 @@ export default class EventsApiService extends ApiService {
       'is_favorite': event.isFavorite,
     };
 
-    delete adaptedEvent.id;
     delete adaptedEvent.basePrice;
     delete adaptedEvent.dateFrom;
     delete adaptedEvent.dateTo;

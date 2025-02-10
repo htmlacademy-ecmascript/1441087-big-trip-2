@@ -128,7 +128,7 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id} ${isDisabled ? 'disabled' : ''}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" ${isDisabled ? 'disabled' : ''} type="checkbox">
             ${createEventTypeListTemplate(_state, eventTypes)}
           </div>
 
@@ -388,6 +388,7 @@ export default class EventCreateView extends AbstractStatefulView {
   static parseStateToData(state) {
     const event = {...state};
 
+    delete event.id;
     delete event.currentDestination;
     delete event.currentOffersPack;
     delete event.isDisabled;
