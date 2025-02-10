@@ -16,8 +16,8 @@ const EVENT_TYPES = [
 const BLANK_EVENT = {
   id: null,
   basePrice: 0,
-  dateFrom: new Date(new Date().setHours(12,0,0,0)),
-  dateTo: new Date(new Date().setHours(13,0,0,0)),
+  dateFrom: null,
+  dateTo: null,
   destination: '',
   isFavorite: false,
   offers: [],
