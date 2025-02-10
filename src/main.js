@@ -6,6 +6,13 @@ import FiltersModel from'./model/filters-model.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import EventsApiService from './service/events-api-service.js';
+import DestinationsApiService from './service/destinations-api-service.js';
+import OffersApiService from './service/offers-api-service.js';
+
+
+const AUTHORIZATION = 'Basic FortySix&2';
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
 
 
 const pageHeaderElement = document.querySelector('.page-header');
@@ -14,9 +21,15 @@ const pageMainElement = document.querySelector('.page-main');
 const tripMainElement = document.querySelector('.trip-main');
 const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
 
-const destinationsModel = new DestinationsModel();
-const eventsModel = new EventsModel();
-const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel({
+  destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
+});
+const eventsModel = new EventsModel({
+  eventsApiService: new EventsApiService(END_POINT, AUTHORIZATION)
+});
+const offersModel = new OffersModel({
+  offersApiService: new OffersApiService(END_POINT, AUTHORIZATION)
+});
 const filtersModel = new FiltersModel();
 const tripPresenter = new TripPresenter({
   tripContainer: pageBodyContainerElement,
@@ -42,16 +55,17 @@ function newEventCloseHandler() {
 }
 
 function newEventOpenHandler() {
-  tripPresenter.createEvent();
+  tripPresenter.openCreateEvent();
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, tripMainElement);
-
 
 destinationsModel.init();
-eventsModel.init();
 offersModel.init();
+eventsModel.init()
+  .finally(() => {
+    render(newEventButtonComponent, tripMainElement);
+  });
 
 filterPresenter.init();
 tripPresenter.init();

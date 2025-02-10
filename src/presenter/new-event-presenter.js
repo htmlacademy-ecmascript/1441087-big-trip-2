@@ -36,12 +36,12 @@ export default class NewEventPresenter {
       return;
     }
 
-    const defaultEvent = this.#eventsModel.defaultEvent;
+    const blankEvent = this.#eventsModel.blankEvent;
 
     this.#eventCreateComponent = new EventCreateView({
-      event: defaultEvent,
-      currentDestination: this.#destinationsModel.getDestinationById(defaultEvent.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(defaultEvent.type),
+      event: blankEvent,
+      currentDestination: this.#destinationsModel.getDestinationById(blankEvent.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(blankEvent.type),
       allDestinations: this.#destinationsModel.destinations,
       allOffersPacks: this.#offersModel.offersPacks,
       eventTypes: this.#eventsModel.eventTypes,
@@ -67,13 +67,30 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#eventCreateComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#eventCreateComponent.updateElement({
+        isDisabled: false,
+        isSaving: false
+      });
+    };
+
+    this.#eventCreateComponent.shake(resetFormState);
+  }
+
   #formSubmitHandler = (event) => {
     this.#handleEventUpdate(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {...event, id: crypto.randomUUID()},
+      event,
     );
-    this.destroy();
   };
 
   #cancelClickHandler = () => {

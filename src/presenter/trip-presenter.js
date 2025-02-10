@@ -1,13 +1,18 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-import {UserAction, UpdateType} from '../utils/common-utils.js';
+import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../utils/common-utils.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
-import NoEventView from '../view/no-event-view.js';
-import EventSort from '../utils/sort-utils.js';
+import TripMessageView from '../view/trip-message-view.js';
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -15,7 +20,7 @@ export default class TripPresenter {
   #tripComponent = new TripView();
   #sortComponent = null;
   #eventListComponent = new EventListView();
-  #noEventComponent = null;
+  #messageComponent = null;
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -24,6 +29,11 @@ export default class TripPresenter {
   #eventsModel = null;
   #offersModel = null;
   #filtersModel = null;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #currentSortType = null;
   #currentFilterType = null;
@@ -51,8 +61,10 @@ export default class TripPresenter {
       handleNewEventClose: handleNewEventClose
     });
 
-    this.#eventsModel.addObserver(this.#modelEventHandler);
-    this.#filtersModel.addObserver(this.#modelEventHandler);
+    this.#eventsModel.addObserver(this.#modelEventsHandler);
+    this.#destinationsModel.addObserver(this.#modelDestinationsHandler);
+    this.#offersModel.addObserver(this.#modelOffersHandler);
+    this.#filtersModel.addObserver(this.#modelEventsHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = this.#filtersModel.filterType;
@@ -77,10 +89,11 @@ export default class TripPresenter {
   }
 
   init () {
+    render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderTrip();
   }
 
-  createEvent() {
+  openCreateEvent() {
     this.#currentSortType = EventSort.defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
     this.#newEventPresenter.init();
@@ -91,21 +104,40 @@ export default class TripPresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #viewActionHandler = (actionType, updateType, update) => {
+  #viewActionHandler = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.#eventsModel.updateEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setSaving();
+        try {
+          await this.#eventsModel.updateEvent(updateType, update);
+        } catch(err) {
+          this.#eventPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_EVENT:
-        this.#eventsModel.addEvent(updateType, update);
+        this.#newEventPresenter.setSaving();
+        try {
+          await this.#eventsModel.addEvent(updateType, update);
+        } catch(err) {
+          this.#newEventPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
-        this.#eventsModel.deleteEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setDeleting();
+        try {
+          await this.#eventsModel.deleteEvent(updateType, update);
+        } catch(err) {
+          this.#eventPresenters.get(update.id).setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
-  #modelEventHandler = (updateType, data) => {
+  #modelEventsHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init({
@@ -121,6 +153,25 @@ export default class TripPresenter {
       case UpdateType.MAJOR:
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        this.#tryRenderTrip();
+        break;
+    }
+  };
+
+  #modelDestinationsHandler = (updateType) => {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this.#tryRenderTrip();
+        break;
+    }
+  };
+
+  #modelOffersHandler = (updateType) => {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this.#tryRenderTrip();
         break;
     }
   };
@@ -167,24 +218,59 @@ export default class TripPresenter {
     events.forEach((event) => this.#renderEvent(event));
   }
 
-  #renderNoEvents() {
-    this.#noEventComponent = new NoEventView({
-      noEventMessage: this.#filtersModel.getnoEventMessage(this.#currentFilterType)
-    });
+  #renderLoadingMessage() {
+    this.#renderTripMessage(LOADING_MESSAGE);
+  }
 
-    render(this.#noEventComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+  #renderNoEventsMessage() {
+    this.#renderTripMessage(this.#filtersModel.getnoEventMessage(this.#currentFilterType));
+  }
+
+  #renderApiErrorMessage() {
+    this.#renderTripMessage(API_ERROR_MESSAGE);
+  }
+
+  #renderTripMessage(message) {
+    if(this.#messageComponent) {
+      remove(this.#messageComponent);
+    }
+
+    this.#messageComponent = new TripMessageView({message});
+    render(this.#messageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+  }
+
+  #tryRenderTrip(){
+    if(!this.#eventsModel.isLoading &&
+       !this.#destinationsModel.isLoading &&
+       !this.#offersModel.isLoading) {
+      remove(this.#messageComponent);
+      this.#renderTrip();
+    }
   }
 
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
 
+    if(this.#eventsModel.isError ||
+       this.#destinationsModel.isError ||
+       this.#offersModel.isError) {
+      this.#renderApiErrorMessage();
+      return;
+    }
+
+    if (this.#eventsModel.isLoading ||
+        this.#destinationsModel.isLoading ||
+        this.#offersModel.isLoading) {
+      this.#renderLoadingMessage();
+      return;
+    }
+
     if(this.events.length === 0) {
-      this.#renderNoEvents();
+      this.#renderNoEventsMessage();
       return;
     }
 
     this.#renderSort();
-    render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderEvents(this.events);
   }
 
@@ -195,8 +281,8 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
 
-    if(this.#noEventComponent) {
-      remove(this.#noEventComponent);
+    if(this.#messageComponent) {
+      remove(this.#messageComponent);
     }
 
     if(resetSortType) {

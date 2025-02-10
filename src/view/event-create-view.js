@@ -45,7 +45,7 @@ function createDestinationListTemplate(destinations, id) {
   );
 }
 
-function createOfferTemplate(_state, offer) {
+function createOfferTemplate(_state, offer, isDisabled) {
   const {id} = _state;
   const {title, price} = offer;
   const offerHtmlTitle = getHtmlSafeString(title);
@@ -60,7 +60,8 @@ function createOfferTemplate(_state, offer) {
         name="event-offer-${offerHtmlTitle}"
         data-offer-id="${offer.id}"
         value="${title}"
-        ${isChecked}>
+        ${isChecked}
+        ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offerHtmlTitle}-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
@@ -70,14 +71,17 @@ function createOfferTemplate(_state, offer) {
   );
 }
 
-function createOfferListTemplate(_state) {
+function createOfferListTemplate(_state, isDisabled) {
   const {currentOffersPack} = _state;
+  if(!currentOffersPack) {
+    return '';
+  }
 
   return currentOffersPack.offers.length !== 0 ? (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
-        ${currentOffersPack.offers.map((offer) => createOfferTemplate(_state, offer)).join('')}
+        ${currentOffersPack.offers.map((offer) => createOfferTemplate(_state, offer, isDisabled)).join('')}
       </div>
     </section>`
   ) : '';
@@ -112,8 +116,8 @@ function createDestinationTemplate(destination) {
 }
 
 function createEventCreateTemplate(_state, allDestinations, eventTypes) {
-  const {id, type, dateFrom, dateTo, basePrice, currentDestination} = _state;
-  const isSubmitDisabled = !type ? 'disabled' : '';
+  const {id, type, dateFrom, dateTo, basePrice, currentDestination, isDisabled, isSaving} = _state;
+  const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
 
   return (
     `<li class="trip-events__item">
@@ -124,7 +128,7 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" ${isDisabled ? 'disabled' : ''} type="checkbox">
             ${createEventTypeListTemplate(_state, eventTypes)}
           </div>
 
@@ -138,7 +142,8 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               type="text"
               name="event-destination"
               value="${currentDestination ? currentDestination.name : ''}"
-              list="destination-list-${id}">
+              list="destination-list-${id}"
+              ${isDisabled ? 'disabled' : ''}>
             ${createDestinationListTemplate(allDestinations, id)}
           </div>
 
@@ -149,7 +154,8 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               class="event__input  event__input--time"
               type="text"
               name="event-start-time"
-              value="${getFormattedDate(dateFrom, DateFormat.DATE)}">
+              value="${getFormattedDate(dateFrom, DateFormat.DATE)}"
+              ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
             <input
@@ -157,7 +163,8 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               class="event__input  event__input--time"
               type="text"
               name="event-end-time"
-              value="${getFormattedDate(dateTo, DateFormat.DATE)}">
+              value="${getFormattedDate(dateTo, DateFormat.DATE)}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -169,16 +176,19 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               id="event-price-${id}"
               class="event__input  event__input--price"
               type="number"
-              min="0"
+              min="1"
               name="event-price"
-              value="${basePrice}">
+              value="${basePrice}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
-          ${createOfferListTemplate(_state)}
+          ${createOfferListTemplate(_state, isDisabled)}
 
           ${createDestinationTemplate(currentDestination)}
         </section>
@@ -243,7 +253,7 @@ export default class EventCreateView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
-    if(this._state.currentOffersPack.offers.length !== 0) {
+    if(this._state.currentOffersPack && this._state.currentOffersPack.offers.length !== 0) {
       this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersClickHandler);
     }
 
@@ -279,7 +289,7 @@ export default class EventCreateView extends AbstractStatefulView {
     let dateTo = new Date(this._state.dateTo);
 
     if(dateFrom > dateTo) {
-      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
+      dateTo = new Date(new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET));
     }
 
     this.updateElement({
@@ -354,20 +364,12 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #offersClickHandler = (evt) => {
     const targetInput = evt.target.closest('input');
-    if(targetInput) {
-      evt.stopPropagation();
-      const targetOfferId = targetInput.dataset.offerId;
-      const isIncludes = this._state.offers.includes(targetOfferId);
-
-      if(isIncludes) {
-        this.updateElement({
-          offers: [...this._state.offers.filter((offer) => offer !== targetOfferId)],
-        });
-      } else {
-        this.updateElement({
-          offers: [...this._state.offers, targetOfferId],
-        });
-      }
+    if (targetInput) {
+      const checkedInputs = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
+      const checkedOffersId = [...checkedInputs.map((input) => input.dataset.offerId)];
+      this.updateElement({
+        offers: [...checkedOffersId],
+      });
     }
   };
 
@@ -375,7 +377,9 @@ export default class EventCreateView extends AbstractStatefulView {
     const state = {
       ...event,
       currentDestination,
-      currentOffersPack
+      currentOffersPack,
+      isDisabled: false,
+      isSaving: false
     };
 
     return state;
@@ -384,8 +388,11 @@ export default class EventCreateView extends AbstractStatefulView {
   static parseStateToData(state) {
     const event = {...state};
 
+    delete event.id;
     delete event.currentDestination;
     delete event.currentOffersPack;
+    delete event.isDisabled;
+    delete event.isSaving;
 
     return event;
   }
