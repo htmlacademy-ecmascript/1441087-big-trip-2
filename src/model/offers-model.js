@@ -6,6 +6,7 @@ export default class OffersModel extends Observable {
   #offersApiService = null;
   #offersPacks = [];
   #isLoading = true;
+  #isError = false;
 
   constructor({offersApiService}) {
     super();
@@ -18,6 +19,7 @@ export default class OffersModel extends Observable {
       this.#offersPacks = offersPacks;
     } catch(err) {
       this.#offersPacks = [];
+      this.#isError = true;
     }
 
     this.#isLoading = false;
@@ -30,6 +32,10 @@ export default class OffersModel extends Observable {
 
   get isLoading() {
     return this.#isLoading;
+  }
+
+  get isError() {
+    return this.#isError;
   }
 
   getOffersPackByType(type) {

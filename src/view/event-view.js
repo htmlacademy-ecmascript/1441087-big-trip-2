@@ -17,6 +17,10 @@ function createOfferTemplate(offer) {
 
 
 function createoffersCheckedListTemplate(event, offersPack) {
+  if(!offersPack) {
+    return '';
+  }
+
   const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
 
   return checkedOffers.length !== 0 ? (

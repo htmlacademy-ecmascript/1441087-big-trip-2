@@ -29,6 +29,7 @@ export default class EventsModel extends Observable {
   #eventsApiService = null;
   #events = [];
   #isLoading = true;
+  #isError = false;
 
   constructor({eventsApiService}) {
     super();
@@ -52,12 +53,17 @@ export default class EventsModel extends Observable {
     return this.#isLoading;
   }
 
+  get isError() {
+    return this.#isError;
+  }
+
   async init() {
     try {
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adaptEventToClient);
     } catch(err) {
       this.#events = [];
+      this.#isError = true;
     }
 
     this.#isLoading = false;

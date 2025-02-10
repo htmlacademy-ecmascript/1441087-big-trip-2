@@ -1,3 +1,5 @@
+const API_ERROR_MESSAGE = 'Failed to load latest route information';
+
 const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
@@ -21,7 +23,7 @@ const HttpMethod = {
 const HttpRoute = {
   EVENT: 'points',
   DESTINATION: 'destinations',
-  OFFERS: 'offers'
+  OFFERS: 'offers',
 };
 
 function getCapitalizedString(string) {
@@ -37,6 +39,7 @@ function isEscapeKey (evt) {
 }
 
 export {
+  API_ERROR_MESSAGE,
   UserAction,
   UpdateType,
   HttpMethod,

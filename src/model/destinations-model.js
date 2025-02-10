@@ -6,6 +6,7 @@ export default class DestinationsModel extends Observable {
   #destinationsApiService = null;
   #destinations = [];
   #isLoading = true;
+  #isError = false;
 
   constructor({destinationsApiService}) {
     super();
@@ -18,6 +19,7 @@ export default class DestinationsModel extends Observable {
       this.#destinations = destinations;
     } catch(err) {
       this.#destinations = [];
+      this.#isError = true;
     }
 
     this.#isLoading = false;
@@ -30,6 +32,10 @@ export default class DestinationsModel extends Observable {
 
   get isLoading() {
     return this.#isLoading;
+  }
+
+  get isError() {
+    return this.#isError;
   }
 
   getDestinationById(id) {
