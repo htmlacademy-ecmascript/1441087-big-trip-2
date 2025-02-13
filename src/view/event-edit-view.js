@@ -46,23 +46,22 @@ function createDestinationListTemplate(destinations, id) {
 }
 
 function createOfferTemplate(_state, offer, isDisabled) {
-  const {id} = _state;
-  const {title, price} = offer;
-  const offerHtmlTitle = getHtmlSafeString(title);
-  const isChecked = _state.offers.includes(offer.id) ? 'checked' : '';
+  const {id, title, price} = offer;
+  const name = getHtmlSafeString(title);
+  const isChecked = _state.offers.includes(id);
 
   return (
     `<div class="event__offer-selector">
       <input
-        id="event-offer-${offerHtmlTitle}-${id}"
+        id="event-offer-${id}"
         class="event__offer-checkbox  visually-hidden"
         type="checkbox"
-        name="event-offer-${offerHtmlTitle}"
-        data-offer-id="${offer.id}"
+        name="event-offer-${name}"
+        data-offer-id="${id}"
         value="${title}"
-        ${isChecked}
+        ${isChecked ? 'checked' : ''}
         ${isDisabled ? 'disabled' : ''}>
-      <label class="event__offer-label" for="event-offer-${offerHtmlTitle}-${id}">
+      <label class="event__offer-label" for="event-offer-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
@@ -262,9 +261,8 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#toggleClickHandler);
-    if(this._state.currentOffersPack && this._state.currentOffersPack.offers.length !== 0) {
-      this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersClickHandler);
-    }
+    [...this.element.querySelectorAll('.event__offer-checkbox')]
+      .map((input) => input.addEventListener('change', this.#offerChangeHandler));
 
     this.#setDateFromPicker();
     this.#setDateToPicker();
@@ -376,14 +374,12 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleToggleClick();
   };
 
-  #offersClickHandler = (evt) => {
-    const targetInput = evt.target.closest('input');
-    if (targetInput) {
-      const checkedInputs = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
-      const checkedOffersId = [...checkedInputs.map((input) => input.dataset.offerId)];
-      this.updateElement({
-        offers: [...checkedOffersId],
-      });
+  #offerChangeHandler = (evt) => {
+    const targetOffer = evt.target.dataset.offerId;
+    if(this._state.offers.includes(targetOffer)) {
+      this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
+    } else {
+      this._state.offers.push(targetOffer);
     }
   };
 
