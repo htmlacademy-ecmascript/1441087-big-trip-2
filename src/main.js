@@ -51,6 +51,7 @@ const newEventButtonComponent = new NewEventButtonView({
 });
 
 function newEventCloseHandler() {
+  tripPresenter.closeCreateEvent();
   newEventButtonComponent.element.disabled = false;
 }
 

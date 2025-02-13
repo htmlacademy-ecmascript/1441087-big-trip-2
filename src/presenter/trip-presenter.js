@@ -20,7 +20,8 @@ export default class TripPresenter {
   #tripComponent = new TripView();
   #sortComponent = null;
   #eventListComponent = new EventListView();
-  #messageComponent = null;
+  #currentMessageComponent = null;
+  #prevMessageComponent = null;
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -97,6 +98,18 @@ export default class TripPresenter {
     this.#currentSortType = EventSort.defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
     this.#newEventPresenter.init();
+    if(this.#currentMessageComponent) {
+      this.#prevMessageComponent = this.#currentMessageComponent;
+      remove(this.#currentMessageComponent);
+    }
+  }
+
+  closeCreateEvent() {
+    if(this.#prevMessageComponent) {
+      this.#currentMessageComponent = this.#prevMessageComponent;
+      this.#prevMessageComponent = null;
+      render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+    }
   }
 
   #modeChangeHandler = () => {
@@ -231,19 +244,19 @@ export default class TripPresenter {
   }
 
   #renderTripMessage(message) {
-    if(this.#messageComponent) {
-      remove(this.#messageComponent);
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
     }
 
-    this.#messageComponent = new TripMessageView({message});
-    render(this.#messageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+    this.#currentMessageComponent = new TripMessageView({message});
+    render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
   #tryRenderTrip(){
     if(!this.#eventsModel.isLoading &&
        !this.#destinationsModel.isLoading &&
        !this.#offersModel.isLoading) {
-      remove(this.#messageComponent);
+      remove(this.#currentMessageComponent);
       this.#renderTrip();
     }
   }
@@ -281,8 +294,14 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
 
-    if(this.#messageComponent) {
-      remove(this.#messageComponent);
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
+      this.#currentMessageComponent = null;
+    }
+
+    if(this.#prevMessageComponent) {
+      remove(this.#prevMessageComponent);
+      this.#prevMessageComponent = null;
     }
 
     if(resetSortType) {
