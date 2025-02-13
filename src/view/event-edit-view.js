@@ -280,7 +280,7 @@ export default class EventEditView extends AbstractStatefulView {
       {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateFrom,
-        onClose: this.#dateFromCloseHandler,
+        onChange: this.#dateFromCloseHandler,
       },
     );
   }
@@ -292,7 +292,7 @@ export default class EventEditView extends AbstractStatefulView {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onClose: this.#dateToCloseHandler,
+        onChange: this.#dateToCloseHandler,
       },
     );
   }
