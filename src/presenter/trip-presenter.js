@@ -160,7 +160,7 @@ export default class TripPresenter {
         this.#renderTrip();
         break;
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
     }
   };
@@ -168,7 +168,7 @@ export default class TripPresenter {
   #modelDestinationsHandler = (updateType) => {
     switch (updateType) {
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
     }
   };
@@ -176,7 +176,7 @@ export default class TripPresenter {
   #modelOffersHandler = (updateType) => {
     switch (updateType) {
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
     }
   };
@@ -269,15 +269,6 @@ export default class TripPresenter {
     render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
-  #tryRenderTrip(){
-    if(!this.#eventsModel.isLoading &&
-       !this.#destinationsModel.isLoading &&
-       !this.#offersModel.isLoading) {
-      remove(this.#currentMessageComponent);
-      this.#renderTrip();
-    }
-  }
-
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
 
@@ -296,6 +287,7 @@ export default class TripPresenter {
     }
 
     this.#renderNewEventButton();
+    remove(this.#currentMessageComponent);
 
     if(this.events.length === 0) {
       this.#renderNoEventsMessage();
