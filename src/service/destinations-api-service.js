@@ -1,4 +1,4 @@
-import {HttpRoute} from '../utils/common-utils.js';
+import {HttpRoute} from '../const.js';
 import ApiService from '../framework/api-service.js';
 
 

@@ -1,5 +1,5 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../utils/common-utils.js';
+import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../const.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
@@ -9,7 +9,7 @@ import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import TripMessageView from '../view/trip-message-view.js';
 
-const TimeLimit = {
+const UiBlockerTimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
@@ -32,8 +32,8 @@ export default class TripPresenter {
   #filtersModel = null;
 
   #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    lowerLimit: UiBlockerTimeLimit.LOWER_LIMIT,
+    upperLimit: UiBlockerTimeLimit.UPPER_LIMIT
   });
 
   #currentSortType = null;
