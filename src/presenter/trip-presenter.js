@@ -4,15 +4,18 @@ import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import TripMessageView from '../view/trip-message-view.js';
 
+
 const UiBlockerTimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
 
 export default class TripPresenter {
   #tripMainContainer = null;
@@ -23,6 +26,7 @@ export default class TripPresenter {
   #eventListComponent = new EventListView();
   #currentMessageComponent = null;
   #prevMessageComponent = null;
+  #newEventButtonComponent = null;
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -47,7 +51,6 @@ export default class TripPresenter {
     eventsModel,
     offersModel,
     filtersModel,
-    handleNewEventClose
   }){
     this.#tripMainContainer = tripMainContainer;
     this.#tripContainer = tripContainer;
@@ -62,7 +65,11 @@ export default class TripPresenter {
       eventsModel: eventsModel,
       offersModel: offersModel,
       handleEventUpdate: this.#viewActionHandler,
-      handleNewEventClose: handleNewEventClose
+      handleNewEventClose: this.#newEventCloseHandler,
+    });
+
+    this.#newEventButtonComponent = new NewEventButtonView({
+      handleNewEventOpen: this.#newEventOpenHandler,
     });
 
     this.#eventsModel.addObserver(this.#modelEventsHandler);
@@ -95,24 +102,6 @@ export default class TripPresenter {
   init () {
     render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderTrip();
-  }
-
-  openCreateEvent() {
-    this.#currentSortType = EventSort.defaultSortType;
-    this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
-    this.#newEventPresenter.init();
-    if(this.#currentMessageComponent) {
-      this.#prevMessageComponent = this.#currentMessageComponent;
-      remove(this.#currentMessageComponent);
-    }
-  }
-
-  closeCreateEvent() {
-    if(this.#prevMessageComponent) {
-      this.#currentMessageComponent = this.#prevMessageComponent;
-      this.#prevMessageComponent = null;
-      render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
-    }
   }
 
   #modeChangeHandler = () => {
@@ -192,6 +181,26 @@ export default class TripPresenter {
     }
   };
 
+  #newEventOpenHandler = () => {
+    this.#newEventButtonComponent.element.disabled = true;
+    this.#currentSortType = EventSort.defaultSortType;
+    this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
+    this.#newEventPresenter.init();
+    if(this.#currentMessageComponent) {
+      this.#prevMessageComponent = this.#currentMessageComponent;
+      remove(this.#currentMessageComponent);
+    }
+  };
+
+  #newEventCloseHandler = () => {
+    this.#newEventButtonComponent.element.disabled = false;
+    if(this.#prevMessageComponent) {
+      this.#currentMessageComponent = this.#prevMessageComponent;
+      this.#prevMessageComponent = null;
+      render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+    }
+  };
+
   #sortClickHandler = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
@@ -202,12 +211,17 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
+  #renderNewEventButton() {
+    render(this.#newEventButtonComponent, this.#tripMainContainer);
+  }
+
   #renderSort() {
     this.#sortComponent = new SortView({
       sortSettings: EventSort.sortSettings,
       currentSortType: this.#currentSortType,
       handleSortClick: this.#sortClickHandler
     });
+
     render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
 
@@ -280,6 +294,8 @@ export default class TripPresenter {
       this.#renderLoadingMessage();
       return;
     }
+
+    this.#renderNewEventButton();
 
     if(this.events.length === 0) {
       this.#renderNoEventsMessage();
