@@ -1,3 +1,5 @@
+const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
+const AUTHORIZATION = 'Basic FortySix&2';
 const API_ERROR_MESSAGE = 'Failed to load latest route information';
 const LOADING_MESSAGE = 'Loading...';
 
@@ -28,6 +30,8 @@ const HttpRoute = {
 };
 
 export {
+  END_POINT,
+  AUTHORIZATION,
   API_ERROR_MESSAGE,
   LOADING_MESSAGE,
   UserAction,

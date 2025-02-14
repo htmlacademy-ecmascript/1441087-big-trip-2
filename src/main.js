@@ -1,4 +1,5 @@
 import {render} from './framework/render.js';
+import {END_POINT, AUTHORIZATION} from './const.js';
 import DestinationsModel from './model/destinations-model.js';
 import EventsModel from './model/events-model.js';
 import OffersModel from './model/offers-model.js';
@@ -11,15 +12,10 @@ import DestinationsApiService from './service/destinations-api-service.js';
 import OffersApiService from './service/offers-api-service.js';
 
 
-const AUTHORIZATION = 'Basic FortySix&2';
-const END_POINT = 'https://23.objects.htmlacademy.pro/big-trip';
-
-
-const pageHeaderElement = document.querySelector('.page-header');
-const filtersElement = pageHeaderElement.querySelector('.trip-controls__filters');
-const pageMainElement = document.querySelector('.page-main');
+const filtersElement = document.querySelector('.trip-controls__filters');
 const tripMainElement = document.querySelector('.trip-main');
-const pageBodyContainerElement = pageMainElement.querySelector('.page-body__container');
+const pageContainerElement = document.querySelector('.page-main div');
+
 
 const destinationsModel = new DestinationsModel({
   destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION)
@@ -32,7 +28,8 @@ const offersModel = new OffersModel({
 });
 const filtersModel = new FiltersModel();
 const tripPresenter = new TripPresenter({
-  tripContainer: pageBodyContainerElement,
+  tripMainContainer: tripMainElement,
+  tripContainer: pageContainerElement,
   destinationsModel,
   eventsModel,
   offersModel,

@@ -15,6 +15,7 @@ const UiBlockerTimeLimit = {
 };
 
 export default class TripPresenter {
+  #tripMainContainer = null;
   #tripContainer = null;
 
   #tripComponent = new TripView();
@@ -40,6 +41,7 @@ export default class TripPresenter {
   #currentFilterType = null;
 
   constructor({
+    tripMainContainer,
     tripContainer,
     destinationsModel,
     eventsModel,
@@ -47,6 +49,7 @@ export default class TripPresenter {
     filtersModel,
     handleNewEventClose
   }){
+    this.#tripMainContainer = tripMainContainer;
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
