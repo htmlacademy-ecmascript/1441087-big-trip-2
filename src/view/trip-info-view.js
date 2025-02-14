@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-
 function createTripInfoTemplate() {
+
   return (`
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
@@ -11,18 +11,29 @@ function createTripInfoTemplate() {
       </div>
 
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">1234</span>
       </p>
     </section>
   `);
 }
 
 export default class TripInfoView extends AbstractView {
-  constructor() {
+  #destinations = [];
+  #events = [];
+  #offersPacks = [];
+
+  constructor({destinations, events, offersPacks}) {
     super();
+    this.#destinations = destinations;
+    this.#events = events;
+    this.#offersPacks = offersPacks;
   }
 
   get template() {
-    return createTripInfoTemplate();
+    return createTripInfoTemplate(
+      this.#destinations,
+      this.#events,
+      this.#offersPacks,
+    );
   }
 }
