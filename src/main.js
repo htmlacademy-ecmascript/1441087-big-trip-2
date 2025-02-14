@@ -3,6 +3,7 @@ import DestinationsModel from './model/destinations-model.js';
 import EventsModel from './model/events-model.js';
 import OffersModel from './model/offers-model.js';
 import FiltersModel from'./model/filters-model.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import EventsApiService from './service/events-api-service.js';
@@ -29,6 +30,10 @@ const offersModel = new OffersModel({
 
 const filtersModel = new FiltersModel();
 
+const tripInfoPresenter = new TripInfoPresenter({
+  tripMainContainer: tripMainElement,
+});
+
 const tripPresenter = new TripPresenter({
   tripMainContainer: tripMainElement,
   tripContainer: pageContainerElement,
@@ -48,5 +53,6 @@ const filterPresenter = new FilterPresenter({
 destinationsModel.init();
 offersModel.init();
 eventsModel.init();
+tripInfoPresenter.init();
 tripPresenter.init();
 filterPresenter.init();
