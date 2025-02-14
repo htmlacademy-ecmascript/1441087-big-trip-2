@@ -1,6 +1,33 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createTripInfoTemplate() {
+function getEventTotalCost(event, offersPack) {
+  const checkedOffers = [];
+
+  for(const offer of offersPack.offers) {
+    if(event.offers.includes(offer.id)) {
+      checkedOffers.push(offer);
+    }
+  }
+
+  const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
+  const eventTotalCost = event.basePrice + offersTotalCost;
+
+  return eventTotalCost;
+}
+
+function getTripTotalCost(events, offersPacks) {
+  let tripTotalCost = 0;
+
+  for(const event of events) {
+    const offersPack = offersPacks.find((pack) => pack.type === event.type);
+    tripTotalCost += getEventTotalCost(event, offersPack);
+  }
+
+  return tripTotalCost;
+}
+
+function createTripInfoTemplate(destinations, events, offersPacks) {
+  const tripTotalCost = getTripTotalCost(events, offersPacks);
 
   return (`
     <section class="trip-main__trip-info  trip-info">
@@ -11,7 +38,7 @@ function createTripInfoTemplate() {
       </div>
 
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">1234</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripTotalCost}</span>
       </p>
     </section>
   `);
