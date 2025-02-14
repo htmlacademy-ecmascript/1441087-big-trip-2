@@ -1,5 +1,5 @@
 import Observable from '../framework/observable.js';
-import {UpdateType} from '../utils/common-utils.js';
+import {UpdateType} from '../const.js';
 
 const EVENT_TYPES = [
   'taxi',

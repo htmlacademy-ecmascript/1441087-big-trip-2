@@ -46,23 +46,22 @@ function createDestinationListTemplate(destinations, id) {
 }
 
 function createOfferTemplate(_state, offer, isDisabled) {
-  const {id} = _state;
-  const {title, price} = offer;
-  const offerHtmlTitle = getHtmlSafeString(title);
-  const isChecked = _state.offers.includes(offer.id) ? 'checked' : '';
+  const {id, title, price} = offer;
+  const name = getHtmlSafeString(title);
+  const isChecked = _state.offers.includes(id);
 
   return (
     `<div class="event__offer-selector">
       <input
-        id="event-offer-${offerHtmlTitle}-${id}"
+        id="event-offer-${id}"
         class="event__offer-checkbox  visually-hidden"
         type="checkbox"
-        name="event-offer-${offerHtmlTitle}"
-        data-offer-id="${offer.id}"
+        name="event-offer-${name}"
+        data-offer-id="${id}"
         value="${title}"
-        ${isChecked}
+        ${isChecked ? 'checked' : ''}
         ${isDisabled ? 'disabled' : ''}>
-      <label class="event__offer-label" for="event-offer-${offerHtmlTitle}-${id}">
+      <label class="event__offer-label" for="event-offer-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
@@ -201,7 +200,8 @@ export default class EventCreateView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffersPacks = null;
   #eventTypes = null;
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
   #handleFormSubmit = null;
   #handleCancelClick = null;
 
@@ -237,9 +237,14 @@ export default class EventCreateView extends AbstractStatefulView {
   removeElement() {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
@@ -253,33 +258,32 @@ export default class EventCreateView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelClickHandler);
-    if(this._state.currentOffersPack && this._state.currentOffersPack.offers.length !== 0) {
-      this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersClickHandler);
-    }
+    [...this.element.querySelectorAll('.event__offer-checkbox')]
+      .map((input) => input.addEventListener('change', this.#offerChangeHandler));
 
     this.#setDateFromPicker();
     this.#setDateToPicker();
   }
 
   #setDateFromPicker() {
-    this.#datepicker = flatpickr(
+    this.#datepickerFrom = flatpickr(
       this.element.querySelector(`#event-start-time-${this._state.id}`),
       {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateFrom,
-        onClose: this.#dateFromCloseHandler,
+        onChange: this.#dateFromCloseHandler,
       },
     );
   }
 
   #setDateToPicker() {
-    this.#datepicker = flatpickr(
+    this.#datepickerTo = flatpickr(
       this.element.querySelector(`#event-end-time-${this._state.id}`),
       {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onClose: this.#dateToCloseHandler,
+        onChange: this.#dateToCloseHandler,
       },
     );
   }
@@ -362,14 +366,12 @@ export default class EventCreateView extends AbstractStatefulView {
     this.#handleCancelClick();
   };
 
-  #offersClickHandler = (evt) => {
-    const targetInput = evt.target.closest('input');
-    if (targetInput) {
-      const checkedInputs = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
-      const checkedOffersId = [...checkedInputs.map((input) => input.dataset.offerId)];
-      this.updateElement({
-        offers: [...checkedOffersId],
-      });
+  #offerChangeHandler = (evt) => {
+    const targetOffer = evt.target.dataset.offerId;
+    if(this._state.offers.includes(targetOffer)) {
+      this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
+    } else {
+      this._state.offers.push(targetOffer);
     }
   };
 

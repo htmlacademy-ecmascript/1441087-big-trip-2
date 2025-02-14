@@ -1,26 +1,32 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../utils/common-utils.js';
+import {API_ERROR_MESSAGE, LOADING_MESSAGE, UserAction, UpdateType} from '../const.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import EventSort from '../utils/sort-utils.js';
 import EventPresenter from '../presenter/event-presenter.js';
 import NewEventPresenter from '../presenter/new-event-presenter.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import TripView from '../view/trip-view.js';
 import SortView from '../view/sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import TripMessageView from '../view/trip-message-view.js';
 
-const TimeLimit = {
+
+const UiBlockerTimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
 
+
 export default class TripPresenter {
+  #tripMainContainer = null;
   #tripContainer = null;
 
   #tripComponent = new TripView();
   #sortComponent = null;
   #eventListComponent = new EventListView();
-  #messageComponent = null;
+  #currentMessageComponent = null;
+  #prevMessageComponent = null;
+  #newEventButtonComponent = null;
 
   #eventPresenters = new Map();
   #newEventPresenter = null;
@@ -31,21 +37,22 @@ export default class TripPresenter {
   #filtersModel = null;
 
   #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    lowerLimit: UiBlockerTimeLimit.LOWER_LIMIT,
+    upperLimit: UiBlockerTimeLimit.UPPER_LIMIT
   });
 
   #currentSortType = null;
   #currentFilterType = null;
 
   constructor({
+    tripMainContainer,
     tripContainer,
     destinationsModel,
     eventsModel,
     offersModel,
     filtersModel,
-    handleNewEventClose
   }){
+    this.#tripMainContainer = tripMainContainer;
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#eventsModel = eventsModel;
@@ -58,7 +65,11 @@ export default class TripPresenter {
       eventsModel: eventsModel,
       offersModel: offersModel,
       handleEventUpdate: this.#viewActionHandler,
-      handleNewEventClose: handleNewEventClose
+      handleNewEventClose: this.#newEventCloseHandler,
+    });
+
+    this.#newEventButtonComponent = new NewEventButtonView({
+      handleNewEventOpen: this.#newEventOpenHandler,
     });
 
     this.#eventsModel.addObserver(this.#modelEventsHandler);
@@ -91,12 +102,6 @@ export default class TripPresenter {
   init () {
     render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderTrip();
-  }
-
-  openCreateEvent() {
-    this.#currentSortType = EventSort.defaultSortType;
-    this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
-    this.#newEventPresenter.init();
   }
 
   #modeChangeHandler = () => {
@@ -155,7 +160,7 @@ export default class TripPresenter {
         this.#renderTrip();
         break;
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
     }
   };
@@ -163,7 +168,7 @@ export default class TripPresenter {
   #modelDestinationsHandler = (updateType) => {
     switch (updateType) {
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
     }
   };
@@ -171,8 +176,28 @@ export default class TripPresenter {
   #modelOffersHandler = (updateType) => {
     switch (updateType) {
       case UpdateType.INIT:
-        this.#tryRenderTrip();
+        this.#renderTrip();
         break;
+    }
+  };
+
+  #newEventOpenHandler = () => {
+    this.#newEventButtonComponent.element.disabled = true;
+    this.#currentSortType = EventSort.defaultSortType;
+    this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
+    this.#newEventPresenter.init();
+    if(this.#currentMessageComponent) {
+      this.#prevMessageComponent = this.#currentMessageComponent;
+      remove(this.#currentMessageComponent);
+    }
+  };
+
+  #newEventCloseHandler = () => {
+    this.#newEventButtonComponent.element.disabled = false;
+    if(this.#prevMessageComponent) {
+      this.#currentMessageComponent = this.#prevMessageComponent;
+      this.#prevMessageComponent = null;
+      render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
     }
   };
 
@@ -186,12 +211,17 @@ export default class TripPresenter {
     this.#renderTrip();
   };
 
+  #renderNewEventButton() {
+    render(this.#newEventButtonComponent, this.#tripMainContainer);
+  }
+
   #renderSort() {
     this.#sortComponent = new SortView({
       sortSettings: EventSort.sortSettings,
       currentSortType: this.#currentSortType,
       handleSortClick: this.#sortClickHandler
     });
+
     render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
   }
 
@@ -231,21 +261,12 @@ export default class TripPresenter {
   }
 
   #renderTripMessage(message) {
-    if(this.#messageComponent) {
-      remove(this.#messageComponent);
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
     }
 
-    this.#messageComponent = new TripMessageView({message});
-    render(this.#messageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
-  }
-
-  #tryRenderTrip(){
-    if(!this.#eventsModel.isLoading &&
-       !this.#destinationsModel.isLoading &&
-       !this.#offersModel.isLoading) {
-      remove(this.#messageComponent);
-      this.#renderTrip();
-    }
+    this.#currentMessageComponent = new TripMessageView({message});
+    render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
   }
 
   #renderTrip() {
@@ -265,6 +286,9 @@ export default class TripPresenter {
       return;
     }
 
+    this.#renderNewEventButton();
+    remove(this.#currentMessageComponent);
+
     if(this.events.length === 0) {
       this.#renderNoEventsMessage();
       return;
@@ -281,8 +305,14 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
 
-    if(this.#messageComponent) {
-      remove(this.#messageComponent);
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
+      this.#currentMessageComponent = null;
+    }
+
+    if(this.#prevMessageComponent) {
+      remove(this.#prevMessageComponent);
+      this.#prevMessageComponent = null;
     }
 
     if(resetSortType) {
