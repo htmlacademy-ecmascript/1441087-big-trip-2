@@ -1,27 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function getEventTotalCost(event, offersPack) {
-  const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
-  const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
-  const eventTotalCost = event.basePrice + offersTotalCost;
 
-  return eventTotalCost;
-}
-
-function getTripTotalCost(events, offersPacks) {
-  let tripTotalCost = 0;
-
-  events.forEach((event) => {
-    const offersPack = offersPacks.find((pack) => pack.type === event.type);
-    tripTotalCost += getEventTotalCost(event, offersPack);
-  });
-
-  return tripTotalCost;
-}
-
-function createTripInfoTemplate(destinations, events, offersPacks) {
-  const tripTotalCost = getTripTotalCost(events, offersPacks);
-
+function createTripInfoTemplate(tripTotalCost) {
   return (`
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
@@ -38,22 +18,16 @@ function createTripInfoTemplate(destinations, events, offersPacks) {
 }
 
 export default class TripInfoView extends AbstractView {
-  #destinations = [];
-  #events = [];
-  #offersPacks = [];
+  #tripTotalCost = null;
 
-  constructor({destinations, events, offersPacks}) {
+  constructor({tripTotalCost}) {
     super();
-    this.#destinations = destinations;
-    this.#events = events;
-    this.#offersPacks = offersPacks;
+    this.#tripTotalCost = tripTotalCost;
   }
 
   get template() {
     return createTripInfoTemplate(
-      this.#destinations,
-      this.#events,
-      this.#offersPacks,
+      this.#tripTotalCost,
     );
   }
 }

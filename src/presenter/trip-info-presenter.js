@@ -52,9 +52,7 @@ export default class TripInfoPresenter {
     }
 
     this.#tripInfoComponent = new TripInfoView({
-      destinations: this.#destinationsModel.destinations,
-      events: this.#eventsModel.events,
-      offersPacks: this.#offersModel.offersPacks,
+      tripTotalCost: this.#getTripTotalCost(this.#eventsModel.events),
     });
 
     render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
@@ -62,5 +60,24 @@ export default class TripInfoPresenter {
 
   #clearTripInfo() {
     remove(this.#tripInfoComponent);
+  }
+
+  #getEventTotalCost(event, offersPack) {
+    const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
+    const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
+    const eventTotalCost = event.basePrice + offersTotalCost;
+
+    return eventTotalCost;
+  }
+
+  #getTripTotalCost(events) {
+    let tripTotalCost = 0;
+
+    events.forEach((event) => {
+      const offersPack = this.#offersModel.getOffersPackByType(event.type);
+      tripTotalCost += this.#getEventTotalCost(event, offersPack);
+    });
+
+    return tripTotalCost;
   }
 }
