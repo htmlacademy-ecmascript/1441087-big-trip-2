@@ -72,10 +72,10 @@ export default class TripPresenter {
       handleNewEventOpen: this.#newEventOpenHandler,
     });
 
-    this.#eventsModel.addObserver(this.#modelEventsHandler);
-    this.#destinationsModel.addObserver(this.#modelDestinationsHandler);
-    this.#offersModel.addObserver(this.#modelOffersHandler);
-    this.#filtersModel.addObserver(this.#modelEventsHandler);
+    this.#eventsModel.addObserver(this.#modelUpdateHandler);
+    this.#destinationsModel.addObserver(this.#modelUpdateHandler);
+    this.#offersModel.addObserver(this.#modelUpdateHandler);
+    this.#filtersModel.addObserver(this.#modelUpdateHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = this.#filtersModel.filterType;
@@ -142,7 +142,7 @@ export default class TripPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #modelEventsHandler = (updateType, data) => {
+  #modelUpdateHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init({
@@ -160,22 +160,6 @@ export default class TripPresenter {
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
         break;
-      case UpdateType.INIT:
-        this.#renderTrip();
-        break;
-    }
-  };
-
-  #modelDestinationsHandler = (updateType) => {
-    switch (updateType) {
-      case UpdateType.INIT:
-        this.#renderTrip();
-        break;
-    }
-  };
-
-  #modelOffersHandler = (updateType) => {
-    switch (updateType) {
       case UpdateType.INIT:
         this.#renderTrip();
         break;
