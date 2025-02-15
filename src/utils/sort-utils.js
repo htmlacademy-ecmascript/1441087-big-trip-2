@@ -81,7 +81,7 @@ export default class EventSort {
     return sortSettings.find((sortType) => sortType.isDefault === true).name;
   }
 
-  static sortEvents(sortType, events) {
+  static sortEvents(events, sortType = this.defaultSortType) {
     switch (sortType) {
       case SortType.TIME:
         events.sort(sortEventTime);

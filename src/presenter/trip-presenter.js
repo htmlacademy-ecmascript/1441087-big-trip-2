@@ -86,7 +86,7 @@ export default class TripPresenter {
     const events = this.#eventsModel.events;
     const filteredEvents = this.#filtersModel.filterMethods[this.#currentFilterType](events);
 
-    EventSort.sortEvents(this.#currentSortType, filteredEvents);
+    EventSort.sortEvents(filteredEvents, this.#currentSortType);
 
     return filteredEvents;
   }
