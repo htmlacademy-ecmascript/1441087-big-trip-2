@@ -148,7 +148,8 @@ export default class TripPresenter {
         this.#eventPresenters.get(data.id).init({
           event: data,
           currentDestination: this.#destinationsModel.getDestinationById(data.destination),
-          currentOffersPack: this.#offersModel.getOffersPackByType(data.type)
+          currentOffersPack: this.#offersModel.getOffersPackByType(data.type),
+          checkedOffers: this.#offersModel.getEventCheckedOffers(data),
         });
         break;
       case UpdateType.MINOR:
@@ -238,7 +239,8 @@ export default class TripPresenter {
     eventPresenter.init({
       event: event,
       currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(event.type)
+      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+      checkedOffers: this.#offersModel.getEventCheckedOffers(event),
     });
 
     this.#eventPresenters.set(event.id, eventPresenter);

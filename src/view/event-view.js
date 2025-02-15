@@ -16,13 +16,7 @@ function createOfferTemplate(offer) {
 }
 
 
-function createoffersCheckedListTemplate(event, offersPack) {
-  if(!offersPack) {
-    return '';
-  }
-
-  const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
-
+function createOffersCheckedListTemplate(checkedOffers) {
   return checkedOffers.length !== 0 ? (
     `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
@@ -32,7 +26,7 @@ function createoffersCheckedListTemplate(event, offersPack) {
 }
 
 
-function createEventTemplate(event, currentDestination, currentOffersPack) {
+function createEventTemplate(event, currentDestination, checkedOffers) {
   const {id, type, dateFrom, dateTo, basePrice} = event;
   const day = getFormattedDate(dateFrom, DateFormat.DAY);
   const timeFrom = getFormattedDate(dateFrom, DateFormat.TIME);
@@ -60,7 +54,7 @@ function createEventTemplate(event, currentDestination, currentOffersPack) {
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
-        ${createoffersCheckedListTemplate(event, currentOffersPack)}
+        ${createOffersCheckedListTemplate(checkedOffers)}
         <button class="event__favorite-btn${isFavorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -80,20 +74,20 @@ function createEventTemplate(event, currentDestination, currentOffersPack) {
 export default class EventView extends AbstractView {
   #event = null;
   #currentDestination = null;
-  #currentOffersPack = null;
+  #checkedOffers = null;
   #handleFavoriteClick = null;
   #handleToggleClick = null;
 
   constructor({event,
     currentDestination,
-    currentOffersPack,
+    checkedOffers,
     handleFavoriteClick,
     handleToggleClick
   }){
     super();
     this.#event = event;
     this.#currentDestination = currentDestination;
-    this.#currentOffersPack = currentOffersPack;
+    this.#checkedOffers = checkedOffers;
     this.#handleFavoriteClick = handleFavoriteClick;
     this.#handleToggleClick = handleToggleClick;
 
@@ -105,7 +99,7 @@ export default class EventView extends AbstractView {
     return createEventTemplate(
       this.#event,
       this.#currentDestination,
-      this.#currentOffersPack,
+      this.#checkedOffers,
     );
   }
 
