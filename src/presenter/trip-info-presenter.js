@@ -1,6 +1,10 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
 
+
+const DESTINATIONS_INFO_MAX = 3;
+
+
 export default class TripInfoPresenter {
   #tripMainContainer = null;
 
@@ -51,14 +55,16 @@ export default class TripInfoPresenter {
       return;
     }
 
-    if(this.#eventsModel.events.length !== 0) {
-      this.#tripInfoComponent = new TripInfoView({
-        tripTotalCost: this.#getTripTotalCost(),
-        tripTitle: this.#getTripTitle(),
-      });
-
-      render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
+    if(this.#eventsModel.events.length === 0) {
+      return;
     }
+
+    this.#tripInfoComponent = new TripInfoView({
+      tripTotalCost: this.#getTripTotalCost(),
+      tripTitle: this.#getTripTitle(),
+    });
+
+    render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
   }
 
   #clearTripInfo() {
@@ -66,7 +72,23 @@ export default class TripInfoPresenter {
   }
 
   #getTripTitle() {
-    return 'Amsterdam &mdash; Chamonix &mdash; Geneva';
+    let events = [];
+    let separator = '';
+
+    if(this.#eventsModel.events.length <= DESTINATIONS_INFO_MAX){
+      events = [...this.#eventsModel.events];
+      separator = ' — ';
+    }
+
+    if(this.#eventsModel.events.length > DESTINATIONS_INFO_MAX){
+      events = [this.#eventsModel.events[0], this.#eventsModel.events.at(-1)];
+      separator = ' ... ';
+    }
+
+    const destinationsNames = events.map((event) => this.#destinationsModel.getDestinationById(event.destination).name);
+    const tripTitle = destinationsNames.join(separator);
+
+    return tripTitle;
   }
 
   #getEventTotalCost(event) {

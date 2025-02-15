@@ -38,6 +38,7 @@ export default class EventsModel extends Observable {
   }
 
   get events() {
+    EventSort.sortEvents(this.#events);
     return this.#events;
   }
 
@@ -62,7 +63,6 @@ export default class EventsModel extends Observable {
     try {
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adaptEventToClient);
-      EventSort.sortEvents(this.#events);
     } catch(err) {
       this.#events = [];
       this.#isError = true;
