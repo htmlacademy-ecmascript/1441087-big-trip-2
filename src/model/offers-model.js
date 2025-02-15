@@ -41,4 +41,9 @@ export default class OffersModel extends Observable {
   getOffersPackByType(type) {
     return this.#offersPacks.find((offersPack) => offersPack.type === type);
   }
+
+  getEventCheckedOffers(event) {
+    const offersPack = this.getOffersPackByType(event.type);
+    return offersPack.offers.filter((offer) => event.offers.includes(offer.id));
+  }
 }

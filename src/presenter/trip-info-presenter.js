@@ -62,8 +62,8 @@ export default class TripInfoPresenter {
     remove(this.#tripInfoComponent);
   }
 
-  #getEventTotalCost(event, offersPack) {
-    const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
+  #getEventTotalCost(event) {
+    const checkedOffers = this.#offersModel.getEventCheckedOffers(event);
     const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
     const eventTotalCost = event.basePrice + offersTotalCost;
 
@@ -74,8 +74,7 @@ export default class TripInfoPresenter {
     let tripTotalCost = 0;
 
     events.forEach((event) => {
-      const offersPack = this.#offersModel.getOffersPackByType(event.type);
-      tripTotalCost += this.#getEventTotalCost(event, offersPack);
+      tripTotalCost += this.#getEventTotalCost(event);
     });
 
     return tripTotalCost;
