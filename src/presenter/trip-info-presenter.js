@@ -21,26 +21,21 @@ export default class TripInfoPresenter {
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
 
-    this.#destinationsModel.addObserver(this.#modelDestinationsHandler);
-    this.#eventsModel.addObserver(this.#modelEventsHandler);
-    this.#offersModel.addObserver(this.#modelOffersHandler);
+    this.#destinationsModel.addObserver(this.#modelUpdateHandler);
+    this.#eventsModel.addObserver(this.#modelUpdateHandler);
+    this.#offersModel.addObserver(this.#modelUpdateHandler);
   }
 
   init() {
+    if(this.#tripInfoComponent) {
+      this.#clearTripInfo();
+    }
+
     this.#renderTripInfo();
   }
 
-  #modelDestinationsHandler = () => {
-    this.#renderTripInfo();
-  };
-
-  #modelEventsHandler = () => {
-    this.#clearTripInfo();
-    this.#renderTripInfo();
-  };
-
-  #modelOffersHandler = () => {
-    this.#renderTripInfo();
+  #modelUpdateHandler = () => {
+    this.init();
   };
 
   #renderTripInfo() {
