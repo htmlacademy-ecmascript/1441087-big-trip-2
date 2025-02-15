@@ -1,11 +1,10 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFilterItemTemplate(filter, currentFilterType, defaultFilterType) {
+function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
   const isChecked = type === currentFilterType ? 'checked' : '';
-  let isDisabled = count === 0 ? 'disabled' : '';
-  isDisabled = type !== defaultFilterType ? isDisabled : '';
+  const isDisabled = count === 0 ? 'disabled' : '';
 
   return (
     `<div class="trip-filters__filter">
@@ -24,9 +23,9 @@ function createFilterItemTemplate(filter, currentFilterType, defaultFilterType) 
   );
 }
 
-function createFilterTemplate(filters, currentFilterType, defaultFilterType) {
+function createFilterTemplate(filters, currentFilterType) {
   const filterItemTemplates = filters.map((filter) =>
-    createFilterItemTemplate(filter, currentFilterType, defaultFilterType)).join('');
+    createFilterItemTemplate(filter, currentFilterType)).join('');
 
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -39,21 +38,19 @@ function createFilterTemplate(filters, currentFilterType, defaultFilterType) {
 export default class FilterView extends AbstractView {
   #filters = null;
   #currentFilterType = null;
-  #defaultFilterType = null;
   #handleFilterClick = null;
 
-  constructor({filters, currentFilterType, defaultFilterType, handleFilterClick}){
+  constructor({filters, currentFilterType, handleFilterClick}){
     super();
     this.#filters = filters;
     this.#currentFilterType = currentFilterType;
-    this.#defaultFilterType = defaultFilterType;
     this.#handleFilterClick = handleFilterClick;
 
     this.element.addEventListener('click', this.#filterClickHandler);
   }
 
   get template() {
-    return createFilterTemplate(this.#filters, this.#currentFilterType, this.#defaultFilterType);
+    return createFilterTemplate(this.#filters, this.#currentFilterType);
   }
 
   #filterClickHandler = (evt) => {

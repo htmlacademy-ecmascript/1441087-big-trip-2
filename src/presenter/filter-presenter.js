@@ -39,7 +39,6 @@ export default class FilterPresenter {
     this.#filterComponent = new FilterView({
       filters,
       currentFilterType: this.#filtersModel.filterType,
-      defaultFilterType: this.#filtersModel.defaultFilterType,
       handleFilterClick: this.#filterClickHandler
     });
 
