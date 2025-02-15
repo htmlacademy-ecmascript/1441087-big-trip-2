@@ -1,14 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 function getEventTotalCost(event, offersPack) {
-  const checkedOffers = [];
-
-  for(const offer of offersPack.offers) {
-    if(event.offers.includes(offer.id)) {
-      checkedOffers.push(offer);
-    }
-  }
-
+  const checkedOffers = offersPack.offers.filter((offer) => event.offers.includes(offer.id));
   const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
   const eventTotalCost = event.basePrice + offersTotalCost;
 
@@ -18,10 +11,10 @@ function getEventTotalCost(event, offersPack) {
 function getTripTotalCost(events, offersPacks) {
   let tripTotalCost = 0;
 
-  for(const event of events) {
+  events.forEach((event) => {
     const offersPack = offersPacks.find((pack) => pack.type === event.type);
     tripTotalCost += getEventTotalCost(event, offersPack);
-  }
+  });
 
   return tripTotalCost;
 }
