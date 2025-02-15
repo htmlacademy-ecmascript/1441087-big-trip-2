@@ -53,7 +53,8 @@ export default class TripInfoPresenter {
 
     if(this.#eventsModel.events.length !== 0) {
       this.#tripInfoComponent = new TripInfoView({
-        tripTotalCost: this.#getTripTotalCost(this.#eventsModel.events),
+        tripTotalCost: this.#getTripTotalCost(),
+        tripTitle: this.#getTripTitle(),
       });
 
       render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
@@ -64,6 +65,10 @@ export default class TripInfoPresenter {
     remove(this.#tripInfoComponent);
   }
 
+  #getTripTitle() {
+    return 'Amsterdam &mdash; Chamonix &mdash; Geneva';
+  }
+
   #getEventTotalCost(event) {
     const checkedOffers = this.#offersModel.getEventCheckedOffers(event);
     const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
@@ -72,10 +77,10 @@ export default class TripInfoPresenter {
     return eventTotalCost;
   }
 
-  #getTripTotalCost(events) {
+  #getTripTotalCost() {
     let tripTotalCost = 0;
 
-    events.forEach((event) => {
+    this.#eventsModel.events.forEach((event) => {
       tripTotalCost += this.#getEventTotalCost(event);
     });
 
