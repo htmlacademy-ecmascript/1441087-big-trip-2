@@ -88,9 +88,8 @@ export default class TripInfoPresenter {
     }
 
     const destinationsNames = events.map((event) => this.#destinationsModel.getDestinationById(event.destination).name);
-    const tripTitle = destinationsNames.join(separator);
 
-    return tripTitle;
+    return destinationsNames.join(separator);
   }
 
   #getTripDuration() {
@@ -106,9 +105,8 @@ export default class TripInfoPresenter {
   #getEventTotalCost(event) {
     const checkedOffers = this.#offersModel.getEventCheckedOffers(event);
     const offersTotalCost = checkedOffers.map((offer) => offer.price).reduce((sum, price) => (sum += price), 0);
-    const eventTotalCost = event.basePrice + offersTotalCost;
 
-    return eventTotalCost;
+    return event.basePrice + offersTotalCost;
   }
 
   #getTripTotalCost() {
