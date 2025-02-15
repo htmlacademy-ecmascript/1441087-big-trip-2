@@ -51,11 +51,13 @@ export default class TripInfoPresenter {
       return;
     }
 
-    this.#tripInfoComponent = new TripInfoView({
-      tripTotalCost: this.#getTripTotalCost(this.#eventsModel.events),
-    });
+    if(this.#eventsModel.events.length !== 0) {
+      this.#tripInfoComponent = new TripInfoView({
+        tripTotalCost: this.#getTripTotalCost(this.#eventsModel.events),
+      });
 
-    render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
+      render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
+    }
   }
 
   #clearTripInfo() {
