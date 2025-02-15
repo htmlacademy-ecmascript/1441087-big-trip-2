@@ -1,4 +1,5 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
+import {DateFormat, getFormattedDate} from '../utils/date-utils.js';
 import TripInfoView from '../view/trip-info-view.js';
 
 
@@ -60,8 +61,9 @@ export default class TripInfoPresenter {
     }
 
     this.#tripInfoComponent = new TripInfoView({
-      tripTotalCost: this.#getTripTotalCost(),
       tripTitle: this.#getTripTitle(),
+      tripDuration: this.#getTripDuration(),
+      tripTotalCost: this.#getTripTotalCost(),
     });
 
     render(this.#tripInfoComponent, this.#tripMainContainer, RenderPosition.AFTERBEGIN);
@@ -82,13 +84,23 @@ export default class TripInfoPresenter {
 
     if(this.#eventsModel.events.length > DESTINATIONS_INFO_MAX){
       events = [this.#eventsModel.events[0], this.#eventsModel.events.at(-1)];
-      separator = ' ... ';
+      separator = ' — ... — ';
     }
 
     const destinationsNames = events.map((event) => this.#destinationsModel.getDestinationById(event.destination).name);
     const tripTitle = destinationsNames.join(separator);
 
     return tripTitle;
+  }
+
+  #getTripDuration() {
+    const firstEvent = this.#eventsModel.events[0];
+    const lastEvent = this.#eventsModel.events.at(-1);
+
+    const tripStartDate = getFormattedDate(firstEvent.dateFrom, DateFormat.TRIP_DATE);
+    const tripEndDate = getFormattedDate(lastEvent.dateTo, DateFormat.TRIP_DATE);
+
+    return `${tripStartDate} — ${tripEndDate}`;
   }
 
   #getEventTotalCost(event) {
