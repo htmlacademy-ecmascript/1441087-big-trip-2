@@ -32,6 +32,9 @@ const filtersModel = new FiltersModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
   tripMainContainer: tripMainElement,
+  destinationsModel,
+  eventsModel,
+  offersModel,
 });
 
 const tripPresenter = new TripPresenter({

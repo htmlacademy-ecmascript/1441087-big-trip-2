@@ -1,5 +1,6 @@
 import Observable from '../framework/observable.js';
 import {UpdateType} from '../const.js';
+import EventSort from '../utils/sort-utils.js';
 
 const EVENT_TYPES = [
   'taxi',
@@ -37,6 +38,7 @@ export default class EventsModel extends Observable {
   }
 
   get events() {
+    EventSort.sortEvents(this.#events);
     return this.#events;
   }
 

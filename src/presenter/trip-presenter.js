@@ -72,10 +72,10 @@ export default class TripPresenter {
       handleNewEventOpen: this.#newEventOpenHandler,
     });
 
-    this.#eventsModel.addObserver(this.#modelEventsHandler);
-    this.#destinationsModel.addObserver(this.#modelDestinationsHandler);
-    this.#offersModel.addObserver(this.#modelOffersHandler);
-    this.#filtersModel.addObserver(this.#modelEventsHandler);
+    this.#eventsModel.addObserver(this.#modelUpdateHandler);
+    this.#destinationsModel.addObserver(this.#modelUpdateHandler);
+    this.#offersModel.addObserver(this.#modelUpdateHandler);
+    this.#filtersModel.addObserver(this.#modelUpdateHandler);
 
     this.#currentSortType = EventSort.defaultSortType;
     this.#currentFilterType = this.#filtersModel.filterType;
@@ -86,7 +86,7 @@ export default class TripPresenter {
     const events = this.#eventsModel.events;
     const filteredEvents = this.#filtersModel.filterMethods[this.#currentFilterType](events);
 
-    EventSort.sortEvents(this.#currentSortType, filteredEvents);
+    EventSort.sortEvents(filteredEvents, this.#currentSortType);
 
     return filteredEvents;
   }
@@ -142,13 +142,14 @@ export default class TripPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #modelEventsHandler = (updateType, data) => {
+  #modelUpdateHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init({
           event: data,
           currentDestination: this.#destinationsModel.getDestinationById(data.destination),
-          currentOffersPack: this.#offersModel.getOffersPackByType(data.type)
+          currentOffersPack: this.#offersModel.getOffersPackByType(data.type),
+          checkedOffers: this.#offersModel.getEventCheckedOffers(data),
         });
         break;
       case UpdateType.MINOR:
@@ -159,22 +160,6 @@ export default class TripPresenter {
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
         break;
-      case UpdateType.INIT:
-        this.#renderTrip();
-        break;
-    }
-  };
-
-  #modelDestinationsHandler = (updateType) => {
-    switch (updateType) {
-      case UpdateType.INIT:
-        this.#renderTrip();
-        break;
-    }
-  };
-
-  #modelOffersHandler = (updateType) => {
-    switch (updateType) {
       case UpdateType.INIT:
         this.#renderTrip();
         break;
@@ -238,7 +223,8 @@ export default class TripPresenter {
     eventPresenter.init({
       event: event,
       currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(event.type)
+      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+      checkedOffers: this.#offersModel.getEventCheckedOffers(event),
     });
 
     this.#eventPresenters.set(event.id, eventPresenter);

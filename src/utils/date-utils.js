@@ -9,7 +9,8 @@ const DateFormat = {
   DAY: 'MMM DD',
   TIME: 'HH:mm',
   DATE: 'DD/MM/YY HH:mm',
-  FLATPICKR: 'd/m/y H:i'
+  FLATPICKR: 'd/m/y H:i',
+  TRIP_DATE: 'DD MMM',
 };
 
 function getFlatpickrConfig() {

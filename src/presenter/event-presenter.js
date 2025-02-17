@@ -20,6 +20,7 @@ export default class EventPresenter {
   #event = null;
   #currentDestination = null;
   #currentOffersPack = null;
+  #checkedOffers = null;
   #allDestinations = null;
   #allOffersPacks = null;
   #eventTypes = null;
@@ -43,10 +44,11 @@ export default class EventPresenter {
     this.handleModeChange = handleModeChange;
   }
 
-  init({event, currentDestination, currentOffersPack}) {
+  init({event, currentDestination, currentOffersPack, checkedOffers}) {
     this.#event = event;
     this.#currentDestination = currentDestination;
     this.#currentOffersPack = currentOffersPack;
+    this.#checkedOffers = checkedOffers;
 
     const prevEventComponent = this.#eventComponent;
     const prevEventEditComponent = this.#eventEditComponent;
@@ -54,7 +56,7 @@ export default class EventPresenter {
     this.#eventComponent = new EventView({
       event: this.#event,
       currentDestination: this.#currentDestination,
-      currentOffersPack: this.#currentOffersPack,
+      checkedOffers: this.#checkedOffers,
       handleFavoriteClick: this.#favoriteClickHandler,
       handleToggleClick: this.#toggleShowClickHandler
     });
