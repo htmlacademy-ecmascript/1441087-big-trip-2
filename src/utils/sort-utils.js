@@ -34,36 +34,36 @@ function getEventDuration(event) {
   return dayjs(event.dateFrom).diff(event.dateTo);
 }
 
-function getWeightForNullDate(dateA, dateB) {
-  if (dateA === null && dateB === null) {
+function getWeightForNullDate(firstDate, secondDate) {
+  if (firstDate === null && secondDate === null) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (firstDate === null) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (secondDate === null) {
     return -1;
   }
 
   return null;
 }
 
-function sortEventDay(eventA, eventB) {
-  const weight = getWeightForNullDate(eventA.dateFrom, eventB.dateFrom);
+function sortEventDay(firstEvent, secondEvent) {
+  const weight = getWeightForNullDate(firstEvent.dateFrom, secondEvent.dateFrom);
 
-  return weight ?? dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+  return weight ?? dayjs(firstEvent.dateFrom).diff(dayjs(secondEvent.dateFrom));
 }
 
-function sortEventTime(eventA, eventB) {
-  const weight = getWeightForNullDate(eventA.dateFrom, eventB.dateFrom);
+function sortEventTime(firstEvent, secondEvent) {
+  const weight = getWeightForNullDate(firstEvent.dateFrom, secondEvent.dateFrom);
 
-  return weight ?? getEventDuration(eventA) - getEventDuration(eventB);
+  return weight ?? getEventDuration(firstEvent) - getEventDuration(secondEvent);
 }
 
-function sortEventPrice(eventA, eventB) {
-  return eventB.basePrice - eventA.basePrice;
+function sortEventPrice(firstEvent, secondEvent) {
+  return secondEvent.basePrice - firstEvent.basePrice;
 }
 
 export default class EventSort {
