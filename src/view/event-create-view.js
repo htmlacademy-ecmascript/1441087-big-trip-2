@@ -350,9 +350,9 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    const newPrice = evt.target.value;
+
     this.updateElement({
-      basePrice: newPrice,
+      basePrice: evt.target.value,
     });
   };
 
