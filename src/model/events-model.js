@@ -1,5 +1,5 @@
-import Observable from '../framework/observable.js';
 import {UpdateType} from '../const.js';
+import Observable from '../framework/observable.js';
 import EventSort from '../utils/sort-utils.js';
 
 const EVENT_TYPES = [

@@ -44,6 +44,7 @@ const SortType = {
   OFFERS: 'offers'
 };
 
+
 export {
   END_POINT,
   AUTHORIZATION,

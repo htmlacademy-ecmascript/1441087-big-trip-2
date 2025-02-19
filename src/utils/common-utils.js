@@ -10,6 +10,7 @@ function isEscapeKey (evt) {
   return evt.key === 'Escape';
 }
 
+
 export {
   getCapitalizedString,
   getHtmlSafeString,

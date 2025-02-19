@@ -1,6 +1,7 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 function createSortItemTemplate(sortItem, currentSortType) {
   const {name, isAvailable} = sortItem;
   const isChecked = name === currentSortType ? 'checked' : '';

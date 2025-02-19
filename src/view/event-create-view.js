@@ -2,7 +2,6 @@ import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js'
 import {EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/material_blue.css';
 
@@ -195,6 +194,7 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
     </li>`
   );
 }
+
 
 export default class EventCreateView extends AbstractStatefulView {
   #allDestinations = null;

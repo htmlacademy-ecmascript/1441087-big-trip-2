@@ -15,7 +15,6 @@ const filtersElement = document.querySelector('.trip-controls__filters');
 const tripMainElement = document.querySelector('.trip-main');
 const pageContainerElement = document.querySelector('.page-main div');
 
-
 const destinationsModel = new DestinationsModel({
   destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION),
 });

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 
+
 const HOURS_IN_DAY = 24;
 const MANUTES_IN_HOUR = 60;
 const REQUIRED_STRING_LENGTH = 2;
@@ -41,6 +42,7 @@ function getFormattedDuration(dateA, dateB) {
 function isDatesEqual(dateA, dateB) {
   return (dateA === null && dateB === null) || dayjs(dateA).isSame(dayjs(dateB));
 }
+
 
 export {
   EVENT_HOUR_OFFSET,
