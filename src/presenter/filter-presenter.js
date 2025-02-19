@@ -5,9 +5,7 @@ import FilterView from '../view/filter-view.js';
 
 export default class FilterPresenter {
   #filterContainer = null;
-
   #filterComponent = null;
-
   #filtersModel = null;
   #eventsModel = null;
 
