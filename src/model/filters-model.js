@@ -12,7 +12,7 @@ const FilterMethod = {
   [FilterType.PAST]: (events) => events.filter((event) => event.dateTo < TODAY)
 };
 
-const noEventMessage = {
+const NoEventMessage = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PRESENT]: 'There are no present events now',
@@ -45,6 +45,6 @@ export default class FiltersModel extends Observable {
   }
 
   getnoEventMessage(filterType) {
-    return noEventMessage[filterType];
+    return NoEventMessage[filterType];
   }
 }
