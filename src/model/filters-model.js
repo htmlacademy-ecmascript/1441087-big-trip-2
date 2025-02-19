@@ -44,7 +44,7 @@ export default class FiltersModel extends Observable {
     this._notify(updateType, filterType);
   }
 
-  getnoEventMessage(filterType) {
+  getNoEventMessage(filterType) {
     return NoEventMessage[filterType];
   }
 }

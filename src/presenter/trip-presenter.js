@@ -239,7 +239,7 @@ export default class TripPresenter {
   }
 
   #renderNoEventsMessage() {
-    this.#renderTripMessage(this.#filtersModel.getnoEventMessage(this.#currentFilterType));
+    this.#renderTripMessage(this.#filtersModel.getNoEventMessage(this.#currentFilterType));
   }
 
   #renderApiErrorMessage() {
