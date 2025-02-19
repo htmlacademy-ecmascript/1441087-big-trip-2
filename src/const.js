@@ -3,6 +3,18 @@ const AUTHORIZATION = 'Basic FortySix&2';
 const API_ERROR_MESSAGE = 'Failed to load latest route information';
 const LOADING_MESSAGE = 'Loading...';
 
+const EVENT_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant'
+];
+
 const HttpMethod = {
   GET: 'GET',
   PUT: 'PUT',
@@ -50,6 +62,7 @@ export {
   AUTHORIZATION,
   API_ERROR_MESSAGE,
   LOADING_MESSAGE,
+  EVENT_TYPES,
   HttpMethod,
   HttpRoute,
   UserAction,

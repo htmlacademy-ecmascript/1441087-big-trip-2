@@ -213,8 +213,8 @@ export default class TripPresenter {
   #renderEvent(event) {
     const eventPresenter = new EventPresenter({
       eventListContainer: this.#eventListComponent.element,
-      allDestinations: this.#destinationsModel.destinations,
-      allOffersPacks: this.#offersModel.offersPacks,
+      allDestinations: this.destinations,
+      allOffersPacks: this.offersPacks,
       eventTypes: this.#eventsModel.eventTypes,
       handleViewAction: this.#viewActionHandler,
       handleModeChange: this.#modeChangeHandler
