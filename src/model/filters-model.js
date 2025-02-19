@@ -6,7 +6,7 @@ const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
 const TODAY = new Date();
 
 const FilterMethod = {
-  [FilterType.EVERYTHING]: (events) => events.filter((event) => event),
+  [FilterType.EVERYTHING]: (events) => events,
   [FilterType.FUTURE]: (events) => events.filter((event) => event.dateFrom > TODAY),
   [FilterType.PRESENT]: (events) => events.filter((event) => event.dateFrom <= TODAY && event.dateTo >= TODAY),
   [FilterType.PAST]: (events) => events.filter((event) => event.dateTo < TODAY)
