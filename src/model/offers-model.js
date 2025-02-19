@@ -1,5 +1,5 @@
-import Observable from '../framework/observable.js';
 import {UpdateType} from '../const.js';
+import Observable from '../framework/observable.js';
 
 
 export default class OffersModel extends Observable {
@@ -13,6 +13,18 @@ export default class OffersModel extends Observable {
     this.#offersApiService = offersApiService;
   }
 
+  get offersPacks() {
+    return this.#offersPacks;
+  }
+
+  get isLoading() {
+    return this.#isLoading;
+  }
+
+  get isError() {
+    return this.#isError;
+  }
+
   async init() {
     try {
       const offersPacks = await this.#offersApiService.offers;
@@ -24,18 +36,6 @@ export default class OffersModel extends Observable {
 
     this.#isLoading = false;
     this._notify(UpdateType.INIT);
-  }
-
-  get offersPacks() {
-    return this.#offersPacks;
-  }
-
-  get isLoading() {
-    return this.#isLoading;
-  }
-
-  get isError() {
-    return this.#isError;
   }
 
   getOffersPackByType(type) {

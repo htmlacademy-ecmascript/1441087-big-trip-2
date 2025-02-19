@@ -15,7 +15,6 @@ function createOfferTemplate(offer) {
   );
 }
 
-
 function createOffersCheckedListTemplate(checkedOffers) {
   return checkedOffers.length !== 0 ? (
     `<h4 class="visually-hidden">Offers:</h4>
@@ -24,7 +23,6 @@ function createOffersCheckedListTemplate(checkedOffers) {
       </ul>`
   ) : '';
 }
-
 
 function createEventTemplate(event, currentDestination, checkedOffers) {
   const {id, type, dateFrom, dateTo, basePrice} = event;

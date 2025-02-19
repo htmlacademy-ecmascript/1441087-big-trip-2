@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 function createTripTemplate() {
   return (
     `<section class="trip-events">
@@ -7,6 +8,7 @@ function createTripTemplate() {
     </section>`
   );
 }
+
 
 export default class TripView extends AbstractView {
   get template() {

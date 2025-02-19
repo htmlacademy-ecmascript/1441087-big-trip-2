@@ -12,10 +12,8 @@ const Mode = {
 
 export default class EventPresenter {
   #eventListContainer = null;
-
   #eventComponent = null;
   #eventEditComponent = null;
-
   #mode = Mode.DEFAULT;
   #event = null;
   #currentDestination = null;
@@ -24,9 +22,8 @@ export default class EventPresenter {
   #allDestinations = null;
   #allOffersPacks = null;
   #eventTypes = null;
-
   #handleViewAction = null;
-  handleModeChange = null;
+  #handleModeChange = null;
 
   constructor({
     eventListContainer,
@@ -41,7 +38,7 @@ export default class EventPresenter {
     this.#allOffersPacks = allOffersPacks;
     this.#eventTypes = eventTypes;
     this.#handleViewAction = handleViewAction;
-    this.handleModeChange = handleModeChange;
+    this.#handleModeChange = handleModeChange;
   }
 
   init({event, currentDestination, currentOffersPack, checkedOffers}) {
@@ -94,6 +91,7 @@ export default class EventPresenter {
   destroy() {
     remove(this.#eventComponent);
     remove(this.#eventEditComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   resetView() {
@@ -141,7 +139,7 @@ export default class EventPresenter {
   #replaceCardToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.handleModeChange();
+    this.#handleModeChange();
     this.#mode = Mode.EDITING;
   }
 

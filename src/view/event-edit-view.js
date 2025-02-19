@@ -2,7 +2,6 @@ import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js'
 import {EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/material_blue.css';
 
@@ -70,7 +69,7 @@ function createOfferTemplate(_state, offer, isDisabled) {
   );
 }
 
-function createOfferListTemplate(_state, isDisabled) {
+function createOffersTemplate(_state, isDisabled) {
   const {currentOffersPack} = _state;
   if(!currentOffersPack) {
     return '';
@@ -102,21 +101,27 @@ function createDestinationTemplate(destination) {
   }
   const {description, pictures} = destination;
 
-  if (description !== '' || pictures.length !== 0) {
-    return (
-      `<section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-        ${createPicturesListTemplate(pictures)}
-      </section>`);
-  } else {
-    return '';
-  }
+  return (description !== '' || pictures.length !== 0) ? (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${description}</p>
+      ${createPicturesListTemplate(pictures)}
+    </section>`) : '';
+}
+
+function createDetailsTemplate(offersTemplate, destinationTemplate) {
+  return (offersTemplate !== '' || destinationTemplate !== '') ? (
+    `<section class="event__details">
+      ${offersTemplate}
+      ${destinationTemplate}
+    </section>`) : '';
 }
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination, isDisabled, isSaving, isDeleting} = _state;
   const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
+  const offersTemplate = createOffersTemplate(_state, isDisabled);
+  const destinationTemplate = createDestinationTemplate(currentDestination);
 
   return (
     `<li class="trip-events__item">
@@ -191,15 +196,12 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
-        <section class="event__details">
-          ${createOfferListTemplate(_state, isDisabled)}
-
-          ${createDestinationTemplate(currentDestination)}
-        </section>
+        ${createDetailsTemplate(offersTemplate, destinationTemplate)}
       </form>
     </li>`
   );
 }
+
 
 export default class EventEditView extends AbstractStatefulView {
   #allDestinations = null;
@@ -280,7 +282,7 @@ export default class EventEditView extends AbstractStatefulView {
       {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateFrom,
-        onChange: this.#dateFromCloseHandler,
+        onClose: this.#dateFromCloseHandler,
       },
     );
   }
@@ -292,7 +294,7 @@ export default class EventEditView extends AbstractStatefulView {
         ...getFlatpickrConfig(),
         defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
-        onChange: this.#dateToCloseHandler,
+        onClose: this.#dateToCloseHandler,
       },
     );
   }
@@ -359,9 +361,9 @@ export default class EventEditView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    const newPrice = evt.target.value;
+
     this.updateElement({
-      basePrice: newPrice,
+      basePrice: evt.target.value,
     });
   };
 
@@ -382,6 +384,7 @@ export default class EventEditView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const targetOffer = evt.target.dataset.offerId;
+
     if(this._state.offers.includes(targetOffer)) {
       this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
     } else {

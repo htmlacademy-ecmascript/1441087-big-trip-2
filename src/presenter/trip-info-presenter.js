@@ -8,11 +8,9 @@ const DESTINATIONS_INFO_MAX = 3;
 
 export default class TripInfoPresenter {
   #tripMainContainer = null;
-
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
-
   #tripInfoComponent = null;
 
   constructor({tripMainContainer, destinationsModel, eventsModel, offersModel}) {
@@ -33,10 +31,6 @@ export default class TripInfoPresenter {
 
     this.#renderTripInfo();
   }
-
-  #modelUpdateHandler = () => {
-    this.init();
-  };
 
   #renderTripInfo() {
     if(this.#eventsModel.isError ||
@@ -113,4 +107,8 @@ export default class TripInfoPresenter {
 
     return tripTotalCost;
   }
+
+  #modelUpdateHandler = () => {
+    this.init();
+  };
 }

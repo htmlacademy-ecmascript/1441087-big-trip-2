@@ -3,18 +3,17 @@ const AUTHORIZATION = 'Basic FortySix&2';
 const API_ERROR_MESSAGE = 'Failed to load latest route information';
 const LOADING_MESSAGE = 'Loading...';
 
-const UserAction = {
-  UPDATE_EVENT: 'UPDATE_EVENT',
-  ADD_EVENT: 'ADD_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT',
-};
-
-const UpdateType = {
-  PATCH: 'PATCH',
-  MINOR: 'MINOR',
-  MAJOR: 'MAJOR',
-  INIT: 'INIT',
-};
+const EVENT_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant'
+];
 
 const HttpMethod = {
   GET: 'GET',
@@ -29,13 +28,45 @@ const HttpRoute = {
   OFFERS: 'offers',
 };
 
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+const SortType = {
+  DAY:'day',
+  EVENT:'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+
+
 export {
   END_POINT,
   AUTHORIZATION,
   API_ERROR_MESSAGE,
   LOADING_MESSAGE,
-  UserAction,
-  UpdateType,
+  EVENT_TYPES,
   HttpMethod,
   HttpRoute,
+  UserAction,
+  UpdateType,
+  FilterType,
+  SortType,
 };

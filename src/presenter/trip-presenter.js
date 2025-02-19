@@ -20,29 +20,25 @@ const UiBlockerTimeLimit = {
 export default class TripPresenter {
   #tripMainContainer = null;
   #tripContainer = null;
-
   #tripComponent = new TripView();
   #sortComponent = null;
   #eventListComponent = new EventListView();
   #currentMessageComponent = null;
   #prevMessageComponent = null;
   #newEventButtonComponent = null;
-
   #eventPresenters = new Map();
   #newEventPresenter = null;
-
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
   #filtersModel = null;
+  #currentSortType = null;
+  #currentFilterType = null;
 
   #uiBlocker = new UiBlocker({
     lowerLimit: UiBlockerTimeLimit.LOWER_LIMIT,
     upperLimit: UiBlockerTimeLimit.UPPER_LIMIT
   });
-
-  #currentSortType = null;
-  #currentFilterType = null;
 
   constructor({
     tripMainContainer,
@@ -102,6 +98,116 @@ export default class TripPresenter {
   init () {
     render(this.#eventListComponent, this.#tripComponent.element);
     this.#renderTrip();
+  }
+
+  #renderLoadingMessage() {
+    this.#renderTripMessage(LOADING_MESSAGE);
+  }
+
+  #renderNoEventsMessage() {
+    this.#renderTripMessage(this.#filtersModel.getNoEventMessage(this.#currentFilterType));
+  }
+
+  #renderApiErrorMessage() {
+    this.#renderTripMessage(API_ERROR_MESSAGE);
+  }
+
+  #renderTripMessage(message) {
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
+    }
+
+    this.#currentMessageComponent = new TripMessageView({message});
+    render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
+  }
+
+  #renderNewEventButton() {
+    render(this.#newEventButtonComponent, this.#tripMainContainer);
+  }
+
+  #renderSort() {
+    this.#sortComponent = new SortView({
+      sortSettings: EventSort.sortSettings,
+      currentSortType: this.#currentSortType,
+      handleSortClick: this.#sortClickHandler
+    });
+
+    render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderEvent(event) {
+    const eventPresenter = new EventPresenter({
+      eventListContainer: this.#eventListComponent.element,
+      allDestinations: this.destinations,
+      allOffersPacks: this.offersPacks,
+      eventTypes: this.#eventsModel.eventTypes,
+      handleViewAction: this.#viewActionHandler,
+      handleModeChange: this.#modeChangeHandler
+    });
+
+    eventPresenter.init({
+      event: event,
+      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
+      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
+      checkedOffers: this.#offersModel.getEventCheckedOffers(event),
+    });
+
+    this.#eventPresenters.set(event.id, eventPresenter);
+  }
+
+  #renderEvents(events) {
+    events.forEach((event) => this.#renderEvent(event));
+  }
+
+  #renderTrip() {
+    render(this.#tripComponent, this.#tripContainer);
+
+    if(this.#eventsModel.isError ||
+       this.#destinationsModel.isError ||
+       this.#offersModel.isError) {
+      this.#renderApiErrorMessage();
+      return;
+    }
+
+    if (this.#eventsModel.isLoading ||
+        this.#destinationsModel.isLoading ||
+        this.#offersModel.isLoading) {
+      this.#renderLoadingMessage();
+      return;
+    }
+
+    this.#renderNewEventButton();
+    remove(this.#currentMessageComponent);
+
+    if(this.events.length === 0) {
+      this.#renderNoEventsMessage();
+      return;
+    }
+
+    this.#renderSort();
+    this.#renderEvents(this.events);
+  }
+
+  #clearTrip({resetSortType = false} = {}) {
+    this.#newEventPresenter.destroy();
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+
+    remove(this.#sortComponent);
+
+    if(this.#currentMessageComponent) {
+      remove(this.#currentMessageComponent);
+      this.#currentMessageComponent = null;
+    }
+
+    if(this.#prevMessageComponent) {
+      remove(this.#prevMessageComponent);
+      this.#prevMessageComponent = null;
+    }
+
+    if(resetSortType) {
+      this.#currentSortType = EventSort.defaultSortType;
+    }
   }
 
   #modeChangeHandler = () => {
@@ -195,114 +301,4 @@ export default class TripPresenter {
     this.#clearTrip();
     this.#renderTrip();
   };
-
-  #renderNewEventButton() {
-    render(this.#newEventButtonComponent, this.#tripMainContainer);
-  }
-
-  #renderSort() {
-    this.#sortComponent = new SortView({
-      sortSettings: EventSort.sortSettings,
-      currentSortType: this.#currentSortType,
-      handleSortClick: this.#sortClickHandler
-    });
-
-    render(this.#sortComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderEvent(event) {
-    const eventPresenter = new EventPresenter({
-      eventListContainer: this.#eventListComponent.element,
-      allDestinations: this.#destinationsModel.destinations,
-      allOffersPacks: this.#offersModel.offersPacks,
-      eventTypes: this.#eventsModel.eventTypes,
-      handleViewAction: this.#viewActionHandler,
-      handleModeChange: this.#modeChangeHandler
-    });
-
-    eventPresenter.init({
-      event: event,
-      currentDestination: this.#destinationsModel.getDestinationById(event.destination),
-      currentOffersPack: this.#offersModel.getOffersPackByType(event.type),
-      checkedOffers: this.#offersModel.getEventCheckedOffers(event),
-    });
-
-    this.#eventPresenters.set(event.id, eventPresenter);
-  }
-
-  #renderEvents(events) {
-    events.forEach((event) => this.#renderEvent(event));
-  }
-
-  #renderLoadingMessage() {
-    this.#renderTripMessage(LOADING_MESSAGE);
-  }
-
-  #renderNoEventsMessage() {
-    this.#renderTripMessage(this.#filtersModel.getnoEventMessage(this.#currentFilterType));
-  }
-
-  #renderApiErrorMessage() {
-    this.#renderTripMessage(API_ERROR_MESSAGE);
-  }
-
-  #renderTripMessage(message) {
-    if(this.#currentMessageComponent) {
-      remove(this.#currentMessageComponent);
-    }
-
-    this.#currentMessageComponent = new TripMessageView({message});
-    render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);
-  }
-
-  #renderTrip() {
-    render(this.#tripComponent, this.#tripContainer);
-
-    if(this.#eventsModel.isError ||
-       this.#destinationsModel.isError ||
-       this.#offersModel.isError) {
-      this.#renderApiErrorMessage();
-      return;
-    }
-
-    if (this.#eventsModel.isLoading ||
-        this.#destinationsModel.isLoading ||
-        this.#offersModel.isLoading) {
-      this.#renderLoadingMessage();
-      return;
-    }
-
-    this.#renderNewEventButton();
-    remove(this.#currentMessageComponent);
-
-    if(this.events.length === 0) {
-      this.#renderNoEventsMessage();
-      return;
-    }
-
-    this.#renderSort();
-    this.#renderEvents(this.events);
-  }
-
-  #clearTrip({resetSortType = false} = {}) {
-    this.#newEventPresenter.destroy();
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-
-    remove(this.#sortComponent);
-
-    if(this.#currentMessageComponent) {
-      remove(this.#currentMessageComponent);
-      this.#currentMessageComponent = null;
-    }
-
-    if(this.#prevMessageComponent) {
-      remove(this.#prevMessageComponent);
-      this.#prevMessageComponent = null;
-    }
-
-    if(resetSortType) {
-      this.#currentSortType = EventSort.defaultSortType;
-    }
-  }
 }

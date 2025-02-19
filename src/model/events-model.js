@@ -1,18 +1,7 @@
+import {EVENT_TYPES, UpdateType} from '../const.js';
 import Observable from '../framework/observable.js';
-import {UpdateType} from '../const.js';
 import EventSort from '../utils/sort-utils.js';
 
-const EVENT_TYPES = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant'
-];
 
 const BLANK_EVENT = {
   id: null,

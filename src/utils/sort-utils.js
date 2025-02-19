@@ -1,76 +1,69 @@
+import {SortType} from '../const.js';
 import dayjs from 'dayjs';
 
-const SortType = {
-  DAY:'day',
-  EVENT:'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offers'
-};
+
+const DEFAULT_SORT_TYPE = SortType.DAY;
 
 const sortSettings = [
   {
     name: SortType.DAY,
     isAvailable: true,
-    isDefault: true
   },
   {
     name: SortType.EVENT,
     isAvailable: false,
-    isDefault: false
   },
   {
     name: SortType.TIME,
     isAvailable: true,
-    isDefault: false
   },
   {
     name: SortType.PRICE,
     isAvailable: true,
-    isDefault: false
   },
   {
     name: SortType.OFFERS,
     isAvailable: false,
-    isDefault: false
   }
 ];
+
 
 function getEventDuration(event) {
   return dayjs(event.dateFrom).diff(event.dateTo);
 }
 
-function getWeightForNullDate(dateA, dateB) {
-  if (dateA === null && dateB === null) {
+function getWeightForNullDate(firstDate, secondDate) {
+  if (firstDate === null && secondDate === null) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (firstDate === null) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (secondDate === null) {
     return -1;
   }
 
   return null;
 }
 
-function sortEventDay(eventA, eventB) {
-  const weight = getWeightForNullDate(eventA.dateFrom, eventB.dateFrom);
+function sortEventDay(firstEvent, secondEvent) {
+  const weight = getWeightForNullDate(firstEvent.dateFrom, secondEvent.dateFrom);
 
-  return weight ?? dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+  return weight ?? dayjs(firstEvent.dateFrom).diff(dayjs(secondEvent.dateFrom));
 }
 
-function sortEventTime(eventA, eventB) {
-  const weight = getWeightForNullDate(eventA.dateFrom, eventB.dateFrom);
+function sortEventTime(firstEvent, secondEvent) {
+  const weight = getWeightForNullDate(firstEvent.dateFrom, secondEvent.dateFrom);
 
-  return weight ?? getEventDuration(eventA) - getEventDuration(eventB);
+  return weight ?? getEventDuration(firstEvent) - getEventDuration(secondEvent);
 }
 
-function sortEventPrice(eventA, eventB) {
-  return eventB.basePrice - eventA.basePrice;
+function sortEventPrice(firstEvent, secondEvent) {
+  return secondEvent.basePrice - firstEvent.basePrice;
 }
+
 
 export default class EventSort {
   static get sortSettings() {
@@ -78,7 +71,7 @@ export default class EventSort {
   }
 
   static get defaultSortType() {
-    return sortSettings.find((sortType) => sortType.isDefault === true).name;
+    return DEFAULT_SORT_TYPE;
   }
 
   static sortEvents(events, sortType = this.defaultSortType) {

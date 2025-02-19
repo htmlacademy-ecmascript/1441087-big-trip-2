@@ -6,13 +6,10 @@ import EventCreateView from '../view/event-create-view.js';
 
 export default class NewEventPresenter {
   #eventListContainer = null;
-
   #eventCreateComponent = null;
-
   #destinationsModel = null;
   #eventsModel = null;
   #offersModel = null;
-
   #handleEventUpdate = null;
   #handleNewEventClose = null;
 
@@ -99,7 +96,8 @@ export default class NewEventPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if(isEscapeKey(evt)) {
+    if (isEscapeKey(evt) &&
+        document.activeElement.tagName !== 'INPUT') {
       evt.preventDefault();
       this.destroy();
     }
