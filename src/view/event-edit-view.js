@@ -114,7 +114,7 @@ function createDetailsTemplate(offersTemplate, destinationTemplate) {
     `<section class="event__details">
       ${offersTemplate}
       ${destinationTemplate}
-     </section>`) : '';
+    </section>`) : '';
 }
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
