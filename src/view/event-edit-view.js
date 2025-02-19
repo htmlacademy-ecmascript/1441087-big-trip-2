@@ -69,7 +69,7 @@ function createOfferTemplate(_state, offer, isDisabled) {
   );
 }
 
-function createOfferListTemplate(_state, isDisabled) {
+function createOffersTemplate(_state, isDisabled) {
   const {currentOffersPack} = _state;
   if(!currentOffersPack) {
     return '';
@@ -113,9 +113,19 @@ function createDestinationTemplate(destination) {
   }
 }
 
+function createDetailsTemplate(offersTemplate, destinationTemplate) {
+  return (offersTemplate !== '' || destinationTemplate !== '') ?
+    (`<section class="event__details">
+        ${offersTemplate}
+        ${destinationTemplate}
+      </section>`) : '';
+}
+
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination, isDisabled, isSaving, isDeleting} = _state;
   const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
+  const offersTemplate = createOffersTemplate(_state, isDisabled);
+  const destinationTemplate = createDestinationTemplate(currentDestination);
 
   return (
     `<li class="trip-events__item">
@@ -190,11 +200,7 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
-        <section class="event__details">
-          ${createOfferListTemplate(_state, isDisabled)}
-
-          ${createDestinationTemplate(currentDestination)}
-        </section>
+        ${createDetailsTemplate(offersTemplate, destinationTemplate)}
       </form>
     </li>`
   );
