@@ -2,33 +2,31 @@ import {SortType} from '../const.js';
 import dayjs from 'dayjs';
 
 
+const DEFAULT_SORT_TYPE = SortType.DAY;
+
 const sortSettings = [
   {
     name: SortType.DAY,
     isAvailable: true,
-    isDefault: true
   },
   {
     name: SortType.EVENT,
     isAvailable: false,
-    isDefault: false
   },
   {
     name: SortType.TIME,
     isAvailable: true,
-    isDefault: false
   },
   {
     name: SortType.PRICE,
     isAvailable: true,
-    isDefault: false
   },
   {
     name: SortType.OFFERS,
     isAvailable: false,
-    isDefault: false
   }
 ];
+
 
 function getEventDuration(event) {
   return dayjs(event.dateFrom).diff(event.dateTo);
@@ -66,13 +64,14 @@ function sortEventPrice(firstEvent, secondEvent) {
   return secondEvent.basePrice - firstEvent.basePrice;
 }
 
+
 export default class EventSort {
   static get sortSettings() {
     return sortSettings;
   }
 
   static get defaultSortType() {
-    return sortSettings.find((sortType) => sortType.isDefault === true).name;
+    return DEFAULT_SORT_TYPE;
   }
 
   static sortEvents(events, sortType = this.defaultSortType) {
