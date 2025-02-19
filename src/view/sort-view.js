@@ -26,7 +26,8 @@ function createSortItemTemplate(sortItem, currentSortType) {
 }
 
 function createSortTemplate(sortSettings, currentSortType) {
-  const sortItems = sortSettings.slice().map((sortItem) => createSortItemTemplate(sortItem, currentSortType)).join('');
+  const sortItems = [...sortSettings].map((sortItem) => createSortItemTemplate(sortItem, currentSortType)).join('');
+
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItems}
