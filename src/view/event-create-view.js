@@ -368,6 +368,7 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const targetOffer = evt.target.dataset.offerId;
+
     if(this._state.offers.includes(targetOffer)) {
       this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
     } else {

@@ -18,7 +18,9 @@ function createSortItemTemplate(sortItem, currentSortType) {
         value="sort-${name}"
         ${isChecked}
         ${isDisabled}>
-      <label class="trip-sort__btn" for="sort-${name}">${getCapitalizedString(name)}</label>
+      <label class="trip-sort__btn" for="sort-${name}">
+        ${getCapitalizedString(name)}
+      </label>
     </div>`
   );
 }

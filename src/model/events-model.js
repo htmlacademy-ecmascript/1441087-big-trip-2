@@ -2,6 +2,7 @@ import {EVENT_TYPES, UpdateType} from '../const.js';
 import Observable from '../framework/observable.js';
 import EventSort from '../utils/sort-utils.js';
 
+
 const BLANK_EVENT = {
   id: null,
   basePrice: 0,

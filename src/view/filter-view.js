@@ -1,6 +1,7 @@
 import {getCapitalizedString} from '../utils/common-utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
   const isChecked = type === currentFilterType ? 'checked' : '';
@@ -34,6 +35,7 @@ function createFilterTemplate(filters, currentFilterType) {
     </form>`
   );
 }
+
 
 export default class FilterView extends AbstractView {
   #filters = null;
