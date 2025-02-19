@@ -1,17 +1,15 @@
 import {FilterType} from '../const.js';
-import dayjs from 'dayjs';
 import Observable from '../framework/observable.js';
 
 
 const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
-const TODAY = dayjs();
-
+const TODAY = new Date();
 
 const FilterMethod = {
   [FilterType.EVERYTHING]: (events) => events.filter((event) => event),
-  [FilterType.FUTURE]: (events) => events.filter((event) => dayjs(event.dateFrom) > TODAY),
-  [FilterType.PRESENT]: (events) => events.filter((event) => dayjs(event.dateFrom) <= TODAY && dayjs(event.dateTo) >= TODAY),
-  [FilterType.PAST]: (events) => events.filter((event) => dayjs(event.dateTo) < TODAY)
+  [FilterType.FUTURE]: (events) => events.filter((event) => event.dateFrom > TODAY),
+  [FilterType.PRESENT]: (events) => events.filter((event) => event.dateFrom <= TODAY && event.dateTo >= TODAY),
+  [FilterType.PAST]: (events) => events.filter((event) => event.dateTo < TODAY)
 };
 
 const noEventMessage = {
@@ -20,6 +18,7 @@ const noEventMessage = {
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no past events now'
 };
+
 
 export default class FiltersModel extends Observable {
   #filterType = DEFAULT_FILTER_TYPE;
