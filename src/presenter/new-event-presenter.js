@@ -96,7 +96,8 @@ export default class NewEventPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if(isEscapeKey(evt)) {
+    if (isEscapeKey(evt) &&
+        document.activeElement.tagName !== 'INPUT') {
       evt.preventDefault();
       this.destroy();
     }
