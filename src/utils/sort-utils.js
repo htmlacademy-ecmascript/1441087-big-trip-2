@@ -1,12 +1,6 @@
+import {SortType} from '../const.js';
 import dayjs from 'dayjs';
 
-const SortType = {
-  DAY:'day',
-  EVENT:'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offers'
-};
 
 const sortSettings = [
   {

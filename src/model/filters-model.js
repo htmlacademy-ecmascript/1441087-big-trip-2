@@ -1,16 +1,11 @@
+import {FilterType} from '../const.js';
 import dayjs from 'dayjs';
 import Observable from '../framework/observable.js';
 
-const TODAY = dayjs();
-
-const FilterType = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past'
-};
 
 const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
+const TODAY = dayjs();
+
 
 const FilterMethod = {
   [FilterType.EVERYTHING]: (events) => events.filter((event) => event),
