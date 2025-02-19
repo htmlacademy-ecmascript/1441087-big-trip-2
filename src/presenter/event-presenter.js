@@ -12,10 +12,8 @@ const Mode = {
 
 export default class EventPresenter {
   #eventListContainer = null;
-
   #eventComponent = null;
   #eventEditComponent = null;
-
   #mode = Mode.DEFAULT;
   #event = null;
   #currentDestination = null;
@@ -24,7 +22,6 @@ export default class EventPresenter {
   #allDestinations = null;
   #allOffersPacks = null;
   #eventTypes = null;
-
   #handleViewAction = null;
   #handleModeChange = null;
 
