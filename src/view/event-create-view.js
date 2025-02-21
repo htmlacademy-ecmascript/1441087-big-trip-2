@@ -1,5 +1,5 @@
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
-import {EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
+import {MILLISECONDS_IN_HOUR, EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -119,7 +119,7 @@ function createDetailsTemplate(offersTemplate, destinationTemplate) {
 
 function createEventCreateTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination, isDisabled, isSaving} = _state;
-  const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
+  const isSubmitDisabled = !type || !currentDestination || !dateFrom || !dateTo;
   const offersTemplate = createOffersTemplate(_state, isDisabled);
   const destinationTemplate = createDestinationTemplate(currentDestination);
 
@@ -289,30 +289,28 @@ export default class EventCreateView extends AbstractStatefulView {
   }
 
   #dateFromCloseHandler = ([userDate]) => {
-    if (!userDate) {
-      userDate = new Date().setMinutes(0);
+    const dateFrom = userDate ? userDate : new Date();
+    let dateTo = this._state.dateTo;
+
+    if (dateTo && dateFrom >= dateTo) {
+      dateTo = dateFrom.valueOf() + (EVENT_HOUR_OFFSET * MILLISECONDS_IN_HOUR);
+
+      this.updateElement({
+        dateFrom: dateFrom,
+        dateTo: new Date(dateTo),
+      });
+    } else {
+      this.updateElement({
+        dateFrom: dateFrom,
+      });
     }
-
-    const dateFrom = new Date(userDate);
-    let dateTo = new Date(this._state.dateTo);
-
-    if (dateFrom > dateTo) {
-      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
-    }
-
-    this.updateElement({
-      dateFrom: dateFrom,
-      dateTo: dateTo
-    });
   };
 
   #dateToCloseHandler = ([userDate]) => {
-    if (!userDate) {
-      userDate = new Date().setMinutes(0);
-    }
+    const dateTo = userDate ? userDate : new Date();
 
     this.updateElement({
-      dateTo: userDate,
+      dateTo: dateTo,
     });
   };
 
