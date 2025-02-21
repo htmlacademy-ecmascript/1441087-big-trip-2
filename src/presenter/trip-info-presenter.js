@@ -25,7 +25,7 @@ export default class TripInfoPresenter {
   }
 
   init() {
-    if(this.#tripInfoComponent) {
+    if (this.#tripInfoComponent) {
       this.#clearTripInfo();
     }
 
@@ -33,7 +33,7 @@ export default class TripInfoPresenter {
   }
 
   #renderTripInfo() {
-    if(this.#eventsModel.isError ||
+    if (this.#eventsModel.isError ||
       this.#destinationsModel.isError ||
       this.#offersModel.isError) {
       return;
@@ -45,7 +45,7 @@ export default class TripInfoPresenter {
       return;
     }
 
-    if(this.#eventsModel.events.length === 0) {
+    if (this.#eventsModel.events.length === 0) {
       return;
     }
 
@@ -66,12 +66,12 @@ export default class TripInfoPresenter {
     let events = [];
     let separator = '';
 
-    if(this.#eventsModel.events.length <= DESTINATIONS_INFO_MAX){
+    if (this.#eventsModel.events.length <= DESTINATIONS_INFO_MAX){
       events = [...this.#eventsModel.events];
       separator = ' — ';
     }
 
-    if(this.#eventsModel.events.length > DESTINATIONS_INFO_MAX){
+    if (this.#eventsModel.events.length > DESTINATIONS_INFO_MAX){
       events = [this.#eventsModel.events[0], this.#eventsModel.events.at(-1)];
       separator = ' — ... — ';
     }

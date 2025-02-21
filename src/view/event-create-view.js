@@ -71,7 +71,7 @@ function createOfferTemplate(_state, offer, isDisabled) {
 
 function createOffersTemplate(_state, isDisabled) {
   const {currentOffersPack} = _state;
-  if(!currentOffersPack) {
+  if (!currentOffersPack) {
     return '';
   }
 
@@ -96,7 +96,7 @@ function createPicturesListTemplate(pictures = []) {
 }
 
 function createDestinationTemplate(destination) {
-  if(!destination) {
+  if (!destination) {
     return '';
   }
   const {description, pictures} = destination;
@@ -272,7 +272,6 @@ export default class EventCreateView extends AbstractStatefulView {
       this.element.querySelector(`#event-start-time-${this._state.id}`),
       {
         ...getFlatpickrConfig(),
-        defaultDate: this._state.dateFrom,
         onClose: this.#dateFromCloseHandler,
       },
     );
@@ -283,7 +282,6 @@ export default class EventCreateView extends AbstractStatefulView {
       this.element.querySelector(`#event-end-time-${this._state.id}`),
       {
         ...getFlatpickrConfig(),
-        defaultDate: this._state.dateTo,
         minDate: this._state.dateFrom,
         onClose: this.#dateToCloseHandler,
       },
@@ -294,8 +292,8 @@ export default class EventCreateView extends AbstractStatefulView {
     const dateFrom = new Date(userDate);
     let dateTo = new Date(this._state.dateTo);
 
-    if(dateFrom > dateTo) {
-      dateTo = new Date(new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET));
+    if (dateFrom > dateTo) {
+      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
     }
 
     this.updateElement({
@@ -314,13 +312,13 @@ export default class EventCreateView extends AbstractStatefulView {
     const targetInput = evt.target.closest('input');
     const typeToggle = this.element.querySelector('.event__type-toggle');
 
-    if(targetInput) {
+    if (targetInput) {
       evt.stopPropagation();
       evt.preventDefault();
 
       const newType = targetInput.value;
 
-      if(newType !== this._state.type) {
+      if (newType !== this._state.type) {
         this.updateElement({
           type: newType,
           offers: [],
@@ -337,7 +335,7 @@ export default class EventCreateView extends AbstractStatefulView {
     const newDestinationName = evt.target.value;
     const newDestination = this.#allDestinations.find((destination) => destination.name === newDestinationName);
 
-    if(newDestination && this._state.currentDestination !== newDestination) {
+    if (newDestination && this._state.currentDestination !== newDestination) {
       this.updateElement({
         destination: newDestination.id,
         currentDestination: newDestination
@@ -353,7 +351,7 @@ export default class EventCreateView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
 
-    this.updateElement({
+    this._setState({
       basePrice: evt.target.value,
     });
   };
@@ -370,12 +368,17 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const targetOffer = evt.target.dataset.offerId;
+    let checkedOffers = [...this._state.offers];
 
-    if(this._state.offers.includes(targetOffer)) {
-      this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
+    if (checkedOffers.includes(targetOffer)) {
+      checkedOffers = checkedOffers.filter((offer) => offer !== targetOffer);
     } else {
-      this._state.offers.push(targetOffer);
+      checkedOffers.push(targetOffer);
     }
+
+    this._setState({
+      offers: checkedOffers,
+    });
   };
 
   static parseDataToState(event, currentDestination, currentOffersPack) {

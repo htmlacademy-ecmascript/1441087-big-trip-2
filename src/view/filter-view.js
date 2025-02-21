@@ -58,7 +58,7 @@ export default class FilterView extends AbstractView {
   #filterClickHandler = (evt) => {
     const targetInput = evt.target.closest('input');
 
-    if(targetInput) {
+    if (targetInput) {
       evt.preventDefault();
       this.#handleFilterClick(evt.target.value);
     }

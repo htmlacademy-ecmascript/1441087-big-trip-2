@@ -113,7 +113,7 @@ export default class TripPresenter {
   }
 
   #renderTripMessage(message) {
-    if(this.#currentMessageComponent) {
+    if (this.#currentMessageComponent) {
       remove(this.#currentMessageComponent);
     }
 
@@ -162,7 +162,7 @@ export default class TripPresenter {
   #renderTrip() {
     render(this.#tripComponent, this.#tripContainer);
 
-    if(this.#eventsModel.isError ||
+    if (this.#eventsModel.isError ||
        this.#destinationsModel.isError ||
        this.#offersModel.isError) {
       this.#renderApiErrorMessage();
@@ -179,7 +179,7 @@ export default class TripPresenter {
     this.#renderNewEventButton();
     remove(this.#currentMessageComponent);
 
-    if(this.events.length === 0) {
+    if (this.events.length === 0) {
       this.#renderNoEventsMessage();
       return;
     }
@@ -195,17 +195,17 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
 
-    if(this.#currentMessageComponent) {
+    if (this.#currentMessageComponent) {
       remove(this.#currentMessageComponent);
       this.#currentMessageComponent = null;
     }
 
-    if(this.#prevMessageComponent) {
+    if (this.#prevMessageComponent) {
       remove(this.#prevMessageComponent);
       this.#prevMessageComponent = null;
     }
 
-    if(resetSortType) {
+    if (resetSortType) {
       this.#currentSortType = EventSort.defaultSortType;
     }
   }
@@ -277,7 +277,7 @@ export default class TripPresenter {
     this.#currentSortType = EventSort.defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
     this.#newEventPresenter.init();
-    if(this.#currentMessageComponent) {
+    if (this.#currentMessageComponent) {
       this.#prevMessageComponent = this.#currentMessageComponent;
       remove(this.#currentMessageComponent);
     }
@@ -285,7 +285,7 @@ export default class TripPresenter {
 
   #newEventCloseHandler = () => {
     this.#newEventButtonComponent.element.disabled = false;
-    if(this.#prevMessageComponent) {
+    if (this.#prevMessageComponent) {
       this.#currentMessageComponent = this.#prevMessageComponent;
       this.#prevMessageComponent = null;
       render(this.#currentMessageComponent, this.#tripComponent.element, RenderPosition.BEFOREEND);

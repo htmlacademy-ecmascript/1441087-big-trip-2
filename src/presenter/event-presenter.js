@@ -95,7 +95,7 @@ export default class EventPresenter {
   }
 
   resetView() {
-    if(this.#mode !== Mode.DEFAULT) {
+    if (this.#mode !== Mode.DEFAULT) {
       this.#eventEditComponent.reset(this.#event, this.#currentDestination, this.#currentOffersPack);
       this.#replaceFormToCard();
     }
