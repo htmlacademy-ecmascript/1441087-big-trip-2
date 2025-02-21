@@ -289,6 +289,10 @@ export default class EventCreateView extends AbstractStatefulView {
   }
 
   #dateFromCloseHandler = ([userDate]) => {
+    if (!userDate) {
+      userDate = new Date().setMinutes(0);
+    }
+
     const dateFrom = new Date(userDate);
     let dateTo = new Date(this._state.dateTo);
 
@@ -303,6 +307,10 @@ export default class EventCreateView extends AbstractStatefulView {
   };
 
   #dateToCloseHandler = ([userDate]) => {
+    if (!userDate) {
+      userDate = new Date().setMinutes(0);
+    }
+
     this.updateElement({
       dateTo: userDate,
     });
