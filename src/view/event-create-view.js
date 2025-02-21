@@ -353,7 +353,7 @@ export default class EventCreateView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
 
-    this.updateElement({
+    this._setState({
       basePrice: evt.target.value,
     });
   };
@@ -370,12 +370,17 @@ export default class EventCreateView extends AbstractStatefulView {
 
   #offerChangeHandler = (evt) => {
     const targetOffer = evt.target.dataset.offerId;
+    let checkedOffers = [...this._state.offers];
 
-    if(this._state.offers.includes(targetOffer)) {
-      this._state.offers = this._state.offers.filter((offer) => offer !== targetOffer);
+    if(checkedOffers.includes(targetOffer)) {
+      checkedOffers = checkedOffers.filter((offer) => offer !== targetOffer);
     } else {
-      this._state.offers.push(targetOffer);
+      checkedOffers.push(targetOffer);
     }
+
+    this._setState({
+      offers: checkedOffers,
+    });
   };
 
   static parseDataToState(event, currentDestination, currentOffersPack) {
