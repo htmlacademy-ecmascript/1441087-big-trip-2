@@ -3,13 +3,13 @@ import Observable from '../framework/observable.js';
 
 
 const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
-const TODAY = new Date();
+const CURRENT_DATE = new Date();
 
 const FilterMethod = {
   [FilterType.EVERYTHING]: (events) => events,
-  [FilterType.FUTURE]: (events) => events.filter((event) => event.dateFrom > TODAY),
-  [FilterType.PRESENT]: (events) => events.filter((event) => event.dateFrom <= TODAY && event.dateTo >= TODAY),
-  [FilterType.PAST]: (events) => events.filter((event) => event.dateTo < TODAY)
+  [FilterType.FUTURE]: (events) => events.filter((event) => event.dateFrom > CURRENT_DATE),
+  [FilterType.PRESENT]: (events) => events.filter((event) => event.dateFrom <= CURRENT_DATE && event.dateTo >= CURRENT_DATE),
+  [FilterType.PAST]: (events) => events.filter((event) => event.dateTo < CURRENT_DATE)
 };
 
 const NoEventMessage = {
