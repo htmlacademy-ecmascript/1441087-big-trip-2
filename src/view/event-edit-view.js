@@ -71,7 +71,7 @@ function createOfferTemplate(_state, offer, isDisabled) {
 
 function createOffersTemplate(_state, isDisabled) {
   const {currentOffersPack} = _state;
-  if(!currentOffersPack) {
+  if (!currentOffersPack) {
     return '';
   }
 
@@ -96,7 +96,7 @@ function createPicturesListTemplate(pictures = []) {
 }
 
 function createDestinationTemplate(destination) {
-  if(!destination) {
+  if (!destination) {
     return '';
   }
   const {description, pictures} = destination;
@@ -303,7 +303,7 @@ export default class EventEditView extends AbstractStatefulView {
     const dateFrom = new Date(userDate);
     let dateTo = new Date(this._state.dateTo);
 
-    if(dateFrom > dateTo) {
+    if (dateFrom > dateTo) {
       dateTo = new Date(new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET));
     }
 
@@ -323,13 +323,13 @@ export default class EventEditView extends AbstractStatefulView {
     const targetInput = evt.target.closest('input');
     const typeToggle = this.element.querySelector('.event__type-toggle');
 
-    if(targetInput) {
+    if (targetInput) {
       evt.stopPropagation();
       evt.preventDefault();
 
       const newType = targetInput.value;
 
-      if(newType !== this._state.type) {
+      if (newType !== this._state.type) {
         this.updateElement({
           type: newType,
           offers: [],
@@ -346,7 +346,7 @@ export default class EventEditView extends AbstractStatefulView {
     const newDestinationName = evt.target.value;
     const newDestination = this.#allDestinations.find((destination) => destination.name === newDestinationName);
 
-    if(newDestination && this._state.currentDestination !== newDestination) {
+    if (newDestination && this._state.currentDestination !== newDestination) {
       this.updateElement({
         destination: newDestination.id,
         currentDestination: newDestination
@@ -386,7 +386,7 @@ export default class EventEditView extends AbstractStatefulView {
     const targetOffer = evt.target.dataset.offerId;
     let checkedOffers = [...this._state.offers];
 
-    if(checkedOffers.includes(targetOffer)) {
+    if (checkedOffers.includes(targetOffer)) {
       checkedOffers = checkedOffers.filter((offer) => offer !== targetOffer);
     } else {
       checkedOffers.push(targetOffer);
