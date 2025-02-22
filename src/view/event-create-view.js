@@ -25,7 +25,7 @@ function createTypeTemplate(_state, type) {
   );
 }
 
-function createEventTypeListTemplate(_state, eventTypes) {
+function createEventTypesTemplate(_state, eventTypes) {
   return (
     `<div class="event__type-list">
       <fieldset class="event__type-group">
@@ -36,7 +36,7 @@ function createEventTypeListTemplate(_state, eventTypes) {
   );
 }
 
-function createDestinationListTemplate(destinations, id) {
+function createDestinationsTemplate(destinations, id) {
   return (
     `<datalist id="destination-list-${id}">
       ${destinations.map((destination) => (`<option value="${destination.name}"></option>`)).join('')}
@@ -85,7 +85,7 @@ function createOffersTemplate(_state, isDisabled) {
   ) : '';
 }
 
-function createPicturesListTemplate(pictures = []) {
+function createPicturesTemplate(pictures = []) {
   return pictures.length !== 0 ? (
     `<div class="event__photos-container">
       <div class="event__photos-tape">
@@ -105,7 +105,7 @@ function createDestinationTemplate(destination) {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      ${createPicturesListTemplate(pictures)}
+      ${createPicturesTemplate(pictures)}
     </section>`) : '';
 }
 
@@ -132,8 +132,12 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" ${isDisabled ? 'disabled' : ''} type="checkbox">
-            ${createEventTypeListTemplate(_state, eventTypes)}
+            <input
+              id="event-type-toggle-${id}"
+              class="event__type-toggle  visually-hidden"
+              type="checkbox">
+              ${isDisabled ? 'disabled' : ''}
+            ${createEventTypesTemplate(_state, eventTypes)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -148,7 +152,7 @@ function createEventCreateTemplate(_state, allDestinations, eventTypes) {
               value="${currentDestination ? currentDestination.name : ''}"
               list="destination-list-${id}"
               ${isDisabled ? 'disabled' : ''}>
-            ${createDestinationListTemplate(allDestinations, id)}
+            ${createDestinationsTemplate(allDestinations, id)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
