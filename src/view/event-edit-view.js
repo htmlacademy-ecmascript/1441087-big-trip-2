@@ -85,11 +85,17 @@ function createOffersTemplate(_state, isDisabled) {
   ) : '';
 }
 
+function createPictureTemplate(picture) {
+  const {src, description} = picture;
+
+  return `<img class="event__photo" src="${src}" alt="${description}">`;
+}
+
 function createPicturesTemplate(pictures = []) {
   return pictures.length !== 0 ? (
     `<div class="event__photos-container">
       <div class="event__photos-tape">
-        ${pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
+        ${pictures.map((picture) => createPictureTemplate(picture)).join('')}
       </div>
     </div>`
   ) : '';
