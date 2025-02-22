@@ -15,7 +15,7 @@ function createOfferTemplate(offer) {
   );
 }
 
-function createOffersCheckedListTemplate(checkedOffers) {
+function createOffersCheckedTemplate(checkedOffers) {
   return checkedOffers.length !== 0 ? (
     `<h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
@@ -35,7 +35,7 @@ function createEventTemplate(event, currentDestination, checkedOffers) {
 
   return (
     `<li class="trip-events__item">
-      <div id = "${id}" class="event">
+      <div id="${id}" class="event">
         <time class="event__date" datetime="${dateFrom}">${day}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -52,7 +52,7 @@ function createEventTemplate(event, currentDestination, checkedOffers) {
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
-        ${createOffersCheckedListTemplate(checkedOffers)}
+        ${createOffersCheckedTemplate(checkedOffers)}
         <button class="event__favorite-btn${isFavorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

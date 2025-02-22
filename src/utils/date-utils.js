@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 
 const HOURS_IN_DAY = 24;
 const MINUTES_IN_HOUR = 60;
+const MILLISECONDS_IN_HOUR = 3600000;
 const REQUIRED_STRING_LENGTH = 2;
 const EVENT_HOUR_OFFSET = 1;
 
@@ -46,6 +47,7 @@ function isDatesEqual(firstDate, secondDate) {
 
 
 export {
+  MILLISECONDS_IN_HOUR,
   EVENT_HOUR_OFFSET,
   DateFormat,
   getFlatpickrConfig,

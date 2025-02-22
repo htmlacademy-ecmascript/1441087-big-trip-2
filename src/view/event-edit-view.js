@@ -1,5 +1,5 @@
 import {getCapitalizedString, getHtmlSafeString} from '../utils/common-utils.js';
-import {EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
+import {MILLISECONDS_IN_HOUR, EVENT_HOUR_OFFSET, DateFormat, getFlatpickrConfig, getFormattedDate} from '../utils/date-utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -25,7 +25,7 @@ function createTypeTemplate(_state, type) {
   );
 }
 
-function createEventTypeListTemplate(_state, eventTypes) {
+function createEventTypesTemplate(_state, eventTypes) {
   return (
     `<div class="event__type-list">
       <fieldset class="event__type-group">
@@ -36,7 +36,7 @@ function createEventTypeListTemplate(_state, eventTypes) {
   );
 }
 
-function createDestinationListTemplate(destinations, id) {
+function createDestinationsTemplate(destinations, id) {
   return (
     `<datalist id="destination-list-${id}">
       ${destinations.map((destination) => (`<option value="${destination.name}"></option>`)).join('')}
@@ -85,11 +85,17 @@ function createOffersTemplate(_state, isDisabled) {
   ) : '';
 }
 
-function createPicturesListTemplate(pictures = []) {
+function createPictureTemplate(picture) {
+  const {src, description} = picture;
+
+  return `<img class="event__photo" src="${src}" alt="${description}">`;
+}
+
+function createPicturesTemplate(pictures = []) {
   return pictures.length !== 0 ? (
     `<div class="event__photos-container">
       <div class="event__photos-tape">
-        ${pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
+        ${pictures.map((picture) => createPictureTemplate(picture)).join('')}
       </div>
     </div>`
   ) : '';
@@ -105,7 +111,7 @@ function createDestinationTemplate(destination) {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      ${createPicturesListTemplate(pictures)}
+      ${createPicturesTemplate(pictures)}
     </section>`) : '';
 }
 
@@ -119,7 +125,7 @@ function createDetailsTemplate(offersTemplate, destinationTemplate) {
 
 function createEventEditTemplate(_state, allDestinations, eventTypes) {
   const {id, type, dateFrom, dateTo, basePrice, currentDestination, isDisabled, isSaving, isDeleting} = _state;
-  const isSubmitDisabled = !type || !currentDestination || !basePrice || !dateFrom || !dateTo;
+  const isSubmitDisabled = !type || !currentDestination || !dateFrom || !dateTo;
   const offersTemplate = createOffersTemplate(_state, isDisabled);
   const destinationTemplate = createDestinationTemplate(currentDestination);
 
@@ -132,8 +138,12 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" ${isDisabled ? 'disabled' : ''} type="checkbox">
-            ${createEventTypeListTemplate(_state, eventTypes)}
+            <input
+              id="event-type-toggle-${id}"
+              class="event__type-toggle  visually-hidden"
+              type="checkbox">
+              ${isDisabled ? 'disabled' : ''}
+            ${createEventTypesTemplate(_state, eventTypes)}
           </div>
 
           <div class="event__field-group  event__field-group--destination">
@@ -148,7 +158,7 @@ function createEventEditTemplate(_state, allDestinations, eventTypes) {
               value="${currentDestination ? currentDestination.name : ''}"
               list="destination-list-${id}"
               ${isDisabled ? 'disabled' : ''}>
-              ${createDestinationListTemplate(allDestinations, id)}
+            ${createDestinationsTemplate(allDestinations, id)}
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -298,30 +308,28 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   #dateFromCloseHandler = ([userDate]) => {
-    if (!userDate) {
-      userDate = new Date().setMinutes(0);
+    const dateFrom = userDate ? userDate : new Date();
+    let dateTo = this._state.dateTo;
+
+    if (dateTo && dateFrom >= dateTo) {
+      dateTo = dateFrom.valueOf() + (EVENT_HOUR_OFFSET * MILLISECONDS_IN_HOUR);
+
+      this.updateElement({
+        dateFrom: dateFrom,
+        dateTo: new Date(dateTo),
+      });
+    } else {
+      this.updateElement({
+        dateFrom: dateFrom,
+      });
     }
-
-    const dateFrom = new Date(userDate);
-    let dateTo = new Date(this._state.dateTo);
-
-    if (dateFrom > dateTo) {
-      dateTo = new Date(userDate).setHours(dateFrom.getHours() + EVENT_HOUR_OFFSET);
-    }
-
-    this.updateElement({
-      dateFrom: dateFrom,
-      dateTo: dateTo
-    });
   };
 
   #dateToCloseHandler = ([userDate]) => {
-    if (!userDate) {
-      userDate = new Date().setMinutes(0);
-    }
+    const dateTo = userDate ? userDate : new Date();
 
     this.updateElement({
-      dateTo: userDate,
+      dateTo: dateTo,
     });
   };
 

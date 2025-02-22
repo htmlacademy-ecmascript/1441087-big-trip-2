@@ -97,6 +97,7 @@ export default class TripPresenter {
 
   init () {
     render(this.#eventListComponent, this.#tripComponent.element);
+    this.#renderNewEventButton();
     this.#renderTrip();
   }
 
@@ -176,7 +177,7 @@ export default class TripPresenter {
       return;
     }
 
-    this.#renderNewEventButton();
+    this.#enableNewEventButton();
     remove(this.#currentMessageComponent);
 
     if (this.events.length === 0) {
@@ -208,6 +209,14 @@ export default class TripPresenter {
     if (resetSortType) {
       this.#currentSortType = EventSort.defaultSortType;
     }
+  }
+
+  #disableNewEventButton() {
+    this.#newEventButtonComponent.element.disabled = true;
+  }
+
+  #enableNewEventButton() {
+    this.#newEventButtonComponent.element.disabled = false;
   }
 
   #modeChangeHandler = () => {
@@ -273,10 +282,10 @@ export default class TripPresenter {
   };
 
   #newEventOpenHandler = () => {
-    this.#newEventButtonComponent.element.disabled = true;
     this.#currentSortType = EventSort.defaultSortType;
     this.#filtersModel.setFilter(UpdateType.MAJOR, this.#filtersModel.defaultFilterType);
     this.#newEventPresenter.init();
+    this.#disableNewEventButton();
     if (this.#currentMessageComponent) {
       this.#prevMessageComponent = this.#currentMessageComponent;
       remove(this.#currentMessageComponent);
@@ -284,7 +293,7 @@ export default class TripPresenter {
   };
 
   #newEventCloseHandler = () => {
-    this.#newEventButtonComponent.element.disabled = false;
+    this.#enableNewEventButton();
     if (this.#prevMessageComponent) {
       this.#currentMessageComponent = this.#prevMessageComponent;
       this.#prevMessageComponent = null;
